@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "To'yona mobile"
 include(":app")
+include(":data")
+include(":domain")

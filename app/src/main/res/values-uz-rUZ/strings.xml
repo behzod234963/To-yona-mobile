@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">To\'yona mobile</string>
-    <string name="skip">Skip</string>
+    <string name="skip">O\'tkazib yuborish</string>
     <string name="o_zbekcha">O\'zbekcha</string>
     <string name="russian">Русский</string>
     <string name="english">English</string>
-    <string name="system">System</string>
-    <string name="next">Next</string>
+    <string name="system">Sistema</string>
+    <string name="next">Keyingisi</string>
     <string name="happiness_days_of_your_friends">Yaqinlarning quvonchli kunlaridan</string>
     <string name="be_line">xabardor bo\'ling</string>
     <string name="safe_and_fast_payments">Xavfsiz va tezkor o\'tkazmalar</string>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">To\'yona mobile</string>
+    <string name="skip">Пропустить</string>
+    <string name="o_zbekcha">O\'zbekcha</string>
+    <string name="russian">Русский</string>
+    <string name="english">English</string>
+    <string name="system">Система</string>
+    <string name="next">Следующий</string>
+    <string name="happiness_days_of_your_friends">радостных дней близких</string>
+    <string name="be_line">Будьте в курсе</string>
+    <string name="safe_and_fast_payments">Быстрые и безопасные переводы</string>
+    <string name="just_and_trust">Простота и надёжность</string>
+</resources>

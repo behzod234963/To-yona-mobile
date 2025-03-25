@@ -17,4 +17,5 @@
     <string name="phone_number_error">Ma\'lumot kiritishda xatolik</string>
     <string name="continue_">Davom etish</string>
     <string name="please_check_validate_places">Iltimos maydonlar to\'g\'ri to\'ldirilganligini tekshiring!</string>
+    <string name="enter_code_below">Iltimos %1$s raqamiga yuborilgan kodni kiriting</string>
 </resources>

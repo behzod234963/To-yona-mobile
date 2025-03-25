@@ -16,4 +16,5 @@
     <string name="phone_number_error">Phone number error</string>
     <string name="continue_">Continue</string>
     <string name="please_check_validate_places">Please check validate places</string>
+    <string name="enter_code_below">Enter code below</string>
 </resources>

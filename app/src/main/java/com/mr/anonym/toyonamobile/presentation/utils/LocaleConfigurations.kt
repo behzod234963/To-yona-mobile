@@ -3,7 +3,6 @@ package com.mr.anonym.toyonamobile.presentation.utils
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import java.util.Locale
 
@@ -21,7 +20,7 @@ class LocaleConfigurations(private val context: Context) {
     }
 
     fun Activity.applySavedLanguage() {
-        val language = sharedPreferences.getLanguage()?:"uz"
+        val language = sharedPreferences.getLanguage() ?: "uz"
         val locale = Locale(language)
         Locale.setDefault(locale)
         val config = Configuration(resources.configuration)

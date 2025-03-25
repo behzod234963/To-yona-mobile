@@ -17,11 +17,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -57,6 +60,10 @@ fun LogInScreen(
     val nameFieldValue = remember { mutableStateOf("") }
     val nameFieldError = remember { mutableStateOf(false) }
 
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -66,11 +73,12 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.3f)
+                    .fillMaxHeight(0.20f)
                     .padding(containerPadding.intValue.dp),
-                verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.log_in),
                     color = secondaryColor,
@@ -88,7 +96,7 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.3f)
+                    .fillMaxHeight(0.40f)
                     .padding(containerPadding.intValue.dp),
                 verticalArrangement = Arrangement.Top
             ) {
@@ -96,7 +104,8 @@ fun LogInScreen(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
                     phoneFieldModifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     phoneFieldError = phoneFieldError.value,
                     phoneFieldValue = phoneFieldValue.value,
                     phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
@@ -106,7 +115,8 @@ fun LogInScreen(
                         phoneFieldError.value = !it.phoneChecker()
                     },
                     nameFieldModifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     nameFieldError = nameFieldError.value,
                     nameFieldValue = nameFieldValue.value,
                     nameFieldTrailingFunction = { nameFieldValue.value = "" },
@@ -119,7 +129,7 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.9f)
+                    .fillMaxHeight(0.85f)
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom

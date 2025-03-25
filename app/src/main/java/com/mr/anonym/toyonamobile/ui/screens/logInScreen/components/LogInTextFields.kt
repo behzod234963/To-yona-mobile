@@ -11,13 +11,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
 
 @Composable
@@ -38,7 +43,6 @@ fun LogInTextFields(
 
     val focusManager = LocalFocusManager.current
     val keyBoardOptions = KeyboardOptions(
-
         keyboardType = KeyboardType.Number,
         imeAction = if (!phoneFieldError) ImeAction.Next else ImeAction.Default
     )
@@ -51,6 +55,10 @@ fun LogInTextFields(
         value = phoneFieldValue,
         onValueChange = { onPhoneValueChange(it) },
         modifier = phoneFieldModifier,
+        textStyle = TextStyle(
+            color = secondaryColor,
+            fontSize = 16.sp
+        ),
         prefix = {
             Text(
                 text = "+998"
@@ -87,6 +95,10 @@ fun LogInTextFields(
         value = nameFieldValue,
         onValueChange = { onNameFieldValueChange(it) },
         modifier = nameFieldModifier,
+        textStyle = TextStyle(
+            color = secondaryColor,
+            fontSize = 16.sp
+        ),
         trailingIcon = {
             IconButton(
                 onClick = {
@@ -101,9 +113,9 @@ fun LogInTextFields(
             }
         },
         supportingText = {
-            if (phoneFieldError){
+            if (nameFieldError){
                 Text(
-                    text = stringResource(R.string.the_place_must_not_be_empty)
+                    text = stringResource(R.string.phone_number_error)
                 )
             }
         },

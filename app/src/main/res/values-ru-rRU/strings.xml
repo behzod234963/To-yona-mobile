@@ -17,4 +17,5 @@
     <string name="phone_number_error">Ошибка при вводе данных</string>
     <string name="continue_">Продолжить</string>
     <string name="please_check_validate_places">Пожалуйста проверьте правильность запольнения полей!</string>
+    <string name="enter_code_below">Пожалуйста введите код отправленный на номер %1$s</string>
 </resources>

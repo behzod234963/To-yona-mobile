@@ -46,7 +46,7 @@ fun OnBoardingTopBar(
                 Text(
                     text = stringResource(R.string.skip),
                     color = quaternaryColor,
-                    fontSize = 18.sp
+                    fontSize = 16.sp
                 )
             }
         },

@@ -6,8 +6,14 @@
     <string name="english">English</string>
     <string name="system">System</string>
     <string name="next">Next</string>
-    <string name="happiness_days_of_your_friends">Yaqinlarning quvonchli kunlaridan</string>
-    <string name="be_line">xabardor bo\'ling</string>
-    <string name="safe_and_fast_payments">Xavfsiz va tezkor o\'tkazmalar</string>
-    <string name="just_and_trust">Oddiylik va ishonchlilik</string>
+    <string name="happiness_days_of_your_friends">Happiness days of your friends</string>
+    <string name="be_line">Be line</string>
+    <string name="safe_and_fast_payments">Safe and fast payments</string>
+    <string name="just_and_trust">Just and trust</string>
+    <string name="log_in">Log in</string>
+    <string name="to_log_in_you_need_to_enter_phone_and_firstname_lastname">Log in you need to enter phone and firstname,lastname</string>
+    <string name="the_place_must_not_be_empty">The place must not be empty</string>
+    <string name="phone_number_error">Phone number error</string>
+    <string name="continue_">Continue</string>
+    <string name="please_check_validate_places">Please check validate places</string>
 </resources>

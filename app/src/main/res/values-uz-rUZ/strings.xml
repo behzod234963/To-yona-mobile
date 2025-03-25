@@ -11,4 +11,10 @@
     <string name="be_line">xabardor bo\'ling</string>
     <string name="safe_and_fast_payments">Xavfsiz va tezkor o\'tkazmalar</string>
     <string name="just_and_trust">Oddiylik va ishonchlilik</string>
+    <string name="log_in">Tizimga kirish</string>
+    <string name="to_log_in_you_need_to_enter_phone_and_firstname_lastname">Tizimga kirish uchun telefon raqamingizni va ism sharifingizni kiriting</string>
+    <string name="the_place_must_not_be_empty">Ism sharifingiz kiritilatigan joy bo\'sh bo\'lmasligi kerak</string>
+    <string name="phone_number_error">Ma\'lumot kiritishda xatolik</string>
+    <string name="continue_">Davom etish</string>
+    <string name="please_check_validate_places">Iltimos maydonlar to\'g\'ri to\'ldirilganligini tekshiring!</string>
 </resources>

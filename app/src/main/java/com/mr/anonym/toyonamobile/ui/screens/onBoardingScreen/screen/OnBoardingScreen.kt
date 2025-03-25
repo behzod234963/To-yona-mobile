@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -60,7 +61,9 @@ fun OnboardingScreen(
             OnBoardingTopBar(
                 onSkipClick = {
                     sharedPreferences.saveFirstTimeState(false)
-                    navController.navigate(ScreensRouter.LogInScreen.route)
+                    navController.navigate(ScreensRouter.LogInScreen.route){
+                        popUpTo(route = ScreensRouter.OnboardingScreen.route){ inclusive = true }
+                    }
                 },
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
@@ -68,6 +71,11 @@ fun OnboardingScreen(
             )
         }
     ) {padding->
+        BackHandler (
+            enabled = true
+        ){
+            sharedPreferences.saveFirstTimeState(false)
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -135,7 +143,7 @@ fun OnboardingScreen(
                     Text(
                         text = stringResource(R.string.next),
                         color = secondaryColor,
-                        fontSize = 18.sp
+                        fontSize = 16.sp
                     )
                 }
             }

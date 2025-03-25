@@ -11,4 +11,10 @@
     <string name="be_line">Будьте в курсе</string>
     <string name="safe_and_fast_payments">Быстрые и безопасные переводы</string>
     <string name="just_and_trust">Простота и надёжность</string>
+    <string name="log_in">Вход в систему</string>
+    <string name="to_log_in_you_need_to_enter_phone_and_firstname_lastname">Для входа в систему вам нужно ввести номер телефона и имя,фамилию</string>
+    <string name="the_place_must_not_be_empty">Поля не должно быть пустым</string>
+    <string name="phone_number_error">Ошибка при вводе данных</string>
+    <string name="continue_">Продолжить</string>
+    <string name="please_check_validate_places">Пожалуйста проверьте правильность запольнения полей!</string>
 </resources>

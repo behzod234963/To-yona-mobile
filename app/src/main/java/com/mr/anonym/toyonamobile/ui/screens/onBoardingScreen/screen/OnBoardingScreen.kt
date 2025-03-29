@@ -2,6 +2,7 @@ package com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.screen
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,15 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.findActivity
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingPager
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingTopBar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -47,6 +45,7 @@ fun OnboardingScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val activityContext = LocalActivity.current
     val sharedPreferences = SharedPreferencesInstance(context)
     val primaryColor = if(isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -74,6 +73,7 @@ fun OnboardingScreen(
         BackHandler (
             enabled = true
         ){
+            navController.popBackStack()
             sharedPreferences.saveFirstTimeState(false)
         }
         Column(
@@ -125,7 +125,6 @@ fun OnboardingScreen(
                     contentDescription = "null"
                 )
             }
-            Spacer(Modifier.height(10.dp))
             if (page.intValue == 2){
                 Button(
                     modifier = Modifier

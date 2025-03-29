@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":data"))
 
     implementation(libs.daggerHilt)
+    implementation(libs.daggerHilt.navigation.compose)
     kapt(libs.kaptCompiler)
     implementation(libs.navigation)
     implementation(libs.kotlinCoroutines)
@@ -72,4 +73,5 @@ dependencies {
     implementation(libs.savedState)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.dataStore)
+    implementation(libs.biometricAuth)
 }

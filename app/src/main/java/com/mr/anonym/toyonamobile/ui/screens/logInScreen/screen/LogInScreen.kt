@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -35,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.components.LogInTextFields
@@ -55,16 +56,25 @@ fun LogInScreen(
     val containerPadding = remember { mutableIntStateOf(10) }
 
     val phoneFieldError = remember { mutableStateOf(false) }
-    val phoneFieldValue = remember { mutableStateOf("") }
+    val phoneFieldValue = rememberSaveable { mutableStateOf("") }
 
-    val nameFieldValue = remember { mutableStateOf("") }
+    val nameFieldValue = rememberSaveable { mutableStateOf("") }
     val nameFieldError = remember { mutableStateOf(false) }
+
+    val passwordValue = rememberSaveable { mutableStateOf( "" ) }
+    val passwordValueError = remember { mutableStateOf( false ) }
+
+    val confirmValue = rememberSaveable { mutableStateOf( "" ) }
+    val confirmValueError = remember { mutableStateOf( false ) }
 
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
-    Scaffold { paddingValues ->
+    Scaffold(
+        containerColor = primaryColor,
+        contentColor = primaryColor
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -96,7 +106,7 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.40f)
+                    .fillMaxHeight(0.55f)
                     .padding(containerPadding.intValue.dp),
                 verticalArrangement = Arrangement.Top
             ) {
@@ -114,22 +124,29 @@ fun LogInScreen(
 //                        if (it.isEmpty()) phoneFieldValue.value = "+998"
                         phoneFieldError.value = !it.phoneChecker()
                     },
-                    nameFieldModifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    nameFieldError = nameFieldError.value,
-                    nameFieldValue = nameFieldValue.value,
-                    nameFieldTrailingFunction = { nameFieldValue.value = "" },
-                    onNameFieldValueChange = {
-                        nameFieldValue.value = it
-                        nameFieldError.value = !it.nameChecker()
-                    }
+                    passwordValue = passwordValue.value,
+                    onPasswordValueChange = {
+                        passwordValue.value = it
+                        passwordValueError.value = !it.passwordChecker()
+                    },
+                    passwordValueTrailingIcon = {
+                        passwordValue.value = ""
+                    },
+                    passwordValueError = passwordValueError.value,
+                    confirmPasswordValue = confirmValue.value,
+                    onConfirmPasswordValueChange = {
+                        confirmValue.value = it
+                    },
+                    confirmPasswordValueTrailingIcon = {
+                        confirmValue.value = ""
+                    },
+                    confirmPasswordValueError = confirmValueError.value
                 )
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.85f)
+                    .fillMaxHeight(0.75f)
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
@@ -144,11 +161,17 @@ fun LogInScreen(
                     ),
                     onClick = {
                         if (
+                            phoneFieldValue.value.isNotEmpty() &&
+                            phoneFieldValue.value.isNotBlank() &&
                             !phoneFieldError.value &&
-                            !nameFieldError.value
+                            !passwordValueError.value
                         ) {
-                            val result = "+998" + phoneFieldValue.value
-                            navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result")
+                            if (confirmValue.value == passwordValue.value){
+                                val result = "+998" + phoneFieldValue.value
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result")
+                            }else{
+                                confirmValueError.value = true
+                            }
                         } else {
                             Toast.makeText(
                                 activityContext,

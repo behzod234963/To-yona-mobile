@@ -9,8 +9,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,16 +30,22 @@ fun OnBoardingTopBar(
     onSkipClick: () -> Unit,
     secondaryColor: Color,
     tertiaryColor: Color,
-    quaternaryColor: Color
+    quaternaryColor: Color,
 ) {
 
     val context = LocalContext.current
     val activityContext = LocalActivity.current
+    val coroutineScope = rememberCoroutineScope()
     val localeManager = LocaleConfigurations(context)
     val sharedPreferences = SharedPreferencesInstance(context)
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale() ) }
     val expanded = remember { mutableStateOf( false ) }
+
+    val localeOptions = mapOf(
+        stringResource(R.string.russian) to "ru",
+        stringResource(R.string.o_zbekcha) to "uz"
+    ).mapKeys { it.key }
 
     TopAppBar(
         navigationIcon = {
@@ -56,16 +65,14 @@ fun OnBoardingTopBar(
                 expanded = expanded.value,
                 value = localeValue.value,
                 onUzbekClick = {
-                    sharedPreferences.saveLanguage("uz")
-                    localeManager.apply {
-                        activityContext?.setLocale("uz")
+                    activityContext?.let{
+                        localeManager.setApplicationLocales(it,"uz")
                     }
                     expanded.value = false
                 },
                 onRussianClick = {
-                    sharedPreferences.saveLanguage("ru")
-                    localeManager.apply {
-                        activityContext?.setLocale("ru")
+                    activityContext?.let{
+                        localeManager.setApplicationLocales(it,"ru")
                     }
                     expanded.value = false
                 },

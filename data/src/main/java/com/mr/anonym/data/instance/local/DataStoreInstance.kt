@@ -87,4 +87,40 @@ class DataStoreInstance(private val context: Context) {
             it[key]?: R.drawable.ic_default_avatar
         }
     }
+    suspend fun saveFirstname(firstname: String){
+        val key = stringPreferencesKey("firstname")
+        context.dataStore.edit {
+            it[key] = firstname
+        }
+    }
+    fun getFirstname(): Flow<String>{
+        val key = stringPreferencesKey("firstname")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun saveLastname(lastname: String){
+        val key = stringPreferencesKey("lastname")
+        context.dataStore.edit {
+            it[key] = lastname
+        }
+    }
+    fun getLastname(): Flow<String>{
+        val key = stringPreferencesKey("lastname")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun savePhoneNumber(phoneNumber: String){
+        val key = stringPreferencesKey("phoneNumber")
+        context.dataStore.edit {
+            it[key] = phoneNumber
+        }
+    }
+    fun getPhoneNumber(): Flow<String>{
+        val key = stringPreferencesKey("phoneNumber")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
 }

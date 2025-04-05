@@ -11,13 +11,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
+import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddEventScreen
+import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
+import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen.NumberCheckScreen
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen.NewPinScreen
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
+import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringScreen
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyEventsScreen
+import com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.screen.NotificationsScreen
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.screen.OnboardingScreen
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen.ProfileScreen
+import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.screen.SettingsScreen
+import com.mr.anonym.toyonamobile.ui.screens.supportScreen.screen.SupportScreen
+import com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.WalletScreen
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -30,13 +39,14 @@ fun NavGraph(
     val isFirstTime = sharedPreferences.getFirstTimeState()
     val newPinState = sharedPreferences.getNewPinState()
     val isLoggedIn = sharedPreferences.getIsLoggedIn()
+    val isProfileSettingsState = sharedPreferences.getIsProfileSettingsState()
 
     NavHost(
         navController = navController,
         startDestination = when{
             isFirstTime->{ ScreensRouter.OnboardingScreen.route }
             !isLoggedIn-> { ScreensRouter.LogInScreen.route }
-            !newPinState ->{ ScreensRouter.ProfileScreen.route }
+            isProfileSettingsState ->{ ScreensRouter.ProfileScreen.route }
             newPinState->{ ScreensRouter.NewPinScreen.route }
             else -> ScreensRouter.EnterScreen.route
         }
@@ -68,6 +78,33 @@ fun NavGraph(
         }
         composable(ScreensRouter.ProfileScreen.route) {
             ProfileScreen(navController)
+        }
+        composable (ScreensRouter.NotificationsScreen.route){
+            NotificationsScreen(navController)
+        }
+        composable (ScreensRouter.ContactsScreen.route){
+            ContactsScreen(navController)
+        }
+        composable (ScreensRouter.MonitoringScreen.route){
+            MonitoringScreen(navController)
+        }
+        composable (ScreensRouter.WalletScreen.route){
+            WalletScreen(navController)
+        }
+        composable (ScreensRouter.SettingsScreen.route){
+            SettingsScreen(navController)
+        }
+        composable (ScreensRouter.SupportScreen.route){
+            SupportScreen(navController)
+        }
+        composable (ScreensRouter.DetailsScreen.route){
+            DetailsScreen(navController)
+        }
+        composable (ScreensRouter.MyEventsScreen.route){
+            MyEventsScreen(navController)
+        }
+        composable (ScreensRouter.AddEventScreen.route){
+            AddEventScreen(navController)
         }
     }
 }

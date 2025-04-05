@@ -9,7 +9,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,18 +60,19 @@ fun OnBoardingTopBar(
         title = { },
         actions = {
             OnBoardingChangeLanguageDropDown(
-                expanded = expanded.value,
                 value = localeValue.value,
                 onUzbekClick = {
                     activityContext?.let{
                         localeManager.setApplicationLocales(it,"uz")
                     }
+                    localeValue.value = "o'zbek"
                     expanded.value = false
                 },
                 onRussianClick = {
                     activityContext?.let{
                         localeManager.setApplicationLocales(it,"ru")
                     }
+                    localeValue.value = "русский"
                     expanded.value = false
                 },
                 secondaryColor = secondaryColor,

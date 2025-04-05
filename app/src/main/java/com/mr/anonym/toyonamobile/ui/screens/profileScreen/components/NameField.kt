@@ -60,7 +60,7 @@ fun NameField(
                 )
             }
         },
-        placeholder = {
+        label = {
             Text(
                 text = stringResource(R.string.firstname),
                 fontSize = 16.sp
@@ -100,7 +100,7 @@ fun NameField(
                 )
             }
         },
-        placeholder = {
+        label = {
             Text(
                 text = stringResource(R.string.lastname),
                 fontSize = 16.sp

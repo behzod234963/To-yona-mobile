@@ -74,4 +74,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.dataStore)
     implementation(libs.biometricAuth)
+    implementation(libs.roomSqlite)
+    implementation(libs.roomCoroutinesSupport)
 }

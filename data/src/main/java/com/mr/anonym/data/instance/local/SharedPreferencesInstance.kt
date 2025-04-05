@@ -31,4 +31,10 @@ class SharedPreferencesInstance(private val context: Context) {
     fun getIsLoggedIn(): Boolean{
         return sharedPreferences.getBoolean("IsLoggedIn", false)
     }
+    fun saveIsProfileSettingsState(state: Boolean){
+        sharedPreferences.edit{ putBoolean("IsProfileSettingsState",state) }
+    }
+    fun getIsProfileSettingsState(): Boolean{
+        return sharedPreferences.getBoolean("IsProfileSettingsState", false)
+    }
 }

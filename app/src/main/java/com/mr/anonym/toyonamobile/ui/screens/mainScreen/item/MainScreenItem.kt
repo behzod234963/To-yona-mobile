@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.item
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -12,9 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,78 +33,73 @@ fun MainScreenItem(
     primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
+    sevenrdColor: Color,
     smallFontSize:Int,
     mediumFontSize:Int,
     partyModel: PartyModel,
     onItemClick:()-> Unit
 ) {
 
-    Row (
+    Card (
         modifier = Modifier
-            .fillMaxWidth()
-            .background(primaryColor)
-            .padding(vertical = 5.dp, horizontal = 10.dp)
-            .clickable{ onItemClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(5.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = sevenrdColor,
+            contentColor = sevenrdColor
+        ),
+        elevation = CardDefaults.cardElevation(7.dp)
     ){
         Row (
             modifier = Modifier
-                .fillMaxWidth(0.5f),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+                .clickable{ onItemClick() },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Card(
+            Row (
                 modifier = Modifier
-                    .size(50.dp)
-                    .padding(5.dp),
-                shape = CircleShape
-            ) {
-                Icon(
+                    .fillMaxWidth(0.75f),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Card(
                     modifier = Modifier
-                        .fillMaxSize(),
-                    imageVector = Icons.Default.Person,
-                    tint = secondaryColor,
-                    contentDescription = "profile icon"
+                        .size(50.dp)
+                        .padding(5.dp),
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        imageVector = Icons.Default.Person,
+                        tint = secondaryColor,
+                        contentDescription = "profile icon"
+                    )
+                }
+                Spacer(Modifier.width(2.dp))
+                Text(
+                    modifier = Modifier
+                        .padding(vertical = 5.dp),
+                    text = partyModel.type,
+                    color = secondaryColor,
+                    fontSize = mediumFontSize.sp,
                 )
             }
-            Spacer(Modifier.width(10.dp))
-            Text(
-                text = partyModel.type,
-                color = secondaryColor,
-                fontSize = mediumFontSize.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-        Row (
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-        ){
-            Text(
-                text = "21-22-mart 2025",
-                color = secondaryColor,
-                fontSize = smallFontSize.sp,
-                textAlign = TextAlign.Center
-            )
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                Spacer(Modifier.width(2.dp))
+                Text(
+                    modifier = Modifier
+                        .padding(vertical = 5.dp),
+                    text = partyModel.dateTime,
+                    color = secondaryColor,
+                    fontSize = smallFontSize.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewMainScreenItem() {
-    MainScreenItem(
-        primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
-        secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-        tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
-        smallFontSize = 16,
-        mediumFontSize = 18,
-        partyModel = PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Kelin to'y",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025"
-        ),
-        onItemClick = {  },
-    )
 }

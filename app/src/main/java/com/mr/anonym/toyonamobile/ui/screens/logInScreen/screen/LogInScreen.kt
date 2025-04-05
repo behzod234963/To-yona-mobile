@@ -106,7 +106,7 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.55f)
+                    .fillMaxHeight(0.60f)
                     .padding(containerPadding.intValue.dp),
                 verticalArrangement = Arrangement.Top
             ) {
@@ -129,16 +129,10 @@ fun LogInScreen(
                         passwordValue.value = it
                         passwordValueError.value = !it.passwordChecker()
                     },
-                    passwordValueTrailingIcon = {
-                        passwordValue.value = ""
-                    },
                     passwordValueError = passwordValueError.value,
                     confirmPasswordValue = confirmValue.value,
                     onConfirmPasswordValueChange = {
                         confirmValue.value = it
-                    },
-                    confirmPasswordValueTrailingIcon = {
-                        confirmValue.value = ""
                     },
                     confirmPasswordValueError = confirmValueError.value
                 )
@@ -146,7 +140,7 @@ fun LogInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.75f)
+                    .fillMaxHeight(0.70f)
                     .padding(horizontal = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom

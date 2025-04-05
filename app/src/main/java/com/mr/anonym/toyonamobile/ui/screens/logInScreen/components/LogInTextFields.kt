@@ -2,6 +2,7 @@ package com.mr.anonym.toyonamobile.ui.screens.logInScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,13 +14,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
@@ -35,11 +41,9 @@ fun LogInTextFields(
     onPhoneValueChange:(String)->Unit,
     passwordValue: String,
     onPasswordValueChange:(String)-> Unit,
-    passwordValueTrailingIcon:()-> Unit,
     passwordValueError: Boolean,
     confirmPasswordValue: String,
     onConfirmPasswordValueChange:(String)-> Unit,
-    confirmPasswordValueTrailingIcon:()->Unit,
     confirmPasswordValueError: Boolean,
 ) {
 
@@ -48,9 +52,15 @@ fun LogInTextFields(
         keyboardType = KeyboardType.Number,
         imeAction = if (!phoneFieldError) ImeAction.Next else ImeAction.Default
     )
+    val passwordKeyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Password
+    )
     val keyBoardActions = KeyboardActions (
         onNext = { focusManager.moveFocus(FocusDirection.Next) }
     )
+    val isShowPassword = rememberSaveable { mutableStateOf( false ) }
+    val isShowConfirmPassword = rememberSaveable { mutableStateOf( false ) }
+    val visualTransformation = VisualTransformation.None
 
 //    Phone field content
     OutlinedTextField(
@@ -79,7 +89,7 @@ fun LogInTextFields(
                 )
             }
         },
-        placeholder = {
+        label = {
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp),
@@ -104,13 +114,15 @@ fun LogInTextFields(
     OutlinedTextField(
         value = passwordValue,
         onValueChange = { onPasswordValueChange(it) },
+        visualTransformation = if (isShowPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = Modifier
             .fillMaxWidth(),
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp
         ),
-        placeholder = {
+        keyboardOptions = passwordKeyboardOptions,
+        label = {
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp),
@@ -121,11 +133,13 @@ fun LogInTextFields(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    passwordValueTrailingIcon()
+                    isShowPassword.value = !isShowPassword.value
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    modifier = Modifier
+                        .size(25.dp),
+                    painter = if ( isShowPassword.value ) painterResource(R.drawable.ic_show) else painterResource(R.drawable.ic_hide),
                     tint = secondaryColor,
                     contentDescription = "null"
                 )
@@ -146,13 +160,15 @@ fun LogInTextFields(
     OutlinedTextField(
         value = confirmPasswordValue,
         onValueChange = { onConfirmPasswordValueChange(it) },
+        visualTransformation = if ( isShowConfirmPassword.value ) VisualTransformation.None else PasswordVisualTransformation() ,
         modifier = Modifier
             .fillMaxWidth(),
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp
         ),
-        placeholder = {
+        keyboardOptions = passwordKeyboardOptions,
+        label = {
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp),
@@ -163,11 +179,13 @@ fun LogInTextFields(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    confirmPasswordValueTrailingIcon()
+                    isShowConfirmPassword.value = !isShowConfirmPassword.value
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    modifier = Modifier
+                        .size(25.dp),
+                    painter = if ( isShowConfirmPassword.value ) painterResource(R.drawable.ic_show) else painterResource(R.drawable.ic_hide),
                     tint = secondaryColor,
                     contentDescription = "null"
                 )

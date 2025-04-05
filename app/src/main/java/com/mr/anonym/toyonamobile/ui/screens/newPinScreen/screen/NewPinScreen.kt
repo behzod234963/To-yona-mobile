@@ -83,9 +83,9 @@ fun NewPinScreen(
             confirmPinValue.value.length > 3 &&
             confirmPinValue.value == pinValue.value
         ) {
-            isPinCodeSetCompleted.value = true
             sharedPreferences.saveNewPinState(false)
             dataStore.savePinCode(pinValue.value)
+            isPinCodeSetCompleted.value = true
         } else {
             isPinCodeSetCompleted.value = false
         }
@@ -103,6 +103,7 @@ fun NewPinScreen(
                 sixrdColor = sixrdColor,
                 title = stringResource(R.string.allow_fingerprint),
                 confirmButton = {
+                    sharedPreferences.saveNewPinState(false)
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(true)
                     }
@@ -110,23 +111,22 @@ fun NewPinScreen(
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(true)
                     }
-                    sharedPreferences.saveNewPinState(false)
                     navController.navigate(ScreensRouter.MainScreen.route)
                 },
                 dismissButton = {
+                    sharedPreferences.saveNewPinState(false)
                     isPinCodeSetCompleted.value = false
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(false)
                     }
-                    sharedPreferences.saveNewPinState(false)
                     navController.navigate(ScreensRouter.MainScreen.route)
                 },
                 onDismissRequest = {
+                    sharedPreferences.saveNewPinState(false)
                     isPinCodeSetCompleted.value = false
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(false)
                     }
-                    sharedPreferences.saveNewPinState(false)
                     navController.navigate(ScreensRouter.MainScreen.route)
                 }
             )

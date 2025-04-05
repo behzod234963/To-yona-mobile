@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,7 +63,7 @@ fun ProfileScreen(
     val quaternaryColor = Color.Red
 
     val showAvatarContent = rememberSaveable { mutableStateOf( false ) }
-    val avatar = rememberSaveable { mutableIntStateOf( R.drawable.ic_man ) }
+    val avatar = rememberSaveable { mutableIntStateOf( R.drawable.ic_default_avatar ) }
 
     val nameValue = rememberSaveable { mutableStateOf("") }
     val nameValueError = rememberSaveable { mutableStateOf(false) }
@@ -73,7 +74,7 @@ fun ProfileScreen(
     val bottomSheetState = rememberModalBottomSheetState()
     coroutineScope.launch { bottomSheetState.hide() }
 
-
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
     Scaffold(
         containerColor = primaryColor,
@@ -113,7 +114,7 @@ fun ProfileScreen(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = "+998973570498",
+                    text = phoneNumber.value,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
@@ -168,7 +169,12 @@ fun ProfileScreen(
                             !nameValueError.value &&
                             !surnameValueError.value
                         ) {
-                            coroutineScope.launch { dataStore.saveAvatar(avatar.value) }
+                            coroutineScope.launch {
+                                dataStore.saveAvatar(avatar.value)
+                                dataStore.saveFirstname(firstname = nameValue.value)
+                                dataStore.saveLastname(lastname = surnameValue.value)
+                            }
+                            sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
                             navController.navigate(ScreensRouter.NewPinScreen.route)
                         } else {

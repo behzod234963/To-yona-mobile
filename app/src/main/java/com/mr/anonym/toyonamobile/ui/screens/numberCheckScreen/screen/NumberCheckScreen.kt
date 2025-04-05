@@ -40,12 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
+import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun NumberCheckScreen(
@@ -56,6 +60,7 @@ fun NumberCheckScreen(
     val context = LocalContext.current
 
     val sharedPreferences = SharedPreferencesInstance(context)
+    val dataStore = DataStoreInstance(context)
 
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -129,7 +134,11 @@ fun NumberCheckScreen(
                                 otpValue.value.isNotBlank() &&
                                 otpValue.value == correctValue.value
                             ){
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    dataStore.savePhoneNumber(arguments.number)
+                                }
                                 sharedPreferences.saveIsLoggedIn(true)
+                                sharedPreferences.saveIsProfileSettingsState(true)
                                 navController.navigate(ScreensRouter.ProfileScreen.route)
                             }else{
                                 Toast.makeText(context,
@@ -229,7 +238,11 @@ fun NumberCheckScreen(
                             otpValue.value.isNotBlank() &&
                             otpValue.value == correctValue.value
                             ){
+                            CoroutineScope(Dispatchers.Default).launch {
+                                dataStore.savePhoneNumber(arguments.number)
+                            }
                             sharedPreferences.saveIsLoggedIn(true)
+                            sharedPreferences.saveIsProfileSettingsState(true)
                             navController.navigate(ScreensRouter.ProfileScreen.route)
                         }else{
                             Toast.makeText(context,

@@ -30,7 +30,6 @@ import com.mr.anonym.toyonamobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingChangeLanguageDropDown(
-    expanded: Boolean,
     value: String,
     onUzbekClick: () -> Unit,
     onRussianClick: () -> Unit,
@@ -44,7 +43,7 @@ fun OnBoardingChangeLanguageDropDown(
 
     ExposedDropdownMenuBox(
         modifier = Modifier
-            .width(if (isExpanded.value) 170.dp else 135.dp )
+            .width(if (isExpanded.value) 170.dp else 135.dp)
             .height(55.dp),
         expanded = isExpanded.value,
         onExpandedChange = { isExpanded.value = !isExpanded.value },
@@ -58,7 +57,9 @@ fun OnBoardingChangeLanguageDropDown(
                 Image(
                     modifier = Modifier
                         .size(35.dp),
-                    painter = if (value.contains("русский")) painterResource(R.drawable.ic_ru_flag) else painterResource(R.drawable.ic_uz_flag),
+                    painter = if (value.contains("русский")) painterResource(R.drawable.ic_ru_flag) else painterResource(
+                        R.drawable.ic_uz_flag
+                    ),
                     contentDescription = "leading icon for locales"
                 )
             },
@@ -72,7 +73,6 @@ fun OnBoardingChangeLanguageDropDown(
             expanded = isExpanded.value,
             onDismissRequest = {
                 isExpanded.value = false
-                isExpanded.value = expanded
             },
             containerColor = tertiaryColor
         ) {
@@ -81,16 +81,25 @@ fun OnBoardingChangeLanguageDropDown(
                 text = {
                     Text(
                         modifier = Modifier
-                            .clickable { onUzbekClick() },
+                            .clickable {
+                                isExpanded.value = false
+                                onUzbekClick()
+                            },
                         text = stringResource(R.string.o_zbekcha),
                         color = secondaryColor,
                         fontSize = 18.sp
                     )
                 },
-                onClick = { onUzbekClick() },
+                onClick = {
+                    isExpanded.value = false
+                    onUzbekClick()
+                },
                 leadingIcon = {
                     IconButton(
-                        onClick = { onUzbekClick() }
+                        onClick = {
+                            isExpanded.value = false
+                            onUzbekClick()
+                        }
                     ) {
                         Image(
                             painter = painterResource(R.drawable.ic_uz_flag),
@@ -104,16 +113,25 @@ fun OnBoardingChangeLanguageDropDown(
                 text = {
                     Text(
                         modifier = Modifier
-                            .clickable { onRussianClick() },
+                            .clickable {
+                                isExpanded.value = false
+                                onRussianClick()
+                                       },
                         text = stringResource(R.string.russian),
                         color = secondaryColor,
                         fontSize = 18.sp
                     )
                 },
-                onClick = { onRussianClick() },
+                onClick = {
+                    isExpanded.value = false
+                    onRussianClick()
+                          },
                 leadingIcon = {
                     IconButton(
-                        onClick = { onRussianClick() }
+                        onClick = {
+                            isExpanded.value = false
+                            onRussianClick()
+                        }
                     ) {
                         Image(
                             painter = painterResource(R.drawable.ic_ru_flag),

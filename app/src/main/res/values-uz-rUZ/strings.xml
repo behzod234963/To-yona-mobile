@@ -80,4 +80,11 @@
     <string name="october">Oktyabr</string>
     <string name="november">Noyabr</string>
     <string name="december">Dekabr</string>
+    <string name="amount">Miqdori</string>
+    <string name="commission"> Komissiya</string>
+    <string name="time_of_the_event">Bajarilgan vaqti</string>
+    <string name="receiver_card">Qabul qiluvchi karta</string>
+    <string name="sender_card">O\'tkazuvchi karta</string>
+    <string name="sender_name">O\'tkazuvchining ismi,sharifi</string>
+    <string name="receiver_name">Qabul qiluvchining ismi,sharifi</string>
 </resources>

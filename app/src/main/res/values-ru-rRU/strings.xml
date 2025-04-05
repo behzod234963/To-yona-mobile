@@ -80,4 +80,11 @@
     <string name="october">Октябрь</string>
     <string name="november">Ноябрь</string>
     <string name="december">Декабрь</string>
+    <string name="amount">Сумма</string>
+    <string name="commission">Комиссия</string>
+    <string name="time_of_the_event">Время проведения</string>
+    <string name="receiver_card">Карта получателя</string>
+    <string name="sender_card">Карта отправителя</string>
+    <string name="sender_name">ФИО отправителя</string>
+    <string name="receiver_name">ФИО получателя</string>
 </resources>

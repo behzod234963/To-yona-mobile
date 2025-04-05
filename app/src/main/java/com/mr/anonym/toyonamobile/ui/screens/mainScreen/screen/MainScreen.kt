@@ -130,6 +130,7 @@ fun MainScreen(
     )
 
     permissionController.requestNotificationPermission(activityContext)
+    permissionController.requestExternalStoragePermission(activityContext!!)
 
     ModalNavigationDrawer(
         drawerState = drawerState,

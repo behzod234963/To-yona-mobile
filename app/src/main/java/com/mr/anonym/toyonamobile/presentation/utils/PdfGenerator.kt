@@ -41,20 +41,20 @@ fun pdfGenerator(context: Context,activity: Activity, fileName: String, model: M
     paint.textSize = 18f
     paint.textAlign = Paint.Align.LEFT
     paint.isFakeBoldText = false
-    canvas.drawText("${context.getString(R.string.data_and_time)} ${model.dateTime}",10f,180f,paint)
+    canvas.drawText("${context.getString(R.string.data_and_time)} ${model.dateTime}",20f,180f,paint)
 
 //    Field
     paint.textSize = 18f
     paint.textAlign = Paint.Align.LEFT
     paint.isFakeBoldText = false
-    canvas.drawText("${context.getString(R.string.amount)} : ${model.amount}",10f,200f,paint)
+    canvas.drawText("${context.getString(R.string.amount)} : ${model.amount}",20f,210f,paint)
 //    canvas.drawText(context.getString(R.string.commission),10f,120f,paint)
-    canvas.drawText("${context.getString(R.string.time_of_the_event)} : ${model.dateTime}",10f,220f,paint)
-    canvas.drawText("${context.getString(R.string.sender_card)} : ${model.senderCardNumber}",10f,240f,paint)
-    canvas.drawText("${context.getString(R.string.sender_name)} : ${model.senderCardHolder}",10f,260f,paint)
-    canvas.drawText("${context.getString(R.string.receiver_card)} : ${model.receiverCardNumber}",10f,280f,paint)
-    canvas.drawText("${context.getString(R.string.receiver_name)} : ${model.receiverCardHolder}",10f,300f,paint)
-    canvas.drawText("${context.getString(R.string.status)} : ${model.status}",10f,320f,paint)
+    canvas.drawText("${context.getString(R.string.time_of_the_event)} : ${model.dateTime}",20f,240f,paint)
+    canvas.drawText("${context.getString(R.string.sender_card)} : ${model.senderCardNumber}",20f,270f,paint)
+    canvas.drawText("${context.getString(R.string.sender_name)} : ${model.senderCardHolder}",20f,300f,paint)
+    canvas.drawText("${context.getString(R.string.receiver_card)} : ${model.receiverCardNumber}",20f,330f,paint)
+    canvas.drawText("${context.getString(R.string.receiver_name)} : ${model.receiverCardHolder}",20f,360f,paint)
+    canvas.drawText("${context.getString(R.string.status)} : ${model.status}",20f,390f,paint)
     pdfDocument.finishPage(page)
     pdfDocument.writeTo(byteArrayOutputStream)
     pdfDocument.close()

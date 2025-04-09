@@ -2,7 +2,7 @@ package com.mr.anonym.toyonamobile.presentation.navigation
 
 sealed class ScreensRouter (val route:String){
     data object OnboardingScreen:ScreensRouter("OnboardingScreen")
-    data object LogInScreen:ScreensRouter("LogInScreen")
+    data object RegistrationScreen:ScreensRouter("RegistrationScreen")
     data object NumberCheckScreen:ScreensRouter("NumberCheckScreen")
     data object NewPinScreen:ScreensRouter("NewPinScreen")
     data object MainScreen:ScreensRouter("MainScreen")
@@ -17,4 +17,5 @@ sealed class ScreensRouter (val route:String){
     data object DetailsScreen: ScreensRouter("DetailsScreen")
     data object MyEventsScreen: ScreensRouter("MyEventsScreen")
     data object AddEventScreen: ScreensRouter("AddEventScreen")
+    data object LoginScreen: ScreensRouter("LoginScreen")
 }

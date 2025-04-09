@@ -1,9 +1,8 @@
-package com.mr.anonym.toyonamobile.ui.screens.logInScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.logInScreens.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,20 +31,16 @@ import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
 
 @Composable
-fun LogInTextFields(
+fun LoginTextFields(
     secondaryColor: Color,
-    tertiaryColor:Color,
-    phoneFieldModifier: Modifier,
-    phoneFieldError: Boolean,
-    phoneFieldValue:String,
+    phoneFieldValue: String,
+    onPhoneValueChange:(String)-> Unit,
     phoneFieldTrailingFunction:()-> Unit,
-    onPhoneValueChange:(String)->Unit,
+    phoneFieldError: Boolean,
+    phoneFieldModifier: Modifier,
     passwordValue: String,
     onPasswordValueChange:(String)-> Unit,
     passwordValueError: Boolean,
-    confirmPasswordValue: String,
-    onConfirmPasswordValueChange:(String)-> Unit,
-    confirmPasswordValueError: Boolean,
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -62,7 +58,7 @@ fun LogInTextFields(
     val isShowConfirmPassword = rememberSaveable { mutableStateOf( false ) }
     val visualTransformation = VisualTransformation.None
 
-//    Phone field content
+        //    Phone field content
     OutlinedTextField(
         value = phoneFieldValue,
         onValueChange = { onPhoneValueChange(it) },
@@ -126,7 +122,7 @@ fun LogInTextFields(
             Text(
                 modifier = Modifier
                     .padding(start = 10.dp),
-                text = stringResource(R.string.new_password),
+                text = stringResource(R.string.password),
                 fontSize = 14.sp
             )
         },
@@ -148,57 +144,11 @@ fun LogInTextFields(
         supportingText = {
             if (passwordValueError){
                 Text(
-                    text = stringResource(R.string.password_exeption)
+                    text = stringResource(R.string.password_exception)
                 )
             }
         },
         isError = passwordValueError,
-        singleLine = true,
-        shape = RoundedCornerShape(10.dp),
-    )
-//    Confirm password field content
-    OutlinedTextField(
-        value = confirmPasswordValue,
-        onValueChange = { onConfirmPasswordValueChange(it) },
-        visualTransformation = if ( isShowConfirmPassword.value ) VisualTransformation.None else PasswordVisualTransformation() ,
-        modifier = Modifier
-            .fillMaxWidth(),
-        textStyle = TextStyle(
-            color = secondaryColor,
-            fontSize = 16.sp
-        ),
-        keyboardOptions = passwordKeyboardOptions,
-        label = {
-            Text(
-                modifier = Modifier
-                    .padding(start = 10.dp),
-                text = stringResource(R.string.confirm_new_password),
-                fontSize = 14.sp
-            )
-        },
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    isShowConfirmPassword.value = !isShowConfirmPassword.value
-                }
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(25.dp),
-                    painter = if ( isShowConfirmPassword.value ) painterResource(R.drawable.ic_show) else painterResource(R.drawable.ic_hide),
-                    tint = secondaryColor,
-                    contentDescription = "null"
-                )
-            }
-        },
-        supportingText = {
-            if (confirmPasswordValueError){
-                Text(
-                    text = stringResource(R.string.passwords_does_not_matches)
-                )
-            }
-        },
-        isError = confirmPasswordValueError,
         singleLine = true,
         shape = RoundedCornerShape(10.dp),
     )

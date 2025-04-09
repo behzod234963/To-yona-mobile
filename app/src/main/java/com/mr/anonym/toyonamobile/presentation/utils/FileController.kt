@@ -6,7 +6,9 @@ import android.graphics.pdf.PdfDocument
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.mr.anonym.toyonamobile.R
 import java.io.File
 import java.io.FileOutputStream
 
@@ -31,6 +33,7 @@ fun saveFileToMemoryWithMediaStore(context: Context, fileName: String,pdfBytes: 
         contentValues.put(MediaStore.Downloads.IS_PENDING,0)
         contentResolver.update(uri,contentValues,null,null)
     }
+    Toast.makeText(context, context.getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show()
 }
 fun saveFileToMemoryWithDefault(context:Context, fileName: String, pdfBytes: ByteArray){
 
@@ -42,7 +45,7 @@ fun saveFileToMemoryWithDefault(context:Context, fileName: String, pdfBytes: Byt
         fileOutputStream.write(pdfBytes)
         fileOutputStream.flush()
         fileOutputStream.close()
-
+        Toast.makeText(context, context.getString(R.string.saved_successfully), Toast.LENGTH_SHORT).show()
     }catch (e:Exception){
 
     }

@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.findActivity
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingPager
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingTopBar
@@ -60,7 +59,7 @@ fun OnboardingScreen(
             OnBoardingTopBar(
                 onSkipClick = {
                     sharedPreferences.saveFirstTimeState(false)
-                    navController.navigate(ScreensRouter.LogInScreen.route){
+                    navController.navigate(ScreensRouter.LoginScreen.route){
                         popUpTo(route = ScreensRouter.OnboardingScreen.route){ inclusive = true }
                     }
                 },
@@ -136,7 +135,9 @@ fun OnboardingScreen(
                     ),
                     onClick = {
                         sharedPreferences.saveFirstTimeState(false)
-                        navController.navigate(ScreensRouter.LogInScreen.route)
+                        navController.navigate(ScreensRouter.LoginScreen.route){
+                            popUpTo(ScreensRouter.OnboardingScreen.route ){ inclusive = true }
+                        }
                     }
                 ){
                     Text(

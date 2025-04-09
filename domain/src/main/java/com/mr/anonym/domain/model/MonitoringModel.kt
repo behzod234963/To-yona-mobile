@@ -16,5 +16,5 @@ data class MonitoringModel(
     val receiverCardHolder: String,
     val amount: String,
     val dateTime: String,
-    val status: String
+    val transferStatus: String
 )

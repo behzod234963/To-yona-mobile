@@ -111,7 +111,9 @@ fun NewPinScreen(
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(true)
                     }
-                    navController.navigate(ScreensRouter.MainScreen.route)
+                    navController.navigate(ScreensRouter.MainScreen.route){
+                        popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
+                    }
                 },
                 dismissButton = {
                     sharedPreferences.saveNewPinState(false)
@@ -119,7 +121,9 @@ fun NewPinScreen(
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(false)
                     }
-                    navController.navigate(ScreensRouter.MainScreen.route)
+                    navController.navigate(ScreensRouter.MainScreen.route){
+                        popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
+                    }
                 },
                 onDismissRequest = {
                     sharedPreferences.saveNewPinState(false)
@@ -127,7 +131,9 @@ fun NewPinScreen(
                     coroutineScope.launch {
                         dataStore.saveIsBiometricAuthOn(false)
                     }
-                    navController.navigate(ScreensRouter.MainScreen.route)
+                    navController.navigate(ScreensRouter.MainScreen.route){
+                        popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
+                    }
                 }
             )
         }

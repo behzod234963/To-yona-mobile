@@ -12,7 +12,7 @@
     <string name="safe_and_fast_payments">Быстрые и безопасные переводы</string>
     <string name="just_and_trust">Простота и надёжность</string>
     <string name="log_in">Вход в систему</string>
-    <string name="to_log_in_you_need_to_enter_phone_and_firstname_lastname">Для входа в систему вам нужно ввести номер телефона и новый пароль</string>
+    <string name="login_instruction">Для входа в систему вам нужно ввести номер телефона и пароль</string>
     <string name="the_place_must_not_be_empty">Поля не должно быть пустым</string>
     <string name="phone_number_error">Ошибка при вводе данных</string>
     <string name="continue_">Продолжить</string>
@@ -27,7 +27,7 @@
     <string name="enter_your_pin_code">Введите свой пин-код</string>
     <string name="confirm_new_pin_code">Подтвердите новый пин-код</string>
     <string name="Confirm">Подтвердить</string>
-    <string name="Later">Потом</string>
+    <string name="Later">Позже</string>
     <string name="allow_fingerprint">Вход по отпечатку пальцев?</string>
     <string name="main">Главная</string>
     <string name="contacts">Контакты</string>
@@ -35,7 +35,7 @@
     <string name="wallet">Кошелек</string>
     <string name="settings">Настройки</string>
     <string name="support_help"><![CDATA[Поддержка & помощь]]></string>
-    <string name="password_exeption">Ошибка при вводе паролья</string>
+    <string name="password_exception">Ошибка при вводе паролья</string>
     <string name="passwords_does_not_matches">Пароли не совпадает</string>
     <string name="enter_your_phone_number">Введите номер телефона</string>
     <string name="new_password">Введите новый пароль</string>
@@ -87,4 +87,11 @@
     <string name="sender_card">Карта отправителя</string>
     <string name="sender_name">ФИО отправителя</string>
     <string name="receiver_name">ФИО получателя</string>
+    <string name="share">Поделится</string>
+    <string name="saved_successfully">Успешно сохранено!</string>
+    <string name="registration_instruction">Чтобы зарегистрироваться вам необходимо ввести свой номер телефона и пароль</string>
+    <string name="password">Пароль</string>
+    <string name="i_have_no_account">У меня нет аккаунта</string>
+    <string name="sign_up">Регистрация</string>
+    <string name="i_have_an_account">У меня есть аккаунт</string>
 </resources>

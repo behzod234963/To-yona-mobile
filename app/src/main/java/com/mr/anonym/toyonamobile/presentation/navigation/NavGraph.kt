@@ -15,9 +15,10 @@ import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddEventScre
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
+import com.mr.anonym.toyonamobile.ui.screens.logInScreens.screen.LogInScreen
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen.NumberCheckScreen
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen.NewPinScreen
-import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
+import com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen.RegistrationScreen
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringScreen
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyEventsScreen
@@ -45,7 +46,7 @@ fun NavGraph(
         navController = navController,
         startDestination = when{
             isFirstTime->{ ScreensRouter.OnboardingScreen.route }
-            !isLoggedIn-> { ScreensRouter.LogInScreen.route }
+            !isLoggedIn-> { ScreensRouter.LoginScreen.route }
             isProfileSettingsState ->{ ScreensRouter.ProfileScreen.route }
             newPinState->{ ScreensRouter.NewPinScreen.route }
             else -> ScreensRouter.EnterScreen.route
@@ -54,8 +55,8 @@ fun NavGraph(
         composable(ScreensRouter.OnboardingScreen.route) {
             OnboardingScreen(navController = navController)
         }
-        composable (ScreensRouter.LogInScreen.route){
-            LogInScreen(navController)
+        composable (ScreensRouter.RegistrationScreen.route){
+            RegistrationScreen(navController)
         }
         composable (
             route = ScreensRouter.NumberCheckScreen.route + "/{number}",
@@ -105,6 +106,9 @@ fun NavGraph(
         }
         composable (ScreensRouter.AddEventScreen.route){
             AddEventScreen(navController)
+        }
+        composable (ScreensRouter.LoginScreen.route){
+            LogInScreen(navController)
         }
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -85,7 +86,9 @@ fun NumberCheckScreen(
 
     Scaffold (
         containerColor = primaryColor,
-        contentColor = primaryColor
+        contentColor = primaryColor,
+        modifier = Modifier
+            .imePadding()
     ){ paddingValues ->
         Column(
             modifier = Modifier
@@ -139,7 +142,9 @@ fun NumberCheckScreen(
                                 }
                                 sharedPreferences.saveIsLoggedIn(true)
                                 sharedPreferences.saveIsProfileSettingsState(true)
-                                navController.navigate(ScreensRouter.ProfileScreen.route)
+                                navController.navigate(ScreensRouter.ProfileScreen.route){
+                                    popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                }
                             }else{
                                 Toast.makeText(context,
                                     context.getString(R.string.please_complete_the_process), Toast.LENGTH_SHORT).show()
@@ -243,7 +248,9 @@ fun NumberCheckScreen(
                             }
                             sharedPreferences.saveIsLoggedIn(true)
                             sharedPreferences.saveIsProfileSettingsState(true)
-                            navController.navigate(ScreensRouter.ProfileScreen.route)
+                            navController.navigate(ScreensRouter.ProfileScreen.route){
+                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                            }
                         }else{
                             Toast.makeText(context,
                                 context.getString(R.string.please_complete_the_process), Toast.LENGTH_SHORT).show()

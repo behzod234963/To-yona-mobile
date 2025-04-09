@@ -1,8 +1,6 @@
-package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
+package com.mr.anonym.toyonamobile.ui.screens.logInScreens.screen
 
-import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -39,41 +39,40 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.logInScreen.components.LogInTextFields
+import com.mr.anonym.toyonamobile.ui.screens.logInScreens.components.LoginTextFields
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LogInScreen(
     navController: NavController
 ) {
 
     val context = LocalContext.current
-    val activityContext = LocalActivity.current
+
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val quaternaryColor = Color.Red
-    val containerPadding = remember { mutableIntStateOf(10) }
+    val fiverdColor = Color.Green
+    val sixrdColor = Color.Blue
+    val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val phoneFieldError = remember { mutableStateOf(false) }
-    val phoneFieldValue = rememberSaveable { mutableStateOf("") }
-
-    val nameFieldValue = rememberSaveable { mutableStateOf("") }
-    val nameFieldError = remember { mutableStateOf(false) }
-
-    val passwordValue = rememberSaveable { mutableStateOf( "" ) }
-    val passwordValueError = remember { mutableStateOf( false ) }
-
-    val confirmValue = rememberSaveable { mutableStateOf( "" ) }
-    val confirmValueError = remember { mutableStateOf( false ) }
-
+    val containerPadding = rememberSaveable { mutableIntStateOf(10) }
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
+
+    val phoneFieldValue = rememberSaveable { mutableStateOf("") }
+    val phoneFieldError = rememberSaveable { mutableStateOf(false) }
+
+    val passwordValue = rememberSaveable { mutableStateOf("") }
+    val passwordValueError = rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         containerColor = primaryColor,
-        contentColor = primaryColor
+        contentColor = primaryColor,
+        modifier = Modifier
+            .imePadding()
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -84,7 +83,7 @@ fun LogInScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.20f)
-                    .padding(containerPadding.intValue.dp),
+                    .padding(containerPadding.value.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -97,8 +96,10 @@ fun LogInScreen(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp),
                     textAlign = TextAlign.Center,
-                    text = stringResource(R.string.to_log_in_you_need_to_enter_phone_and_firstname_lastname),
+                    text = stringResource(R.string.login_instruction),
                     color = secondaryColor,
                     fontSize = 16.sp,
                 )
@@ -108,34 +109,39 @@ fun LogInScreen(
                     .fillMaxWidth()
                     .fillMaxHeight(0.60f)
                     .padding(containerPadding.intValue.dp),
-                verticalArrangement = Arrangement.Top
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LogInTextFields(
+                LoginTextFields(
                     secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
+                    phoneFieldValue = phoneFieldValue.value,
+                    onPhoneValueChange = {
+                        phoneFieldValue.value = it
+                        phoneFieldError.value = !it.phoneChecker()
+                    },
+                    phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
+                    phoneFieldError = phoneFieldError.value,
                     phoneFieldModifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
-                    phoneFieldError = phoneFieldError.value,
-                    phoneFieldValue = phoneFieldValue.value,
-                    phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
-                    onPhoneValueChange = {
-                        phoneFieldValue.value = it
-//                        if (it.isEmpty()) phoneFieldValue.value = "+998"
-                        phoneFieldError.value = !it.phoneChecker()
-                    },
                     passwordValue = passwordValue.value,
                     onPasswordValueChange = {
                         passwordValue.value = it
                         passwordValueError.value = !it.passwordChecker()
                     },
-                    passwordValueError = passwordValueError.value,
-                    confirmPasswordValue = confirmValue.value,
-                    onConfirmPasswordValueChange = {
-                        confirmValue.value = it
-                    },
-                    confirmPasswordValueError = confirmValueError.value
+                    passwordValueError = passwordValueError.value
                 )
+                TextButton (
+                    onClick = {
+                        navController.navigate(ScreensRouter.RegistrationScreen.route)
+                    }
+                ){
+                    Text(
+                        text = stringResource(R.string.i_have_no_account),
+                        color = Color.Blue,
+                        fontSize = 16.sp
+                    )
+                }
             }
             Column(
                 modifier = Modifier
@@ -160,15 +166,13 @@ fun LogInScreen(
                             !phoneFieldError.value &&
                             !passwordValueError.value
                         ) {
-                            if (confirmValue.value == passwordValue.value){
-                                val result = "+998" + phoneFieldValue.value
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result")
-                            }else{
-                                confirmValueError.value = true
+                            val result = "+998" + phoneFieldValue.value
+                            navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
+                                popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
                             }
                         } else {
                             Toast.makeText(
-                                activityContext,
+                                context,
                                 context.getString(R.string.please_check_validate_places),
                                 Toast.LENGTH_SHORT
                             ).show()
@@ -190,5 +194,7 @@ fun LogInScreen(
 @Preview
 @Composable
 private fun PreviewLogInScreen() {
-    LogInScreen(NavController(LocalContext.current))
+    LogInScreen(
+        navController = NavController(LocalContext.current)
+    )
 }

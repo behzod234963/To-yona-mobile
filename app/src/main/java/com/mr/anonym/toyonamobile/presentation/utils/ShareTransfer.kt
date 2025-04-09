@@ -1,23 +1,25 @@
 package com.mr.anonym.toyonamobile.presentation.utils
 
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.core.graphics.scale
 import com.mr.anonym.domain.model.MonitoringModel
 import com.mr.anonym.toyonamobile.R
-import androidx.core.graphics.scale
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 
-@RequiresApi(Build.VERSION_CODES.Q)
-fun pdfGenerator(context: Context,activity: Activity, fileName: String, model: MonitoringModel){
+fun shareTransfer(context: Context, fileName: String, model: MonitoringModel){
 
-    val permissionController = PermissionController(context)
     val pdfDocument = PdfDocument()
     val byteArrayOutputStream = ByteArrayOutputStream()
     val pageInfo = PdfDocument.PageInfo.Builder(595,842,1).create()
@@ -57,20 +59,36 @@ fun pdfGenerator(context: Context,activity: Activity, fileName: String, model: M
     pdfDocument.close()
     val pdfByteArray = byteArrayOutputStream.toByteArray()
 
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
-        if (ActivityCompat.checkSelfPermission(
+    try {
+        val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        if (!path.exists()) path.mkdirs()
+        val file = File(path,"$fileName.pdf")
+        val fileOutputStream = FileOutputStream(file)
+        fileOutputStream.write(pdfByteArray)
+        fileOutputStream.flush()
+        fileOutputStream.close()
+
+        Log.d("FileIoLogging", "shareTransfer: ${context.packageName}")
+        val uri = FileProvider.getUriForFile(
             context,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(
-                context, android.Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ){
-            saveFileToMemoryWithDefault(context,fileName, pdfBytes = pdfByteArray)
-        }else{
-            permissionController.requestExternalStoragePermission(activity)
+            "${context.packageName}.provider",
+            file
+        )
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_STREAM,uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-    }else{
-        saveFileToMemoryWithMediaStore(context,fileName,pdfByteArray)
+
+        val chooser = Intent.createChooser(shareIntent, context.getString(R.string.share))
+        context.startActivity(chooser)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (file.exists()){
+                file.delete()
+            }
+        },300000)
+    }catch (e:Exception){
+        Log.d("FileIoLogging", "shareTransfer: ${e.message}")
     }
 }

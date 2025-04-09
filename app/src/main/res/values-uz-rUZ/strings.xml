@@ -12,7 +12,7 @@
     <string name="safe_and_fast_payments">Xavfsiz va tezkor o\'tkazmalar</string>
     <string name="just_and_trust">Oddiylik va ishonchlilik</string>
     <string name="log_in">Tizimga kirish</string>
-    <string name="to_log_in_you_need_to_enter_phone_and_firstname_lastname">Tizimga kirish uchun telefon raqamingizni va yangi parol kiriting</string>
+    <string name="login_instruction">Tizimga kirish uchun telefon raqam va parolni kiriting</string>
     <string name="the_place_must_not_be_empty">Ism sharifingiz kiritilatigan joy bo\'sh bo\'lmasligi kerak</string>
     <string name="phone_number_error">Ma\'lumot kiritishda xatolik</string>
     <string name="continue_">Davom etish</string>
@@ -35,7 +35,7 @@
     <string name="wallet">Hamyon</string>
     <string name="settings">Sozlamalar</string>
     <string name="support_help"><![CDATA[Qo\'llab quvvatlash & yordam]]></string>
-    <string name="password_exeption">Parol kiritishda xatolik</string>
+    <string name="password_exception">Parol kiritishda xatolik</string>
     <string name="passwords_does_not_matches">Parollar bir-biriga mos kelmaydi</string>
     <string name="enter_your_phone_number">Telefon raqamingizni kiriting</string>
     <string name="new_password">Yangi parolni kiriting</string>
@@ -87,4 +87,11 @@
     <string name="sender_card">O\'tkazuvchi karta</string>
     <string name="sender_name">O\'tkazuvchining ismi,sharifi</string>
     <string name="receiver_name">Qabul qiluvchining ismi,sharifi</string>
+    <string name="share">Ulashish</string>
+    <string name="saved_successfully">Muvaffaqiyatli saqlandi!</string>
+    <string name="registration_instruction">Ro\'yhatdan o\'tish uchun telefon raqam va parolni kiriting</string>
+    <string name="password">Parol</string>
+    <string name="i_have_no_account">Menda akkaunt mavjud emas</string>
+    <string name="sign_up">Ro\'yhatdan o\'tish</string>
+    <string name="i_have_an_account">Menda akkaunt mavjud</string>
 </resources>

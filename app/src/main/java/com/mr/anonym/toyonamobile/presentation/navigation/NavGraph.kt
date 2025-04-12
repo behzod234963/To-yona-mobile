@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
+import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens.AddCardScreen
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddEventScreen
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
@@ -109,6 +110,9 @@ fun NavGraph(
         }
         composable (ScreensRouter.LoginScreen.route){
             LogInScreen(navController)
+        }
+        composable (ScreensRouter.AddCardScreen.route){
+            AddCardScreen(navController)
         }
     }
 }

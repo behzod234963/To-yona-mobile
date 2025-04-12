@@ -61,7 +61,7 @@ fun MainScreen(
     val sixrdColor = Color.Blue
     val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val smallFontSize = remember { mutableIntStateOf(16) }
+    val smallFontSize = remember { mutableIntStateOf(14) }
     val mediumFontSize = remember { mutableIntStateOf(18) }
     val largeFontSize = remember { mutableIntStateOf(22) }
 
@@ -76,6 +76,13 @@ fun MainScreen(
     val showSearchResults = rememberSaveable { mutableStateOf(false) }
 
     val partyList = listOf<PartyModel>(
+        PartyModel(
+            id = 1,
+            userID = 1,
+            type = "123456789012345678901234567890",
+            cardNumber = "9860030160619356",
+            dateTime = "21-22-mart 2025,17:00"
+        ),
         PartyModel(
             id = 1,
             userID = 1,
@@ -106,6 +113,13 @@ fun MainScreen(
         ),
     )
     val partyLists = listOf<PartyModel>(
+        PartyModel(
+            id = 1,
+            userID = 1,
+            type = "123456789012345678901234567890",
+            cardNumber = "9860030160619356",
+            dateTime = "21-22-mart 2025,17:00"
+        ),
         PartyModel(
             id = 1,
             userID = 1,
@@ -188,17 +202,17 @@ fun MainScreen(
             },
             topBar = {
                 MainScreenTopBar(
+                    primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
                     title = stringResource(R.string.app_name),
-                    onNavigationIconClick = {
-                        coroutineScope.launch {
-                            if (drawerState.isOpen) drawerState.close() else drawerState.open()
-                        }
-                    },
                     onActionsClick = {
                         navController.navigate(ScreensRouter.NotificationsScreen.route)
                     }
-                )
+                ) {
+                    coroutineScope.launch {
+                        if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                    }
+                }
             }
         ) { paddingValues ->
             Column(

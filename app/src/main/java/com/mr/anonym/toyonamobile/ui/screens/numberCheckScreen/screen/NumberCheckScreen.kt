@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -75,6 +77,9 @@ fun NumberCheckScreen(
 
     val timeLeft = remember { mutableStateOf(40) }
     val isRunning = remember { mutableStateOf(true) }
+
+    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState( false )
+    val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
 
     LaunchedEffect(isRunning.value,timeLeft.value) {
         while ( isRunning.value && timeLeft.value > 0 ){
@@ -137,13 +142,34 @@ fun NumberCheckScreen(
                                 otpValue.value.isNotBlank() &&
                                 otpValue.value == correctValue.value
                             ){
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    dataStore.savePhoneNumber(arguments.number)
-                                }
-                                sharedPreferences.saveIsLoggedIn(true)
-                                sharedPreferences.saveIsProfileSettingsState(true)
-                                navController.navigate(ScreensRouter.ProfileScreen.route){
-                                    popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                when{
+                                    isPasswordForgotten.value->{
+                                        CoroutineScope(Dispatchers.Default).launch {
+                                            dataStore.savePhoneNumber(arguments.number)
+                                        }
+                                        navController.navigate(ScreensRouter.RegistrationScreen.route){
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        }
+                                    }
+                                    isPinForgotten.value->{
+                                        CoroutineScope(Dispatchers.Default).launch {
+                                            dataStore.savePhoneNumber(arguments.number)
+                                        }
+                                        sharedPreferences.saveNewPinState(true)
+                                        navController.navigate(ScreensRouter.NewPinScreen.route){
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        }
+                                    }
+                                    else->{
+                                        CoroutineScope(Dispatchers.Default).launch {
+                                            dataStore.savePhoneNumber(arguments.number)
+                                        }
+                                        sharedPreferences.saveIsLoggedIn(true)
+                                        sharedPreferences.saveIsProfileSettingsState(true)
+                                        navController.navigate(ScreensRouter.ProfileScreen.route){
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        }
+                                    }
                                 }
                             }else{
                                 Toast.makeText(context,
@@ -243,13 +269,34 @@ fun NumberCheckScreen(
                             otpValue.value.isNotBlank() &&
                             otpValue.value == correctValue.value
                             ){
-                            CoroutineScope(Dispatchers.Default).launch {
-                                dataStore.savePhoneNumber(arguments.number)
-                            }
-                            sharedPreferences.saveIsLoggedIn(true)
-                            sharedPreferences.saveIsProfileSettingsState(true)
-                            navController.navigate(ScreensRouter.ProfileScreen.route){
-                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                            when{
+                                isPasswordForgotten.value->{
+                                    CoroutineScope(Dispatchers.Default).launch {
+                                        dataStore.savePhoneNumber(arguments.number)
+                                    }
+                                    navController.navigate(ScreensRouter.RegistrationScreen.route){
+                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                    }
+                                }
+                                isPinForgotten.value->{
+                                    CoroutineScope(Dispatchers.Default).launch {
+                                        dataStore.savePhoneNumber(arguments.number)
+                                    }
+                                    sharedPreferences.saveNewPinState(true)
+                                    navController.navigate(ScreensRouter.NewPinScreen.route){
+                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                    }
+                                }
+                                else->{
+                                    CoroutineScope(Dispatchers.Default).launch {
+                                        dataStore.savePhoneNumber(arguments.number)
+                                    }
+                                    sharedPreferences.saveIsLoggedIn(true)
+                                    sharedPreferences.saveIsProfileSettingsState(true)
+                                    navController.navigate(ScreensRouter.ProfileScreen.route){
+                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                    }
+                                }
                             }
                         }else{
                             Toast.makeText(context,

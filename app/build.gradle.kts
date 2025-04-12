@@ -76,4 +76,10 @@ dependencies {
     implementation(libs.biometricAuth)
     implementation(libs.roomSqlite)
     implementation(libs.roomCoroutinesSupport)
+    implementation(libs.cameraXcore)
+    implementation(libs.cameraX2)
+    implementation(libs.cameraXlifecycle)
+    implementation(libs.cameraXview)
+    implementation(libs.cameraXextensions)
+    implementation(libs.mlKit)
 }

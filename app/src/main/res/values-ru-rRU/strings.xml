@@ -94,4 +94,9 @@
     <string name="i_have_no_account">У меня нет аккаунта</string>
     <string name="sign_up">Регистрация</string>
     <string name="i_have_an_account">У меня есть аккаунт</string>
+    <string name="forgot_password">Забыль пароль ?</string>
+    <string name="add_card">Добавление карты</string>
+    <string name="card_field_must_contains_16_digit">Номер карты должен содержать 16 цифр</string>
+    <string name="expire_date">Дата окончания</string>
+    <string name="mm_yy">ММ/ГГ</string>
 </resources>

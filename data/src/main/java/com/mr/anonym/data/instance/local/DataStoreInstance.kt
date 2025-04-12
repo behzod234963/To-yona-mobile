@@ -123,4 +123,40 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:""
         }
     }
+    suspend fun isPasswordForgotten(status: Boolean){
+        val key = booleanPreferencesKey("ForgotPassword")
+        context.dataStore.edit {
+            it[key] = status
+        }
+    }
+    fun isPasswordForgottenState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("ForgotPassword")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
+    suspend fun isOldUser(state: Boolean){
+        val key = booleanPreferencesKey( "isOldUser" )
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun isOldUserState(): Flow<Boolean>{
+        val key = booleanPreferencesKey( "isOldUser" )
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
+    suspend fun isPinForgotten(state: Boolean){
+        val key = booleanPreferencesKey("ForgotPinCode")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun isPinForgottenState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("ForgotPinCode")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
 }

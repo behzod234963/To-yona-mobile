@@ -80,6 +80,8 @@ fun EnterScreen(
     val pinValue = remember { mutableStateOf("") }
     val iconSize = remember { mutableIntStateOf(30) }
 
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+
     LaunchedEffect(pinValue.value) {
         if(
             pinValue.value.length > 3 &&
@@ -600,7 +602,12 @@ fun EnterScreen(
                 ) {
                     Text(
                         modifier = Modifier
-                            .clickable { TODO() },
+                            .clickable {
+                                coroutineScope.launch {
+                                    dataStore.isPinForgotten(true)
+                                }
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}")
+                            },
                         text = stringResource(R.string.forgot_pin_code),
                         color = sixrdColor,
                         fontSize = 16.sp,

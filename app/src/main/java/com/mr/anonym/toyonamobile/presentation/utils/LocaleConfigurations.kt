@@ -12,7 +12,6 @@ import java.util.Locale
 class LocaleConfigurations(private val context: Context) {
 
     val sharedPreferences = SharedPreferencesInstance(context)
-    val applicationContext = context.applicationContext
 
     fun Activity.setLocale(language: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){

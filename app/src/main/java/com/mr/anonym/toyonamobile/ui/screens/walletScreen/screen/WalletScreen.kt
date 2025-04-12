@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.components.WalletTopBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -33,9 +34,10 @@ fun WalletScreen(
         contentColor = primaryColor,
         topBar = {
             WalletTopBar(
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationClick = { navController.popBackStack() },
-                onActionsClick = { TODO() }
+                onActionsClick = { navController.navigate(ScreensRouter.AddCardScreen.route) }
             ) 
         }
     ) { paddingValues ->

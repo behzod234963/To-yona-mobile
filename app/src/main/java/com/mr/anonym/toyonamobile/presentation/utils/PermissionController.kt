@@ -48,4 +48,21 @@ class PermissionController(private val context: Context) {
 
         }
     }
+    fun requestCameraPermission(activity: Activity): Boolean{
+         if (ActivityCompat.checkSelfPermission(
+            activity,
+                Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED){
+            return true
+        }else{
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(
+                    Manifest.permission.CAMERA
+                ),
+                2
+            )
+        }
+        return false
+    }
 }

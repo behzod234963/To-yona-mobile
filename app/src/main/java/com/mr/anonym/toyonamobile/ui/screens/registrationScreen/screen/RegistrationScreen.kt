@@ -20,9 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,11 +39,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.registrationScreen.components.RegistrationTextFields
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -51,6 +56,11 @@ fun RegistrationScreen(
 
     val context = LocalContext.current
     val activityContext = LocalActivity.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
+
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
@@ -63,11 +73,14 @@ fun RegistrationScreen(
     val nameFieldValue = rememberSaveable { mutableStateOf("") }
     val nameFieldError = remember { mutableStateOf(false) }
 
-    val passwordValue = rememberSaveable { mutableStateOf( "" ) }
-    val passwordValueError = remember { mutableStateOf( false ) }
+    val passwordValue = rememberSaveable { mutableStateOf("") }
+    val passwordValueError = remember { mutableStateOf(false) }
 
-    val confirmValue = rememberSaveable { mutableStateOf( "" ) }
-    val confirmValueError = remember { mutableStateOf( false ) }
+    val confirmValue = rememberSaveable { mutableStateOf("") }
+    val confirmValueError = remember { mutableStateOf(false) }
+
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {
@@ -122,7 +135,8 @@ fun RegistrationScreen(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     phoneFieldError = phoneFieldError.value,
-                    phoneFieldValue = phoneFieldValue.value,
+                    isPhoneFieldEnabled = !isPasswordForgotten.value,
+                    phoneFieldValue = if (isPasswordForgotten.value) phoneNumber.value else phoneFieldValue.value,
                     phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                     onPhoneValueChange = {
                         phoneFieldValue.value = it
@@ -141,14 +155,16 @@ fun RegistrationScreen(
                     },
                     confirmPasswordValueError = confirmValueError.value
                 )
-                TextButton(
-                    onClick = { navController.popBackStack() }
-                ) {
-                    Text(
-                        text = stringResource(R.string.i_have_an_account),
-                        color =  Color.Blue,
-                        fontSize = 16.sp
-                    )
+                if (!isPasswordForgotten.value) {
+                    TextButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.i_have_an_account),
+                            color = Color.Blue,
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
             Column(
@@ -168,26 +184,49 @@ fun RegistrationScreen(
                         containerColor = quaternaryColor
                     ),
                     onClick = {
-                        if (
+                        when {
                             phoneFieldValue.value.isNotEmpty() &&
-                            phoneFieldValue.value.isNotBlank() &&
-                            !phoneFieldError.value &&
-                            !passwordValueError.value
-                        ) {
-                            if (confirmValue.value == passwordValue.value){
-                                val result = "+998" + phoneFieldValue.value
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
-                                    popUpTo(ScreensRouter.RegistrationScreen.route){ inclusive = true }
+                                    phoneFieldValue.value.isNotBlank() &&
+                                    !phoneFieldError.value &&
+                                    !passwordValueError.value &&
+                                    !isPasswordForgotten.value -> {
+                                if (confirmValue.value == passwordValue.value) {
+                                    val result = "+998" + phoneFieldValue.value
+                                    navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
+                                        popUpTo(ScreensRouter.RegistrationScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                } else {
+                                    confirmValueError.value = true
                                 }
-                            }else{
-                                confirmValueError.value = true
                             }
-                        } else {
-                            Toast.makeText(
-                                activityContext,
-                                context.getString(R.string.please_check_validate_places),
-                                Toast.LENGTH_SHORT
-                            ).show()
+
+                            isPasswordForgotten.value &&
+                                    !passwordValueError.value -> {
+                                if (confirmValue.value == passwordValue.value) {
+                                    coroutineScope.launch {
+                                        dataStore.isPasswordForgotten(false)
+                                        dataStore.isOldUser(true)
+                                    }
+                                    sharedPreferences.saveIsLoggedIn(true)
+                                    sharedPreferences.saveIsProfileSettingsState(true)
+                                    navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                        popUpTo(ScreensRouter.RegistrationScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }else{
+                                    confirmValueError.value = true
+                                }
+                            }
+                            else->{
+                                Toast.makeText(
+                                    activityContext,
+                                    context.getString(R.string.please_check_validate_places),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 ) {

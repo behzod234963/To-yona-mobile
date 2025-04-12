@@ -1,8 +1,7 @@
-package com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.components
+package com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,19 +18,16 @@ import com.mr.anonym.toyonamobile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletTopBar(
-    primaryColor:Color,
+fun AddCardTopBar(
+    primaryColor: Color,
     secondaryColor: Color,
-    navigationClick:()->Unit,
-    onActionsClick:()-> Unit
+    onNavigationClick:()-> Unit
 ) {
+
     TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = primaryColor
-        ),
         title = {
             Text(
-                text = stringResource(R.string.wallet),
+                text = stringResource(R.string.add_card),
                 color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
@@ -39,7 +35,7 @@ fun WalletTopBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { navigationClick() }
+                onClick = { onNavigationClick() }
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -48,16 +44,8 @@ fun WalletTopBar(
                 )
             }
         },
-        actions = {
-            IconButton(
-                onClick = { onActionsClick() }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    tint = secondaryColor,
-                    contentDescription = ""
-                )
-            }
-        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = primaryColor
+        ),
     )
 }

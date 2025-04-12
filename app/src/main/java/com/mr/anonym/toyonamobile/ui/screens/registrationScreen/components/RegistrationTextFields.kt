@@ -3,7 +3,6 @@ package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,17 +33,18 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun RegistrationTextFields(
     secondaryColor: Color,
-    tertiaryColor:Color,
+    tertiaryColor: Color,
     phoneFieldModifier: Modifier,
     phoneFieldError: Boolean,
-    phoneFieldValue:String,
-    phoneFieldTrailingFunction:()-> Unit,
-    onPhoneValueChange:(String)->Unit,
+    isPhoneFieldEnabled: Boolean,
+    phoneFieldValue: String,
+    phoneFieldTrailingFunction: () -> Unit,
+    onPhoneValueChange: (String) -> Unit,
     passwordValue: String,
-    onPasswordValueChange:(String)-> Unit,
+    onPasswordValueChange: (String) -> Unit,
     passwordValueError: Boolean,
     confirmPasswordValue: String,
-    onConfirmPasswordValueChange:(String)-> Unit,
+    onConfirmPasswordValueChange: (String) -> Unit,
     confirmPasswordValueError: Boolean,
 ) {
 
@@ -55,11 +56,11 @@ fun RegistrationTextFields(
     val passwordKeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Password
     )
-    val keyBoardActions = KeyboardActions (
+    val keyBoardActions = KeyboardActions(
         onNext = { focusManager.moveFocus(FocusDirection.Next) }
     )
-    val isShowPassword = rememberSaveable { mutableStateOf( false ) }
-    val isShowConfirmPassword = rememberSaveable { mutableStateOf( false ) }
+    val isShowPassword = rememberSaveable { mutableStateOf(false) }
+    val isShowConfirmPassword = rememberSaveable { mutableStateOf(false) }
     val visualTransformation = VisualTransformation.None
 
 //    Phone field content
@@ -67,26 +68,27 @@ fun RegistrationTextFields(
         value = phoneFieldValue,
         onValueChange = { onPhoneValueChange(it) },
         modifier = phoneFieldModifier,
+        enabled = isPhoneFieldEnabled,
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp
         ),
         prefix = {
-            Text(
-                text = "+998"
-            )
+            if (isPhoneFieldEnabled) Text(text = "+998")
         },
         trailingIcon = {
-            IconButton(
-                onClick = {
-                    phoneFieldTrailingFunction()
+            if (isPhoneFieldEnabled){
+                IconButton(
+                    onClick = {
+                        phoneFieldTrailingFunction()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        tint = secondaryColor,
+                        contentDescription = "null"
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    tint = secondaryColor,
-                    contentDescription = "null"
-                )
             }
         },
         label = {
@@ -98,7 +100,7 @@ fun RegistrationTextFields(
             )
         },
         supportingText = {
-            if (phoneFieldError){
+            if (phoneFieldError) {
                 Text(
                     text = stringResource(R.string.phone_number_error)
                 )
@@ -139,14 +141,16 @@ fun RegistrationTextFields(
                 Icon(
                     modifier = Modifier
                         .size(25.dp),
-                    painter = if ( isShowPassword.value ) painterResource(R.drawable.ic_show) else painterResource(R.drawable.ic_hide),
+                    painter = if (isShowPassword.value) painterResource(R.drawable.ic_show) else painterResource(
+                        R.drawable.ic_hide
+                    ),
                     tint = secondaryColor,
                     contentDescription = "null"
                 )
             }
         },
         supportingText = {
-            if (passwordValueError){
+            if (passwordValueError) {
                 Text(
                     text = stringResource(R.string.password_exception)
                 )
@@ -160,7 +164,7 @@ fun RegistrationTextFields(
     OutlinedTextField(
         value = confirmPasswordValue,
         onValueChange = { onConfirmPasswordValueChange(it) },
-        visualTransformation = if ( isShowConfirmPassword.value ) VisualTransformation.None else PasswordVisualTransformation() ,
+        visualTransformation = if (isShowConfirmPassword.value) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = Modifier
             .fillMaxWidth(),
         textStyle = TextStyle(
@@ -185,14 +189,16 @@ fun RegistrationTextFields(
                 Icon(
                     modifier = Modifier
                         .size(25.dp),
-                    painter = if ( isShowConfirmPassword.value ) painterResource(R.drawable.ic_show) else painterResource(R.drawable.ic_hide),
+                    painter = if (isShowConfirmPassword.value) painterResource(R.drawable.ic_show) else painterResource(
+                        R.drawable.ic_hide
+                    ),
                     tint = secondaryColor,
                     contentDescription = "null"
                 )
             }
         },
         supportingText = {
-            if (confirmPasswordValueError){
+            if (confirmPasswordValueError) {
                 Text(
                     text = stringResource(R.string.passwords_does_not_matches)
                 )

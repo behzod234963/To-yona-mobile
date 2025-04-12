@@ -76,6 +76,9 @@ fun ProfileScreen(
     coroutineScope.launch { bottomSheetState.hide() }
 
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val isOldUserState = dataStore.isOldUserState().collectAsState(false)
+    val oldUserFirstName = rememberSaveable { mutableStateOf( "" ) }
+    val oldUserLastName = rememberSaveable { mutableStateOf( "" ) }
 
     Scaffold(
         containerColor = primaryColor,
@@ -110,7 +113,11 @@ fun ProfileScreen(
                 }
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = "${nameValue.value} ${surnameValue.value}",
+                    text = if (isOldUserState.value){
+                        "${oldUserFirstName.value} ${oldUserLastName.value}"
+                    }else{
+                        "${nameValue.value} ${surnameValue.value}"
+                    },
                     color = secondaryColor,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
@@ -132,22 +139,32 @@ fun ProfileScreen(
                 Spacer(Modifier.height(20.dp))
                 NameField(
                     secondaryColor = secondaryColor,
-                    nameValue = nameValue.value,
+                    nameValue = if (isOldUserState.value) oldUserFirstName.value else nameValue.value ,
                     onNameValueChange = {
-                        nameValue.value = it
-                        nameValueError.value = !it.nameChecker()
+                        if(isOldUserState.value){
+                            oldUserFirstName.value = it
+                            nameValueError.value = !it.nameChecker()
+                        }else{
+                            nameValue.value = it
+                            nameValueError.value = !it.nameChecker()
+                        }
                     },
                     nameValueTrailingIcon = {
-                        nameValue.value = ""
+                        if (isOldUserState.value) oldUserFirstName.value = "" else nameValue.value = ""
                     },
                     nameValueError = nameValueError.value,
-                    surnameValue = surnameValue.value,
+                    surnameValue = if ( isOldUserState.value ) oldUserLastName.value else surnameValue.value ,
                     onSurnameValueChange = {
-                        surnameValue.value = it
-                        surnameValueError.value = !it.nameChecker()
+                        if (isOldUserState.value){
+                            oldUserLastName.value = it
+                            surnameValueError.value = !it.nameChecker()
+                        }else{
+                            surnameValue.value = it
+                            surnameValueError.value = !it.nameChecker()
+                        }
                     },
                     surnameValueTrailingIcon = {
-                        surnameValue.value = ""
+                        if (isOldUserState.value) oldUserLastName.value = "" else surnameValue.value = ""
                     },
                     surnameValueError = surnameValueError.value
                 )
@@ -172,15 +189,27 @@ fun ProfileScreen(
                             !nameValueError.value &&
                             !surnameValueError.value
                         ) {
-                            coroutineScope.launch {
-                                dataStore.saveAvatar(avatar.value)
-                                dataStore.saveFirstname(firstname = nameValue.value)
-                                dataStore.saveLastname(lastname = surnameValue.value)
-                            }
-                            sharedPreferences.saveIsProfileSettingsState(false)
-                            sharedPreferences.saveNewPinState(true)
-                            navController.navigate(ScreensRouter.NewPinScreen.route){
-                                popUpTo(ScreensRouter.ProfileScreen.route){ inclusive = true }
+                            if ( isOldUserState.value ){
+                                coroutineScope.launch {
+                                    dataStore.saveAvatar(avatar.value)
+                                    dataStore.saveFirstname(firstname = nameValue.value)
+                                    dataStore.saveLastname(lastname = surnameValue.value)
+                                }
+                                sharedPreferences.saveIsProfileSettingsState(false)
+                                navController.navigate(ScreensRouter.EnterScreen.route){
+                                    popUpTo(ScreensRouter.ProfileScreen.route){ inclusive = true }
+                                }
+                            }else{
+                                coroutineScope.launch {
+                                    dataStore.saveAvatar(avatar.value)
+                                    dataStore.saveFirstname(firstname = nameValue.value)
+                                    dataStore.saveLastname(lastname = surnameValue.value)
+                                }
+                                sharedPreferences.saveIsProfileSettingsState(false)
+                                sharedPreferences.saveNewPinState(true)
+                                navController.navigate(ScreensRouter.NewPinScreen.route){
+                                    popUpTo(ScreensRouter.ProfileScreen.route){ inclusive = true }
+                                }
                             }
                         } else {
                             Toast.makeText(
@@ -194,7 +223,7 @@ fun ProfileScreen(
                     Text(
                         text = stringResource(R.string.continue_),
                         color = secondaryColor,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

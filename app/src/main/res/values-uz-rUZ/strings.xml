@@ -94,4 +94,9 @@
     <string name="i_have_no_account">Menda akkaunt mavjud emas</string>
     <string name="sign_up">Ro\'yhatdan o\'tish</string>
     <string name="i_have_an_account">Menda akkaunt mavjud</string>
+    <string name="forgot_password">Parolni unutdingizmi ?</string>
+    <string name="add_card">Karta qo\'shish</string>
+    <string name="card_field_must_contains_16_digit">Karta raqami 16 raqam bo\'lishi lozim</string>
+    <string name="expire_date">Tugash muddati</string>
+    <string name="mm_yy">OO/YY</string>
 </resources>

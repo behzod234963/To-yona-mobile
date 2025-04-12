@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,11 +36,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.logInScreens.components.LoginTextFields
+import kotlinx.coroutines.launch
 
 @Composable
 fun LogInScreen(
@@ -47,6 +50,9 @@ fun LogInScreen(
 ) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope ()
+
+    val dataStore = DataStoreInstance(context)
 
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -142,6 +148,31 @@ fun LogInScreen(
                         fontSize = 16.sp
                     )
                 }
+                TextButton (
+                    onClick = {
+                        if (
+                            phoneFieldValue.value.isNotEmpty() &&
+                            phoneFieldValue.value.isNotBlank() &&
+                            !phoneFieldError.value
+                            ) {
+                            coroutineScope.launch {
+                                dataStore.isPasswordForgotten(true)
+                            }
+                            val result = "+998" + phoneFieldValue.value
+                            navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
+                                popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                            }
+                        }else{
+                            phoneFieldError.value = true
+                        }
+                    }
+                ){
+                    Text(
+                        text = stringResource(R.string.forgot_password),
+                        color = Color.Blue,
+                        fontSize = 16.sp
+                    )
+                }
             }
             Column(
                 modifier = Modifier
@@ -166,6 +197,9 @@ fun LogInScreen(
                             !phoneFieldError.value &&
                             !passwordValueError.value
                         ) {
+                            coroutineScope.launch {
+                                dataStore.isOldUser(true)
+                            }
                             val result = "+998" + phoneFieldValue.value
                             navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
                                 popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }

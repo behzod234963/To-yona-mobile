@@ -25,10 +25,11 @@ import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingTopBar(
-    onSkipClick: () -> Unit,
+    primaryColor:Color,
     secondaryColor: Color,
     tertiaryColor: Color,
     quaternaryColor: Color,
+    onSkipClick: () -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -46,6 +47,9 @@ fun OnBoardingTopBar(
     ).mapKeys { it.key }
 
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = primaryColor,
+        ),
         navigationIcon = {
             TextButton(
                 onClick = { onSkipClick() }

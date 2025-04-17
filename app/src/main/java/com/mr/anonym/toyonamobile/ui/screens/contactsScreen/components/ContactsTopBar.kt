@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +51,9 @@ fun ContactsTopBar(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = primaryColor,
+        ),
         navigationIcon = {
             IconButton(
                 onClick = { onNavigationClick() }

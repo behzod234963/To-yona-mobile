@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.logInScreens.components
+package com.mr.anonym.toyonamobile.ui.screens.logInScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

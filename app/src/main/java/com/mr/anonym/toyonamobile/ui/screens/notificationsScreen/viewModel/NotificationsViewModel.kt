@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.viewModel
+package com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.viewModel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +16,7 @@ class NotificationsViewModel @Inject constructor(
     private val localUseCases: LocalUseCases
 ): ViewModel() {
 
-    private val _notifications = mutableStateOf(LocalDataState().notifications )
+    private val _notifications = mutableStateOf(LocalDataState().notifications)
     val notifications: State<List<NotificationsModel>> = _notifications
 
     init {

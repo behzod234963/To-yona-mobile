@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -57,16 +58,16 @@ fun OnboardingScreen(
         containerColor = primaryColor,
         topBar = {
             OnBoardingTopBar(
-                onSkipClick = {
-                    sharedPreferences.saveFirstTimeState(false)
-                    navController.navigate(ScreensRouter.LoginScreen.route){
-                        popUpTo(route = ScreensRouter.OnboardingScreen.route){ inclusive = true }
-                    }
-                },
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
                 quaternaryColor = quaternaryColor
-            )
+            ) {
+                sharedPreferences.saveFirstTimeState(false)
+                navController.navigate(ScreensRouter.LoginScreen.route) {
+                    popUpTo(route = ScreensRouter.OnboardingScreen.route) { inclusive = true }
+                }
+            }
         }
     ) {padding->
         BackHandler (
@@ -133,6 +134,7 @@ fun OnboardingScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = quaternaryColor
                     ),
+                    shape = RoundedCornerShape(10.dp),
                     onClick = {
                         sharedPreferences.saveFirstTimeState(false)
                         navController.navigate(ScreensRouter.LoginScreen.route){

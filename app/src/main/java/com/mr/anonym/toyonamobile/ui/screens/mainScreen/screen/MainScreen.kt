@@ -205,6 +205,7 @@ fun MainScreen(
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
                     title = stringResource(R.string.app_name),
+                    navigationIcon = profileAvatar.value,
                     onActionsClick = {
                         navController.navigate(ScreensRouter.NotificationsScreen.route)
                     }

@@ -44,6 +44,8 @@ dependencies {
 
     implementation(project(":domain"))
     implementation(libs.androidx.dataStore)
-    implementation(libs.roomSqlite)
+    implementation(libs.androidx.room.common)
     implementation(libs.roomCoroutinesSupport)
+    kapt(libs.roomCompiler)
+
 }

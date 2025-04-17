@@ -45,6 +45,7 @@ fun NotificationsScreen(
     Scaffold(
         topBar = {
             NotificationsTopBar(
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 onNavigationIconClick = {
                     navController.popBackStack()

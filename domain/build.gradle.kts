@@ -43,5 +43,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.roomSqlite)
+    implementation(libs.androidx.room.common)
     implementation(libs.roomCoroutinesSupport)
+    kapt(libs.roomCompiler)
 }

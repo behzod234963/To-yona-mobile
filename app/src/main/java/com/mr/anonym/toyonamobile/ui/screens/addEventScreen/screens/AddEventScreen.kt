@@ -52,12 +52,11 @@ import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventT
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.collections.get
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddEventScreen(
-    navController: NavController
+    navController: NavController,
 ) {
 
     val context = LocalContext.current
@@ -82,20 +81,20 @@ fun AddEventScreen(
     val isOtherEventError = rememberSaveable { mutableStateOf(false) }
 
 
-    val showTimePicker = rememberSaveable { mutableStateOf( false ) }
-    val time = remember { mutableStateOf( "" ) }
-    val selectedTime = remember { mutableStateOf(System.currentTimeMillis() ) }
+    val showTimePicker = rememberSaveable { mutableStateOf(false) }
+    val time = remember { mutableStateOf("") }
+    val selectedTime = remember { mutableStateOf(System.currentTimeMillis()) }
     val pickedHour = calendarInstance.get(android.icu.util.Calendar.HOUR_OF_DAY)
     val pickedMinute = calendarInstance.get(android.icu.util.Calendar.MINUTE)
     val timePickerDialog = TimePickerDialog(
         context,
-         { _: TimePicker, hourOfDay,minute->
-            time.value = if ( minute == 0 ) "$hourOfDay:${minute}0" else "$hourOfDay:$minute"
-            calendarInstance.set(Calendar.HOUR_OF_DAY,hourOfDay)
-            calendarInstance.set(Calendar.MINUTE,minute)
-            calendarInstance.set(Calendar.SECOND,0)
+        { _: TimePicker, hourOfDay, minute ->
+            time.value = if (minute == 0) "$hourOfDay:${minute}0" else "$hourOfDay:$minute"
+            calendarInstance.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendarInstance.set(Calendar.MINUTE, minute)
+            calendarInstance.set(Calendar.SECOND, 0)
             selectedTime.value = calendarInstance.time.time
-        }, pickedHour, pickedMinute,true
+        }, pickedHour, pickedMinute, true
     )
 
     val showDatePicker = rememberSaveable { mutableStateOf(false) }
@@ -110,17 +109,17 @@ fun AddEventScreen(
         "9860030160619356",
         "9860030160619350"
     )
-    val cardValue = rememberSaveable { mutableStateOf( cards[0] ) }
+    val cardValue = rememberSaveable { mutableStateOf(cards[0]) }
 
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
         topBar = {
             AddEventTopBar(
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                navigationIconClick = { navController.popBackStack() },
-                onActionsClick = { navController.navigate(ScreensRouter.MyEventsScreen.route) }
-            )
+                navigationIconClick = { navController.popBackStack() }
+            ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },
         floatingActionButton = {
             AddEventFAB(
@@ -320,10 +319,10 @@ fun AddEventScreen(
                     shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp),
                     elevation = CardDefaults.cardElevation(7.dp)
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth(),
-                    ){
+                    ) {
                         Text(
                             text = "${startDate.value} , ${endDate.value}",
                             modifier = Modifier
@@ -361,7 +360,7 @@ fun AddEventScreen(
                     }
                 )
             }
-            if (showTimePicker.value){
+            if (showTimePicker.value) {
                 timePickerDialog.show()
                 showTimePicker.value = false
             }

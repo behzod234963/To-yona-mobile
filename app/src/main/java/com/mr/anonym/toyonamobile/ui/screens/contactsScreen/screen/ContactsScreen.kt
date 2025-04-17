@@ -44,8 +44,8 @@ fun ContactsScreen(
     val sixrdColor = Color.Blue
     val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val searchBarValue = rememberSaveable { mutableStateOf( "" ) }
-    val showSearchBar = rememberSaveable { mutableStateOf( false ) }
+    val searchBarValue = rememberSaveable { mutableStateOf("") }
+    val showSearchBar = rememberSaveable { mutableStateOf(false) }
 
     val contactList = listOf<FriendsModel>(
         FriendsModel(
@@ -107,13 +107,13 @@ fun ContactsScreen(
                 }
             ) { showSearchBar.value = true }
         }
-    ) {paddingValues ->
-        LazyColumn (
+    ) { paddingValues ->
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-        ){
-            items( contactList ){ model->
+        ) {
+            items(contactList) { model ->
                 ContactsItem(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,

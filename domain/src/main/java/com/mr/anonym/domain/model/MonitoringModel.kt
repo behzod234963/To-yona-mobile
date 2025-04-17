@@ -3,9 +3,8 @@ package com.mr.anonym.domain.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity("MonitoringEntity")
 data class MonitoringModel(
-    @PrimaryKey val id:Int? = null,
+    val id:Int? = null,
     val monthIndex: Int,
     val eventName: String,
     val eventOwnerName: String,

@@ -9,7 +9,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.graphics.scale
 import com.mr.anonym.domain.model.MonitoringModel
@@ -87,7 +86,7 @@ fun shareTransfer(context: Context, fileName: String, model: MonitoringModel){
             if (file.exists()){
                 file.delete()
             }
-        },300000)
+        },60000)
     }catch (e:Exception){
         Log.d("FileIoLogging", "shareTransfer: ${e.message}")
     }

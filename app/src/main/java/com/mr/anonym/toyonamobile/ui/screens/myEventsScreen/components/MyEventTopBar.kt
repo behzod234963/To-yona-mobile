@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -17,11 +18,15 @@ import com.mr.anonym.toyonamobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyEventTopBar(
+    primaryColor:Color,
     secondaryColor: Color,
     onNavigationIconClick:()-> Unit,
 ) {
 
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = primaryColor,
+        ),
         title = {
             Text(
                 text = stringResource(R.string.my_events),

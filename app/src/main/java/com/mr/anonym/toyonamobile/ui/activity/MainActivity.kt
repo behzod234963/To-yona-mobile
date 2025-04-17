@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.activity
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -15,17 +16,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricAuthManager
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricResult
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.utils.shareTransfer
 import com.mr.anonym.toyonamobile.ui.activity.viewModel.MainActivityViewModel
 import com.mr.anonym.toyonamobile.ui.theme.ToyonaMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,10 +46,12 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var localeConfig: LocaleConfigurations
+    @Inject lateinit var sharedPreferences: SharedPreferencesInstance
 
     @Inject
     lateinit var dataStore: DataStoreInstance
     private val viewModel: MainActivityViewModel by viewModels()
+    var isScanning: State<Boolean>  = mutableStateOf( false )
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,11 +61,13 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.applySavedLanguage()
             }
         }
+
         enableEdgeToEdge()
         setContent {
             ToyonaMobileTheme {
                 val navController = rememberNavController()
                 NavGraph(navController)
+                val coroutineScope = rememberCoroutineScope()
                 val isStateOnPause = remember { mutableStateOf(false) }
                 val biometricAuthState = dataStore.getBiometricAuthState().collectAsState(false)
                 val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
@@ -94,12 +103,15 @@ class MainActivity : AppCompatActivity() {
                             dataStore.saveBiometricAuthState(false)
                             navController.navigate(ScreensRouter.MainScreen.route)
                         }
+
                         is BiometricResult.AuthenticationError -> {
 
                         }
+
                         BiometricResult.AuthenticationFailed -> {
 
                         }
+
                         BiometricResult.AuthenticationNotSet -> {
                             if (Build.VERSION.SDK_INT >= 30) {
                                 val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
@@ -128,12 +140,17 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         CoroutineScope(Dispatchers.Default).launch {
             dataStore.saveBiometricAuthState(true)
+            dataStore.isPasswordForgotten(false)
         }
+        sharedPreferences.addCardProcess(false)
     }
+
     override fun onDestroy() {
         super.onDestroy()
+        sharedPreferences.addCardProcess(false)
         CoroutineScope(Dispatchers.Default).launch {
             dataStore.saveBiometricAuthState(true)
+            dataStore.isPasswordForgotten(false)
         }
     }
 }

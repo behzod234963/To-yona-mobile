@@ -99,4 +99,8 @@
     <string name="card_field_must_contains_16_digit">Номер карты должен содержать 16 цифр</string>
     <string name="expire_date">Дата окончания</string>
     <string name="mm_yy">ММ/ГГ</string>
+    <string name="add_cart">Добавить карту</string>
+    <string name="card_delete_alert">Вы действительно хотите удалить данную банковскую карту?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 </resources>

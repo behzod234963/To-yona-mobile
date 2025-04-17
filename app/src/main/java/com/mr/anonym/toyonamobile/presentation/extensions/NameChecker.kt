@@ -11,3 +11,15 @@ fun String.nameChecker(): Boolean{
         false
     }
 }
+
+fun String.cardHolderChecker(): Boolean{
+    val regexPattern = Regex("^[a-zA-Z\\s-]*$")
+    return if (
+        regexPattern.matches(this) &&
+        this.isNotEmpty()
+    ){
+        true
+    }else{
+        false
+    }
+}

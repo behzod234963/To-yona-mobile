@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.logInScreens.screen
+package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -41,7 +42,7 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.logInScreens.components.LoginTextFields
+import com.mr.anonym.toyonamobile.ui.screens.logInScreen.components.LoginTextFields
 import kotlinx.coroutines.launch
 
 @Composable
@@ -190,6 +191,7 @@ fun LogInScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = quaternaryColor
                     ),
+                    shape = RoundedCornerShape(10.dp),
                     onClick = {
                         if (
                             phoneFieldValue.value.isNotEmpty() &&

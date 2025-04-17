@@ -35,14 +35,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.util.copy
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.moneySeparator
 import com.mr.anonym.toyonamobile.presentation.extensions.moneyType
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun DetailsHistoryItem(

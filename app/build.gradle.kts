@@ -8,11 +8,12 @@ plugins {
 
 android {
     namespace = "com.mr.anonym.toyonamobile"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.mr.anonym.toyonamobile"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -64,7 +65,9 @@ dependencies {
 
     implementation(libs.daggerHilt)
     implementation(libs.daggerHilt.navigation.compose)
-    kapt(libs.kaptCompiler)
+    kapt(libs.daggerHiltCompiler)
+    kapt(libs.daggerHiltAndroidCompiler)
+
     implementation(libs.navigation)
     implementation(libs.kotlinCoroutines)
     implementation(libs.viewModel)
@@ -74,12 +77,11 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.dataStore)
     implementation(libs.biometricAuth)
+
+    implementation(libs.androidx.room.common)
     implementation(libs.roomSqlite)
     implementation(libs.roomCoroutinesSupport)
-    implementation(libs.cameraXcore)
-    implementation(libs.cameraX2)
-    implementation(libs.cameraXlifecycle)
-    implementation(libs.cameraXview)
-    implementation(libs.cameraXextensions)
-    implementation(libs.mlKit)
+    kapt(libs.roomCompiler)
+
+    implementation(libs.cardIOscanner)
 }

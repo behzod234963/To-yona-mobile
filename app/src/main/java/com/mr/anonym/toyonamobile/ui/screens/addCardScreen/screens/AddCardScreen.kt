@@ -1,43 +1,75 @@
 package com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardHolderChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.utils.Arguments
+import com.mr.anonym.toyonamobile.presentation.utils.CardEvents
+import com.mr.anonym.toyonamobile.presentation.utils.CardScannerIO
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
+import com.mr.anonym.toyonamobile.presentation.utils.startScanning
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.AddCardTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.CardFields
-import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.CardNumberScanner
+import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.viewModel.AddCardViewModel
+import kotlinx.coroutines.launch
+import java.util.Locale.getDefault
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddCardScreen(
-    navController: NavController
+    arguments: Arguments,
+    navController: NavController,
+    viewModel: AddCardViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val coroutineScope = rememberCoroutineScope()
     val permissionManager = PermissionController(context)
+    val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
 
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -47,15 +79,27 @@ fun AddCardScreen(
     val sixrdColor = Color.Blue
     val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val cardValue = rememberSaveable { mutableStateOf("") }
-    val cardValueError = rememberSaveable { mutableStateOf(false) }
-    val carDateValue = rememberSaveable { mutableStateOf("") }
-    val cardDateError = rememberSaveable { mutableStateOf(false) }
-
+    val isScanned = rememberSaveable { mutableStateOf(false) }
     val isScannerOn = rememberSaveable { mutableStateOf(false) }
     val isFlashOn = rememberSaveable { mutableStateOf(false) }
+    val isScannerRunning = rememberSaveable { mutableStateOf(false) }
+
+    val cardNumberValue = viewModel.cardNumber
+    val cardValueError = rememberSaveable { mutableStateOf(false) }
+    val expiryDateValue = viewModel.expiryDate
+    val cardDateError = rememberSaveable { mutableStateOf(false) }
+    val cardHolderValue = viewModel.cardHolder
+    val cardHolderValueError = rememberSaveable { mutableStateOf( false ) }
+
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+
+    val launcher = CardScannerIO(context) { card ->
+        viewModel.cardEvents(CardEvents.ChangeCardNumber(card.cardNumber))
+    }
 
     Scaffold(
+        modifier = Modifier
+            .imePadding(),
         containerColor = primaryColor,
         contentColor = primaryColor,
         topBar = {
@@ -66,74 +110,129 @@ fun AddCardScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        Column (
             modifier = Modifier
                 .fillMaxSize()
                 .background(sevenrdColor)
                 .padding(paddingValues)
-                .padding(16.dp)
-        ) {
+        ){
             CardFields(
                 secondaryColor = secondaryColor,
-                cardValue = cardValue.value,
+                cardValue = cardNumberValue.value,
+                isScanned = isScanned.value,
+                columnModifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.85f)
+                    .padding(10.dp),
                 onCardValueChange = {
-                    cardValue.value = it
+                    isScanned.value = false
+                    viewModel.cardEvents(CardEvents.ChangeCardNumber(it.take(16)))
                 },
                 cardFieldError = cardValueError.value,
                 cardFieldTrailingClick = {
-                    isScannerOn.value = true
+                    isScanned.value = true
+                    startScanning(context, launcher)
                 },
-                cardDateValue = carDateValue.value,
+                cardDateValue = expiryDateValue.value,
                 onCardDateValueChange = {
-                    carDateValue.value = it
+                    viewModel.cardEvents(CardEvents.ChangeExpiryDate(it))
                 },
-                cardDateError = cardDateError.value
+                cardDateError = cardDateError.value,
+                cardHolderValue = cardHolderValue.value,
+                onCardHolderValueChange = {
+                    viewModel.cardEvents(CardEvents.ChangeCardHolder(it.uppercase(getDefault())))
+                    cardHolderValueError.value = !it.cardHolderChecker()
+                },
+                cardHolderValueError = cardHolderValueError.value,
+                cardHolderFieldTrailingIcon = {
+                    viewModel.cardEvents(CardEvents.ChangeCardHolder(""))
+                },
             )
-        }
-    }
-    if (isScannerOn.value &&
-        permissionManager.requestCameraPermission(activity!!)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            CardNumberScanner(
-                context = context,
-                isFlashOn = isFlashOn.value,
-                onCardNumberFound = {
-                    cardValue.value = it
-                    isScannerOn.value = false
-                    Log.d("UtilsLogging", "AddCardScreen: it's worked")
-                }
-            )
-            Box(
+            Column(
                 modifier = Modifier
-                    .padding(16.dp),
-                contentAlignment = Alignment.TopEnd
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.Bottom,
             ) {
-                IconButton(
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = quaternaryColor,
+                        contentColor = quaternaryColor
+                    ),
+                    shape = RoundedCornerShape(10.dp),
                     onClick = {
-                        isFlashOn.value = !isFlashOn.value
+                        isScanned.value = true
+                        if (
+                            cardNumberValue.value.isNotEmpty() &&
+                            cardNumberValue.value.isNotBlank() &&
+                            !cardValueError.value &&
+                            expiryDateValue.value.isNotEmpty() &&
+                            expiryDateValue.value.isNotBlank() &&
+                            !cardDateError.value &&
+                            cardHolderValue.value.isNotEmpty() &&
+                            cardHolderValue.value.isNotBlank() &&
+                            !cardHolderValueError.value
+                        ){
+                            val first = expiryDateValue.value.take(2)
+                            val last = expiryDateValue.value.takeLast(2)
+                            val formatted = cardNumberValue.value.cardNumberSeparator()
+                            if (arguments.cardId == -1){
+                                sharedPreferences.addCardProcess(true)
+                                coroutineScope.launch {
+                                    dataStore.saveCardID(-1)
+                                    dataStore.saveCardNumber(formatted)
+                                    dataStore.saveCardHolder(cardHolderValue.value)
+                                    dataStore.saveExpiryDate("$first/$last")
+                                }
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}"){
+                                    popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
+                                }
+                            }else{
+                                sharedPreferences.addCardProcess(true)
+                                coroutineScope.launch {
+                                    dataStore.saveCardID(arguments.cardId)
+                                    dataStore.saveCardNumber(formatted)
+                                    dataStore.saveCardHolder(cardHolderValue.value)
+                                    dataStore.saveExpiryDate("$first/$last")
+                                }
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}"){
+                                    popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
+                                }
+                            }
+                        }else{
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.please_check_validate_places),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 ) {
-                    Icon(
-                        painter = if (!isFlashOn.value) painterResource(R.drawable.ic_flash_on) else painterResource(
-                            R.drawable.ic_flash_off
-                        ),
-                        tint = secondaryColor,
-                        contentDescription = ""
-                    )
+                    Row (
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        Icon(
+                            painter = painterResource(R.drawable.ic_add_circle),
+                            tint = primaryColor,
+                            contentDescription = ""
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Text(
+                            text = stringResource(R.string.add_cart),
+                            color = primaryColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewAddCardScreen() {
-    AddCardScreen(
-        navController = NavController(LocalContext.current)
-    )
 }

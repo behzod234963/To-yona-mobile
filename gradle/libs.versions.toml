@@ -19,8 +19,7 @@ lifecycleVersion = "2.8.7"
 dataStoreVersion = "1.1.4"
 biometricAuthVersion = "1.1.0"
 roomVersion = "2.7.0"
-cameraXversion = "1.4.2"
-mlKitRecognitionVersion = "16.0.1"
+cardIOscannerVersion = "5.5.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,7 +41,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 daggerHilt = { group = "com.google.dagger" , name = "hilt-android" , version.ref = "daggerHiltVersion" }
 daggerHilt-navigation-compose = { group = "androidx.hilt" ,name  = "hilt-navigation-compose" , version.ref = "daggerHiltNavigationComposeVersion"}
-kaptCompiler = { group = "com.google.dagger" , name = "hilt-android-compiler" , version.ref = "daggerHiltVersion" }
+daggerHiltAndroidCompiler = { group = "com.google.dagger" , name = "hilt-android-compiler" , version.ref = "daggerHiltVersion" }
+daggerHiltCompiler = {group = "com.google.dagger",name = "hilt-compiler",version.ref = "daggerHiltVersion"}
 navigation = { group = "androidx.navigation" , name = "navigation-compose" , version.ref = "navigationVersion" }
 kotlinCoroutines = { group = "org.jetbrains.kotlinx" , name = "kotlinx-coroutines-android" , version.ref = "coroutinesVersion" }
 viewModel = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-ktx" , version.ref = "lifecycleVersion" }
@@ -53,12 +53,9 @@ androidx-dataStore = { group = "androidx.datastore" , name  = "datastore-prefere
 biometricAuth = { group = "androidx.biometric" , name = "biometric" , version.ref = "biometricAuthVersion" }
 roomSqlite = { group = "androidx.room" , name = "room-runtime" , version.ref = "roomVersion" }
 roomCoroutinesSupport = { group = "androidx.room" , name = "room-ktx" , version.ref = "roomVersion" }
-cameraXcore = { group = "androidx.camera" , name = "camera-core" , version.ref = "cameraXversion" }
-cameraX2 = { group = "androidx.camera" , name = "camera-camera2" , version.ref = "cameraXversion" }
-cameraXlifecycle = { group = "androidx.camera" , name = "camera-lifecycle" , version.ref = "cameraXversion" }
-cameraXview = { group = "androidx.camera" , name = "camera-view" , version.ref = "cameraXversion" }
-cameraXextensions = { group = "androidx.camera" , name = "camera-extensions" , version.ref = "cameraXversion" }
-mlKit = { group = "com.google.mlkit" , name = "text-recognition" , version.ref = "mlKitRecognitionVersion" }
+roomCompiler = { group = "androidx.room" , name = "room-compiler" , version.ref = "roomVersion" }
+androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomVersion" }
+cardIOscanner = { group = "io.card" , name = "android-sdk" , version.ref = "cardIOscannerVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

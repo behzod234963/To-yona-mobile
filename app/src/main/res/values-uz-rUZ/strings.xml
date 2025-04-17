@@ -99,4 +99,8 @@
     <string name="card_field_must_contains_16_digit">Karta raqami 16 raqam bo\'lishi lozim</string>
     <string name="expire_date">Tugash muddati</string>
     <string name="mm_yy">OO/YY</string>
+    <string name="add_cart">Karta qo\'shish</string>
+    <string name="card_delete_alert">Siz bu bank kartasini o\'chirishni xohlaysizmi?</string>
+    <string name="yes">Xa</string>
+    <string name="no">Yo\'q</string>
 </resources>

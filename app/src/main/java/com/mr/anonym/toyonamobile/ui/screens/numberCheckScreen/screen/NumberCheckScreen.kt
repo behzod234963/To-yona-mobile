@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
@@ -30,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,30 +39,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
+import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.viewModel.NumberCheckViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun NumberCheckScreen(
     arguments: Arguments,
-    navController: NavController
+    navController: NavController,
+    viewModel: NumberCheckViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
@@ -80,6 +85,12 @@ fun NumberCheckScreen(
 
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState( false )
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
+
+    val addCardProcess = sharedPreferences.addCardProcessState()
+    val cardID = dataStore.getCardID().collectAsState(-1)
+    val cardNumber = dataStore.getCardNumber().collectAsState("")
+    val cardHolder = dataStore.getCardHolder().collectAsState("")
+    val expiryDate = dataStore.getExpiryDate().collectAsState("")
 
     LaunchedEffect(isRunning.value,timeLeft.value) {
         while ( isRunning.value && timeLeft.value > 0 ){
@@ -143,6 +154,34 @@ fun NumberCheckScreen(
                                 otpValue.value == correctValue.value
                             ){
                                 when{
+                                    addCardProcess->{
+                                        if(cardID.value == -1){
+                                            viewModel.insertCard(
+                                                CardModel(
+                                                    cardNumber = cardNumber.value,
+                                                    cardHolder = cardHolder.value,
+                                                    expiryDate = expiryDate.value,
+                                                )
+                                            )
+                                            sharedPreferences.addCardProcess(false)
+                                            navController.navigate(ScreensRouter.WalletScreen.route){
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                            }
+                                        }else{
+                                            viewModel.insertCard(
+                                                CardModel(
+                                                    id = cardID.value,
+                                                    cardNumber = cardNumber.value,
+                                                    cardHolder = cardHolder.value,
+                                                    expiryDate = expiryDate.value,
+                                                )
+                                            )
+                                            sharedPreferences.addCardProcess(false)
+                                            navController.navigate(ScreensRouter.WalletScreen.route){
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                            }
+                                        }
+                                    }
                                     isPasswordForgotten.value->{
                                         CoroutineScope(Dispatchers.Default).launch {
                                             dataStore.savePhoneNumber(arguments.number)
@@ -263,6 +302,7 @@ fun NumberCheckScreen(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = quaternaryColor
                     ),
+                    shape = RoundedCornerShape(10.dp),
                     onClick = {
                         if (
                             otpValue.value.isNotEmpty() &&
@@ -270,6 +310,30 @@ fun NumberCheckScreen(
                             otpValue.value == correctValue.value
                             ){
                             when{
+                                addCardProcess->{
+                                    if(cardID.value == -1){
+                                        viewModel.insertCard(
+                                            CardModel(
+                                                cardNumber = cardNumber.value,
+                                                cardHolder = cardHolder.value,
+                                                expiryDate = expiryDate.value,
+                                            )
+                                        )
+                                        sharedPreferences.addCardProcess(false)
+                                        navController.navigate(ScreensRouter.WalletScreen.route)
+                                    }else{
+                                        viewModel.insertCard(
+                                            CardModel(
+                                                id = cardID.value,
+                                                cardNumber = cardNumber.value,
+                                                cardHolder = cardHolder.value,
+                                                expiryDate = expiryDate.value,
+                                            )
+                                        )
+                                        sharedPreferences.addCardProcess(false)
+                                        navController.navigate(ScreensRouter.WalletScreen.route)
+                                    }
+                                }
                                 isPasswordForgotten.value->{
                                     CoroutineScope(Dispatchers.Default).launch {
                                         dataStore.savePhoneNumber(arguments.number)
@@ -314,13 +378,4 @@ fun NumberCheckScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewNumberCheckScreen() {
-    NumberCheckScreen(
-        navController = NavController(LocalContext.current),
-        arguments = Arguments("+998973570498")
-    )
 }

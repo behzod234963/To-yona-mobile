@@ -1,14 +1,15 @@
 package com.mr.anonym.toyonamobile.di.module
 
-import com.mr.anonym.domain.repository.MonitoringRepository
+import com.mr.anonym.domain.repository.CardRepository
 import com.mr.anonym.domain.repository.NotificationsRepository
 import com.mr.anonym.domain.useCases.local.ClearNotificationsUseCase
+import com.mr.anonym.domain.useCases.local.DeleteCardUseCase
 import com.mr.anonym.domain.useCases.local.DeleteNotificationUseCase
-import com.mr.anonym.domain.useCases.local.GetExpensesByCardUseCase
-import com.mr.anonym.domain.useCases.local.GetExpensesByMonthUseCase
+import com.mr.anonym.domain.useCases.local.GetCardByIdUseCase
+import com.mr.anonym.domain.useCases.local.GetCardsUseCase
 import com.mr.anonym.domain.useCases.local.GetNotificationsByIDUseCase
 import com.mr.anonym.domain.useCases.local.GetNotificationsUseCase
-import com.mr.anonym.domain.useCases.local.InsertExpenseUseCase
+import com.mr.anonym.domain.useCases.local.InsertCardUseCase
 import com.mr.anonym.domain.useCases.local.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import dagger.Module
@@ -25,7 +26,7 @@ class DomainModule {
     @Singleton
     fun provideUseCases(
         notificationsRepository: NotificationsRepository,
-        monitoringRepository: MonitoringRepository
+        cardRepository: CardRepository
     ): LocalUseCases =
         LocalUseCases(
             insertNotificationUseCase = InsertNotificationUseCase(notificationsRepository),
@@ -33,8 +34,9 @@ class DomainModule {
             getNotificationsByIDUseCase = GetNotificationsByIDUseCase(notificationsRepository),
             deleteNotificationUseCase = DeleteNotificationUseCase(notificationsRepository),
             clearNotificationsUseCase = ClearNotificationsUseCase(notificationsRepository),
-            insertExpenseUseCase = InsertExpenseUseCase(monitoringRepository),
-            getExpenseByMonthUseCase = GetExpensesByMonthUseCase(monitoringRepository),
-            getExpensesByCardUseCase = GetExpensesByCardUseCase(monitoringRepository),
+            insertCardUseCase = InsertCardUseCase(cardRepository),
+            getCardsUseCase = GetCardsUseCase(cardRepository),
+            getCardByIdUseCase = GetCardByIdUseCase(cardRepository),
+            deleteCardUseCase = DeleteCardUseCase(cardRepository),
         )
 }

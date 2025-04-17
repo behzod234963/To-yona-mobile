@@ -1,25 +1,44 @@
 package com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen
 
+import android.R
 import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.components.WalletTopBar
+import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletScreenDialog
+import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletTopBar
+import com.mr.anonym.toyonamobile.ui.screens.walletScreen.item.WalletScreenItem
+import com.mr.anonym.toyonamobile.ui.screens.walletScreen.viewModel.WalletViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WalletScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: WalletViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
+    val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
 
     val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
@@ -29,6 +48,15 @@ fun WalletScreen(
     val sixrdColor = Color.Blue
     val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
+    val whiteGreen = Color(5, 114, 5, 255)
+    val cardBackgroundBrush = Brush.linearGradient(colors = listOf(whiteGreen,fiverdColor))
+
+    val showDeleteDialog = rememberSaveable { mutableStateOf( false ) }
+
+    val cards = viewModel.cards
+    val cardModel = remember { mutableStateOf(CardModel() ) }
+    sharedPreferences.addCardProcess(false)
+
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -37,24 +65,39 @@ fun WalletScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationClick = { navController.popBackStack() },
-                onActionsClick = { navController.navigate(ScreensRouter.AddCardScreen.route) }
+                onActionsClick = { navController.navigate(ScreensRouter.AddCardScreen.route + "/-1") }
             ) 
         }
     ) { paddingValues ->
+        if (showDeleteDialog.value){
+            WalletScreenDialog(
+                secondaryColor = secondaryColor,
+                quaternaryColor = quaternaryColor,
+                fiverdColor = fiverdColor,
+                onConfirmClick = {
+                    viewModel.deleteCard(cardModel.value)
+                    showDeleteDialog.value = false
+                },
+                onDismissClick = { showDeleteDialog.value = false },
+                onDismissRequest = { showDeleteDialog.value = false }
+            )
+        }
         LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(10.dp)
         ){
-
+            items(cards.value){model->
+                WalletScreenItem(
+                    secondaryColor = secondaryColor,
+                    brush = cardBackgroundBrush,
+                    model = model,
+                    onChangeClick = { navController.navigate(ScreensRouter.AddCardScreen.route + "/${model.id}") },
+                    onDeleteClick = { showDeleteDialog.value = true }
+                )
+                cardModel.value = model
+            }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewWalletScreen() {
-    WalletScreen(
-        NavController(LocalContext.current)
-    )
 }

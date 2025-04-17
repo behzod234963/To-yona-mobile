@@ -37,4 +37,10 @@ class SharedPreferencesInstance(private val context: Context) {
     fun getIsProfileSettingsState(): Boolean{
         return sharedPreferences.getBoolean("IsProfileSettingsState", false)
     }
+    fun addCardProcess(state: Boolean){
+        sharedPreferences.edit { putBoolean("addCardProcess",state) }
+    }
+    fun addCardProcessState(): Boolean{
+       return sharedPreferences.getBoolean("addCardProcess",false)
+    }
 }

@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.components
+package com.mr.anonym.toyonamobile.ui.screens.walletScreen.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column

@@ -85,14 +85,17 @@ private fun PreviewMonitoringModel() {
         sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
         model = MonitoringModel(
             id = 1,
-            monthIndex = 3,
             eventName = "Wedding",
-            eventOwnerName = "Bekhzod",
-            eventOwnerLastName = "Khudaybergenov","","",
-            receiverCardNumber = "9860030160619356","",
-            amount = "- 1 000 000",
+            eventOwnerName = "",
+            eventOwnerLastName = "",
             dateTime = "",
-            ""
+            amount = "",
+            senderCardNumber = "",
+            senderCardHolder = "",
+            receiverCardNumber = "",
+            receiverCardHolder = "",
+            transferStatus = "",
+            monthIndex = 3
         )
     ) { }
 }

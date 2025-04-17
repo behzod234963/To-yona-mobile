@@ -16,7 +16,7 @@ import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddEventScre
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
-import com.mr.anonym.toyonamobile.ui.screens.logInScreens.screen.LogInScreen
+import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen.NumberCheckScreen
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen.NewPinScreen
 import com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen.RegistrationScreen
@@ -105,14 +105,26 @@ fun NavGraph(
         composable (ScreensRouter.MyEventsScreen.route){
             MyEventsScreen(navController)
         }
-        composable (ScreensRouter.AddEventScreen.route){
-            AddEventScreen(navController)
+        composable (route = ScreensRouter.AddEventScreen.route){
+            AddEventScreen(navController = navController)
         }
         composable (ScreensRouter.LoginScreen.route){
             LogInScreen(navController)
         }
-        composable (ScreensRouter.AddCardScreen.route){
-            AddCardScreen(navController)
+        composable (
+            arguments = listOf(
+                navArgument("cardID"){
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            ),
+            route = ScreensRouter.AddCardScreen.route + "/{cardID}"
+        ){entry->
+            val cardID = entry.arguments?.getInt("cardID")?:-1
+            AddCardScreen(
+                arguments = Arguments(cardId = cardID),
+                navController = navController
+            )
         }
     }
 }

@@ -98,4 +98,8 @@
     <string name="card_field_must_contains_16_digit">Card field must contains 16 digit</string>
     <string name="expire_date">Expire date</string>
     <string name="mm_yy">MM/YY</string>
+    <string name="add_cart">Add cart</string>
+    <string name="card_delete_alert">Are you sure to delete this card?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

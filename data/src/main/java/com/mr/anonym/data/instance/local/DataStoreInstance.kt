@@ -159,4 +159,52 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
+    suspend fun saveCardNumber(cardNumber: String){
+        val key = stringPreferencesKey("cardNumber")
+        context.dataStore.edit {
+            it[key] = cardNumber
+        }
+    }
+    fun getCardNumber(): Flow<String>{
+        val key = stringPreferencesKey("cardNumber")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun saveCardHolder(cardHolder: String){
+        val key = stringPreferencesKey("cardHolder")
+        context.dataStore.edit {
+            it[key] = cardHolder
+        }
+    }
+    fun getCardHolder(): Flow<String>{
+        val key = stringPreferencesKey("cardHolder")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun saveExpiryDate(date: String){
+        val key = stringPreferencesKey("ExpiryDate")
+        context.dataStore.edit {
+            it[key] = date
+        }
+    }
+    fun getExpiryDate(): Flow<String>{
+        val key = stringPreferencesKey("ExpiryDate")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun saveCardID(id: Int){
+        val key = intPreferencesKey("cardIDs")
+        context.dataStore.edit {
+            it[key] = id
+        }
+    }
+    fun getCardID(): Flow<Int>{
+        val key = intPreferencesKey("cardIDs")
+        return context.dataStore.data.map {
+            it[key]?:-1
+        }
+    }
 }

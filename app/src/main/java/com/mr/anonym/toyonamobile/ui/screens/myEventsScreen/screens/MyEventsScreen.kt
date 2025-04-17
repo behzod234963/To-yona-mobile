@@ -73,6 +73,7 @@ fun MyEventsScreen(
         contentColor = sevenrdColor,
         topBar = {
             MyEventTopBar(
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor
             ) { navController.popBackStack() }
         }

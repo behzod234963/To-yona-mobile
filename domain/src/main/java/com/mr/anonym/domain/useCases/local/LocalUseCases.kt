@@ -6,7 +6,8 @@ data class LocalUseCases(
     val getNotificationsByIDUseCase:GetNotificationsByIDUseCase,
     val deleteNotificationUseCase:DeleteNotificationUseCase,
     val clearNotificationsUseCase:ClearNotificationsUseCase,
-    val insertExpenseUseCase:InsertExpenseUseCase,
-    val getExpenseByMonthUseCase:GetExpensesByMonthUseCase,
-    val getExpensesByCardUseCase:GetExpensesByCardUseCase
+    val insertCardUseCase:InsertCardUseCase,
+    val getCardsUseCase:GetCardsUseCase,
+    val getCardByIdUseCase:GetCardByIdUseCase,
+    val deleteCardUseCase:DeleteCardUseCase
 )

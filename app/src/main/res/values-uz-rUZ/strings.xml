@@ -103,4 +103,10 @@
     <string name="card_delete_alert">Siz bu bank kartasini o\'chirishni xohlaysizmi?</string>
     <string name="yes">Xa</string>
     <string name="no">Yo\'q</string>
+    <string name="personal_data">Shaxsiy ma\'lumotlar</string>
+    <string name="language_change">Tilni o\'zgartirish</string>
+    <string name="allow_notifications">Bildirishnomalar yoqilsinmi</string>
+    <string name="theme_settings">Mavzu sozlamalari</string>
+    <string name="security">Xavfsizlik</string>
+    <string name="choose_the_language">Tilni tanlang</string>
 </resources>

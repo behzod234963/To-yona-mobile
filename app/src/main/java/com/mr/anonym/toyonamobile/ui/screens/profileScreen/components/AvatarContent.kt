@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.profileScreen.components
 
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,7 @@ import com.mr.anonym.toyonamobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AvatarContent(
-    primaryColor: Color,
+    secondaryColor: Color,
     tertiaryColor:Color,
     state: SheetState,
     onDismissRequest:()->Unit,
@@ -41,13 +42,13 @@ fun AvatarContent(
         onDismissRequest = { onDismissRequest() },
         sheetState = state,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = tertiaryColor,
+        contentColor = tertiaryColor,
         dragHandle = {
             BottomSheetDefaults.DragHandle(
                 height = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                color = tertiaryColor
+                color = secondaryColor
             )
         },
     ) {
@@ -59,7 +60,7 @@ fun AvatarContent(
         ){
             Text(
                 text = stringResource(R.string.choose_the_avatar),
-                color = tertiaryColor,
+                color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -98,5 +99,6 @@ fun AvatarContent(
                 )
             }
         }
+        Spacer(Modifier.height(10.dp))
     }
 }

@@ -16,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +40,7 @@ fun OnBoardingTopBar(
     val localeManager = LocaleConfigurations(context)
     val sharedPreferences = SharedPreferencesInstance(context)
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale() ) }
+    val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale().replaceFirstChar { it.titlecase() } ) }
     val expanded = remember { mutableStateOf( false ) }
 
     val localeOptions = mapOf(
@@ -69,14 +71,14 @@ fun OnBoardingTopBar(
                     activityContext?.let{
                         localeManager.setApplicationLocales(it,"uz")
                     }
-                    localeValue.value = "o'zbek"
+                    localeValue.value = "o'zbek".replaceFirstChar { it.titlecase() }
                     expanded.value = false
                 },
                 onRussianClick = {
                     activityContext?.let{
                         localeManager.setApplicationLocales(it,"ru")
                     }
-                    localeValue.value = "русский"
+                    localeValue.value = "русский".replaceFirstChar { it.titlecase() }
                     expanded.value = false
                 },
                 secondaryColor = secondaryColor,

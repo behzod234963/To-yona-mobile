@@ -34,6 +34,7 @@ class LocaleConfigurations(private val context: Context) {
     fun setApplicationLocales(activity: Activity, language: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
+            sharedPreferences.saveLanguage(language)
         } else {
             sharedPreferences.saveLanguage(language)
             activity.setLocale(language)

@@ -103,4 +103,10 @@
     <string name="card_delete_alert">Вы действительно хотите удалить данную банковскую карту?</string>
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+    <string name="personal_data">Персональные данные</string>
+    <string name="language_change">Сменить язык</string>
+    <string name="allow_notifications">Включить уведомления</string>
+    <string name="theme_settings">Настройки темы</string>
+    <string name="security">Безопасность</string>
+    <string name="choose_the_language">Выберите язык</string>
 </resources>

@@ -46,6 +46,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
+import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,29 +64,42 @@ fun ProfileScreen(
     val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val quaternaryColor = Color.Red
+    val fiverdColor = Color.Green
+    val sixrdColor = Color.Blue
+    val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val showAvatarContent = rememberSaveable { mutableStateOf( false ) }
-    val avatar = rememberSaveable { mutableIntStateOf( R.drawable.ic_default_avatar ) }
+    val showAvatarContent = rememberSaveable { mutableStateOf(false) }
+    val avatar = rememberSaveable { mutableIntStateOf(R.drawable.ic_default_avatar) }
 
     val nameValue = rememberSaveable { mutableStateOf("") }
     val nameValueError = rememberSaveable { mutableStateOf(false) }
 
-    val surnameValue = rememberSaveable { mutableStateOf("") }
-    val surnameValueError = rememberSaveable { mutableStateOf(false) }
+    val lastnameValue = rememberSaveable { mutableStateOf("") }
+    val lastnameValueError = rememberSaveable { mutableStateOf(false) }
 
-    val bottomSheetState = rememberModalBottomSheetState()
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     coroutineScope.launch { bottomSheetState.hide() }
 
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
-    val oldUserFirstName = rememberSaveable { mutableStateOf( "" ) }
-    val oldUserLastName = rememberSaveable { mutableStateOf( "" ) }
+    val oldUserFirstName = dataStore.getFirstname().collectAsState("")
+    val oldUserLastName = dataStore.getLastname().collectAsState("")
+
+    val editProfileProcess = sharedPreferences.editProfileProcessState()
 
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
         modifier = Modifier
-            .imePadding()
+            .imePadding(),
+        topBar = {
+            ProfileTopBar(
+                primaryColor = primaryColor,
+                secondaryColor = secondaryColor,
+                onNavigationClick = { navController.popBackStack() }
+            )
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -108,16 +122,36 @@ fun ProfileScreen(
                     }
                 ) {
                     Image(
-                        painter = painterResource(avatar.value),
+                        painter = when {
+                            isOldUserState.value -> {
+                                painterResource(profileAvatar.value)
+                            }
+
+                            editProfileProcess -> {
+                                painterResource(profileAvatar.value)
+                            }
+
+                            else -> {
+                                painterResource(avatar.intValue)
+                            }
+                        },
                         contentDescription = "man"
                     )
                 }
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = if (isOldUserState.value){
-                        "${oldUserFirstName.value} ${oldUserLastName.value}"
-                    }else{
-                        "${nameValue.value} ${surnameValue.value}"
+                    text = when {
+                        isOldUserState.value -> {
+                            "${oldUserFirstName.value} ${oldUserLastName.value}"
+                        }
+
+                        editProfileProcess -> {
+                            "${oldUserFirstName.value} ${oldUserLastName.value}"
+                        }
+
+                        else -> {
+                            "${nameValue.value} ${lastnameValue.value}"
+                        }
                     },
                     color = secondaryColor,
                     fontSize = 18.sp,
@@ -137,37 +171,26 @@ fun ProfileScreen(
                     .fillMaxHeight(0.6f)
                     .padding(horizontal = 10.dp),
             ) {
-                Spacer(Modifier.height(20.dp))
                 NameField(
                     secondaryColor = secondaryColor,
-                    nameValue = if (isOldUserState.value) oldUserFirstName.value else nameValue.value ,
+                    nameValue = nameValue.value,
                     onNameValueChange = {
-                        if(isOldUserState.value){
-                            oldUserFirstName.value = it
-                            nameValueError.value = !it.nameChecker()
-                        }else{
-                            nameValue.value = it
-                            nameValueError.value = !it.nameChecker()
-                        }
+                        nameValue.value = it
+                        nameValueError.value = !it.nameChecker()
                     },
                     nameValueTrailingIcon = {
-                        if (isOldUserState.value) oldUserFirstName.value = "" else nameValue.value = ""
+                        nameValue.value = ""
                     },
                     nameValueError = nameValueError.value,
-                    surnameValue = if ( isOldUserState.value ) oldUserLastName.value else surnameValue.value ,
+                    surnameValue = lastnameValue.value,
                     onSurnameValueChange = {
-                        if (isOldUserState.value){
-                            oldUserLastName.value = it
-                            surnameValueError.value = !it.nameChecker()
-                        }else{
-                            surnameValue.value = it
-                            surnameValueError.value = !it.nameChecker()
-                        }
+                        lastnameValue.value = it
+                        lastnameValueError.value = !it.nameChecker()
                     },
                     surnameValueTrailingIcon = {
-                        if (isOldUserState.value) oldUserLastName.value = "" else surnameValue.value = ""
+                        lastnameValue.value = ""
                     },
-                    surnameValueError = surnameValueError.value
+                    surnameValueError = lastnameValueError.value
                 )
             }
             Column(
@@ -189,28 +212,44 @@ fun ProfileScreen(
                     onClick = {
                         if (
                             !nameValueError.value &&
-                            !surnameValueError.value
+                            !lastnameValueError.value
                         ) {
-                            if ( isOldUserState.value ){
-                                coroutineScope.launch {
-                                    dataStore.saveAvatar(avatar.value)
-                                    dataStore.saveFirstname(firstname = nameValue.value)
-                                    dataStore.saveLastname(lastname = surnameValue.value)
+                            when {
+                                isOldUserState.value -> {
+                                    coroutineScope.launch {
+                                        dataStore.saveAvatar(avatar.value)
+                                        dataStore.saveFirstname(firstname = nameValue.value)
+                                        dataStore.saveLastname(lastname = lastnameValue.value)
+                                    }
+                                    sharedPreferences.saveIsProfileSettingsState(false)
+                                    navController.navigate(ScreensRouter.EnterScreen.route) {
+                                        popUpTo(ScreensRouter.ProfileScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
                                 }
-                                sharedPreferences.saveIsProfileSettingsState(false)
-                                navController.navigate(ScreensRouter.EnterScreen.route){
-                                    popUpTo(ScreensRouter.ProfileScreen.route){ inclusive = true }
+                                editProfileProcess->{
+                                    coroutineScope.launch {
+                                        dataStore.saveAvatar(avatar.intValue)
+                                        dataStore.saveFirstname(nameValue.value)
+                                        dataStore.saveLastname(lastnameValue.value)
+                                    }
+                                    sharedPreferences.editProfileProcess(false)
+                                    navController.navigate(ScreensRouter.SettingsScreen.route)
                                 }
-                            }else{
-                                coroutineScope.launch {
-                                    dataStore.saveAvatar(avatar.value)
-                                    dataStore.saveFirstname(firstname = nameValue.value)
-                                    dataStore.saveLastname(lastname = surnameValue.value)
-                                }
-                                sharedPreferences.saveIsProfileSettingsState(false)
-                                sharedPreferences.saveNewPinState(true)
-                                navController.navigate(ScreensRouter.NewPinScreen.route){
-                                    popUpTo(ScreensRouter.ProfileScreen.route){ inclusive = true }
+                                else -> {
+                                    coroutineScope.launch {
+                                        dataStore.saveAvatar(avatar.value)
+                                        dataStore.saveFirstname(firstname = nameValue.value)
+                                        dataStore.saveLastname(lastname = lastnameValue.value)
+                                    }
+                                    sharedPreferences.saveIsProfileSettingsState(false)
+                                    sharedPreferences.saveNewPinState(true)
+                                    navController.navigate(ScreensRouter.NewPinScreen.route) {
+                                        popUpTo(ScreensRouter.ProfileScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
                                 }
                             }
                         } else {
@@ -230,9 +269,9 @@ fun ProfileScreen(
                     )
                 }
             }
-            if (showAvatarContent.value){
+            if (showAvatarContent.value) {
                 AvatarContent(
-                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
                     state = bottomSheetState,
                     onDismissRequest = {
@@ -249,14 +288,13 @@ fun ProfileScreen(
                         if (bottomSheetState.isVisible) {
                             showAvatarContent.value = false
                         }
-                    },
-                    onFemaleClick = {
-                        avatar.value = it
-                        if (bottomSheetState.isVisible) {
-                            showAvatarContent.value = false
-                        }
                     }
-                )
+                ) {
+                    avatar.value = it
+                    if (bottomSheetState.isVisible) {
+                        showAvatarContent.value = false
+                    }
+                }
             }
         }
     }

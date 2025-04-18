@@ -102,4 +102,10 @@
     <string name="card_delete_alert">Are you sure to delete this card?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="personal_data">Personal data</string>
+    <string name="language_change">Language change</string>
+    <string name="allow_notifications">Allow notifications</string>
+    <string name="theme_settings">Theme settings</string>
+    <string name="security">Security</string>
+    <string name="choose_the_language">Choose the language</string>
 </resources>

@@ -20,11 +20,11 @@ fun MyEventSwitch(
         colors = SwitchDefaults.colors(
             checkedThumbColor = secondaryColor,
             checkedTrackColor = fiverdColor,
-            checkedBorderColor = secondaryColor,
+            checkedBorderColor = fiverdColor,
             checkedIconColor = fiverdColor,
             uncheckedThumbColor = secondaryColor,
             uncheckedTrackColor = quaternaryColor,
-            uncheckedBorderColor = secondaryColor,
+            uncheckedBorderColor = quaternaryColor,
             uncheckedIconColor = quaternaryColor
         ),
     )

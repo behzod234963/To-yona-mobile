@@ -108,4 +108,8 @@
     <string name="theme_settings">Theme settings</string>
     <string name="security">Security</string>
     <string name="choose_the_language">Choose the language</string>
+    <string name="choose_app_theme">Choose app theme</string>
+    <string name="day_theme">Day theme</string>
+    <string name="night_theme">Night theme</string>
+    <string name="system_theme">System theme</string>
 </resources>

@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -47,9 +48,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var localeConfig: LocaleConfigurations
     @Inject lateinit var sharedPreferences: SharedPreferencesInstance
-
-    @Inject
-    lateinit var dataStore: DataStoreInstance
+    @Inject lateinit var dataStore: DataStoreInstance
     private val viewModel: MainActivityViewModel by viewModels()
     var isScanning: State<Boolean>  = mutableStateOf( false )
 
@@ -64,7 +63,19 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContent {
-            ToyonaMobileTheme {
+
+            val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+            val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+
+            ToyonaMobileTheme(
+                darkTheme =
+                when{
+                    isSystemTheme.value-> isSystemInDarkTheme()
+                    isDarkTheme.value-> true
+                    else-> false
+                },
+                dynamicColor = false
+            ) {
                 val navController = rememberNavController()
                 NavGraph(navController)
                 val coroutineScope = rememberCoroutineScope()

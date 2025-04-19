@@ -109,4 +109,8 @@
     <string name="theme_settings">Mavzu sozlamalari</string>
     <string name="security">Xavfsizlik</string>
     <string name="choose_the_language">Tilni tanlang</string>
+    <string name="choose_app_theme">Ilova mavzusini tanlang</string>
+    <string name="day_theme">Kunduzgi</string>
+    <string name="night_theme">Tungi</string>
+    <string name="system_theme">Sistema mavzusi</string>
 </resources>

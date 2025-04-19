@@ -207,4 +207,28 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:-1
         }
     }
+    suspend fun isDarkTheme(state: Boolean){
+        val key = booleanPreferencesKey("isDarkTheme")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun getDarkThemeState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("isDarkTheme")
+        return context.dataStore.data.map{
+            it[key]?:false
+        }
+    }
+    suspend fun isSystemTheme(state: Boolean){
+        val key = booleanPreferencesKey("isSystemThemeApplied")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun getSystemThemeState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("isSystemThemeApplied")
+        return context.dataStore.data.map{
+            it[key]?:true
+        }
+    }
 }

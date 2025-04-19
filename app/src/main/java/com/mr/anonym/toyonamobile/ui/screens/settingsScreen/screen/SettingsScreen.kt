@@ -1,9 +1,13 @@
 package com.mr.anonym.toyonamobile.ui.screens.settingsScreen.screen
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.LocalActivity
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -34,17 +38,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import com.mr.anonym.toyonamobile.ui.screens.personalScreen.components.LanguageBottomSheet
+import com.mr.anonym.toyonamobile.presentation.utils.restartApp
+import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsField
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar
+import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.ThemeBottomSheet
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -54,6 +65,7 @@ fun SettingsScreen(
 
     val context = LocalContext.current
     val activityContext = LocalActivity.current
+    val appCompat = AppCompatActivity()
     val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
@@ -68,7 +80,13 @@ fun SettingsScreen(
     val sixrdColor = Color.Blue
     val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
 
-    val isNotificationsChecked = remember { mutableStateOf(false) }
+    val isNotificationsChecked = remember { mutableStateOf(
+        ActivityCompat.checkSelfPermission(
+            context,
+                Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    ) }
+    val isNotificationContentClicked = rememberSaveable { mutableStateOf( false ) }
 
     val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
     val firstName = dataStore.getFirstname().collectAsState("")
@@ -76,14 +94,43 @@ fun SettingsScreen(
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
     sharedPreferences.editProfileProcess(false)
 
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    coroutineScope.launch { bottomSheetState.hide() }
+    val languageBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    coroutineScope.launch { languageBottomSheetState.hide() }
     val showLanguageContent = rememberSaveable { mutableStateOf( false ) }
     val isUzbekSelected = rememberSaveable { mutableStateOf( false ) }
     val isRussianSelected = rememberSaveable { mutableStateOf( false ) }
     val localeValue = rememberSaveable { mutableStateOf( sharedPreferences.getLanguage() ) }
     val isPrimaryLocale = rememberSaveable { mutableStateOf( true ) }
 
+    val themeBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    coroutineScope.launch { themeBottomSheetState.hide() }
+    val isDaySelected = rememberSaveable { mutableStateOf( false ) }
+    val isNightSelected = rememberSaveable { mutableStateOf( false ) }
+    val isSystemSelected = rememberSaveable { mutableStateOf( false ) }
+    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+    val isThemeSelected = rememberSaveable { mutableStateOf( false ) }
+    val showThemeContent = rememberSaveable { mutableStateOf( false ) }
+
+    if (!isThemeSelected.value){
+        when{
+            isSystemTheme.value->{
+                isSystemSelected.value = true
+                isDaySelected.value = false
+                isNightSelected.value = false
+            }
+            isDarkTheme.value->{
+                isNightSelected.value = true
+                isDaySelected.value  = false
+                isSystemSelected.value = false
+            }
+            !isDarkTheme.value->{
+                isDaySelected.value = true
+                isNightSelected.value = false
+                isSystemSelected.value = false
+            }
+        }
+    }
     if (isPrimaryLocale.value){
         when{
             localeValue.value?.contains("uz") == true ->{
@@ -183,8 +230,8 @@ fun SettingsScreen(
                 contentTitle = stringResource(R.string.allow_notifications),
                 isHaveSwitcher = true,
                 isChecked = isNotificationsChecked.value,
-                onCheckedChange = { TODO() },
-                onContentClick = { TODO() }
+                onCheckedChange = { isNotificationContentClicked.value = true },
+                onContentClick = { isNotificationContentClicked.value = true }
             )
 //            Theme content
             SettingsField(
@@ -196,8 +243,10 @@ fun SettingsScreen(
                 contentTitle = stringResource(R.string.theme_settings),
                 isHaveSwitcher = false,
                 isChecked = false,
-                onCheckedChange = { TODO() },
-                onContentClick = { TODO() }
+                onCheckedChange = {  },
+                onContentClick = {
+                    showThemeContent.value = true
+                }
             )
 //            Security content
             SettingsField(
@@ -219,7 +268,7 @@ fun SettingsScreen(
                     tertiaryColor = tertiaryColor,
                     quaternaryColor = quaternaryColor,
                     fiverdColor = fiverdColor,
-                    state = bottomSheetState,
+                    state = languageBottomSheetState,
                     onDismissRequest = { showLanguageContent.value = false },
                     onUzbekSelected = isUzbekSelected.value,
                     onUzbekClick = {
@@ -242,10 +291,71 @@ fun SettingsScreen(
                     showLanguageContent.value = false
                 }
             }
+            if (isNotificationContentClicked.value){
+                notificationController(context)
+                isNotificationContentClicked.value = false
+            }
+            if (showThemeContent.value){
+                ThemeBottomSheet(
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    quaternaryColor = quaternaryColor,
+                    fiverdColor = fiverdColor,
+                    state = themeBottomSheetState,
+                    onDismissRequest = {
+                        showThemeContent.value = false
+                    },
+                    isDaySelected = isDaySelected.value,
+                    onDayClick = {
+                        coroutineScope.launch { 
+                            dataStore.isDarkTheme(false)
+                            dataStore.isSystemTheme(false)
+                            withContext(Dispatchers.Main){
+                                isThemeSelected.value = true
+                                isDaySelected.value = true
+                                isNightSelected.value = false
+                                isSystemSelected.value = false
+                                showThemeContent.value = false
+                                restartApp(context)
+                            }
+                        }
+                    },
+                    isNightSelected = isNightSelected.value,
+                    onNightClick = {
+                        coroutineScope.launch {
+                            dataStore.isDarkTheme(true)
+                            dataStore.isSystemTheme(false)
+                            withContext(Dispatchers.Main){
+                                isThemeSelected.value = true
+                                isDaySelected.value = false
+                                isNightSelected.value = true
+                                isSystemSelected.value = false
+                                showThemeContent.value = false
+                            }
+                        }
+                    },
+                    isSystemSelected = isSystemSelected.value,
+                    onSystemClick = {
+                        coroutineScope.launch {
+                            dataStore.isDarkTheme(false)
+                            dataStore.isSystemTheme(true)
+                            withContext(Dispatchers.Main){
+                                isThemeSelected.value = true
+                                isDaySelected.value = false
+                                isNightSelected.value = false
+                                isSystemSelected.value = true
+                                showThemeContent.value = false
+                            }
+                        }
+                    }
+                )
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 private fun PreviewSettingsScreen() {

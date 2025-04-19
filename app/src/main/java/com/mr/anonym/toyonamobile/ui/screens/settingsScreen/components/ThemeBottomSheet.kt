@@ -1,7 +1,6 @@
-package com.mr.anonym.toyonamobile.ui.screens.personalScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,7 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -34,7 +34,7 @@ import com.mr.anonym.toyonamobile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageBottomSheet(
+fun ThemeBottomSheet(
     primaryColor: Color,
     secondaryColor:Color,
     tertiaryColor: Color,
@@ -42,10 +42,12 @@ fun LanguageBottomSheet(
     fiverdColor: Color,
     state: SheetState,
     onDismissRequest:()-> Unit,
-    onUzbekSelected: Boolean,
-    onUzbekClick:()-> Unit,
-    onRussianSelected: Boolean,
-    onRussianClick:()-> Unit
+    isDaySelected: Boolean,
+    onDayClick:()-> Unit,
+    isNightSelected: Boolean,
+    onNightClick:()-> Unit,
+    isSystemSelected: Boolean,
+    onSystemClick:()-> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
@@ -70,12 +72,13 @@ fun LanguageBottomSheet(
         ) {
             Spacer(Modifier.height(7.dp))
             Text(
-                text = stringResource(R.string.choose_the_language),
+                text = stringResource(R.string.choose_app_theme),
                 color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(Modifier.height(7.dp))
+//            Day theme field
             Card (
                 colors = CardDefaults.cardColors(
                     containerColor = Color.Gray,
@@ -83,7 +86,7 @@ fun LanguageBottomSheet(
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
-                onClick = { onUzbekClick() }
+                onClick = { onDayClick() }
             ){
                 Row (
                     modifier = Modifier
@@ -96,23 +99,24 @@ fun LanguageBottomSheet(
                     Row (
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Image(
+                        Icon(
                             modifier = Modifier
                                 .size(45.dp),
-                            painter = painterResource(R.drawable.ic_uz_flag),
+                            painter = painterResource(R.drawable.ic_day),
+                            tint = secondaryColor,
                             contentDescription = ""
                         )
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = stringResource(R.string.o_zbekcha),
+                            text = stringResource(R.string.day_theme),
                             fontSize = 16.sp,
                             color = secondaryColor,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
                     RadioButton(
-                        selected = onUzbekSelected,
-                        onClick = { onUzbekClick() },
+                        selected = isDaySelected,
+                        onClick = { onDayClick() },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = fiverdColor,
                             unselectedColor = quaternaryColor
@@ -121,6 +125,7 @@ fun LanguageBottomSheet(
                 }
             }
             Spacer(Modifier.height(10.dp))
+//            Night theme field
             Card (
                 colors = CardDefaults.cardColors(
                     containerColor = Color.Gray,
@@ -128,7 +133,7 @@ fun LanguageBottomSheet(
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
-                onClick = { onRussianClick() }
+                onClick = { onNightClick() }
             ){
                 Row (
                     modifier = Modifier
@@ -141,23 +146,71 @@ fun LanguageBottomSheet(
                     Row (
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Image(
+                        Icon(
                             modifier = Modifier
                                 .size(45.dp),
-                            painter = painterResource(R.drawable.ic_ru_flag),
+                            painter = painterResource(R.drawable.ic_night),
+                            tint = secondaryColor,
                             contentDescription = ""
                         )
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = stringResource(R.string.russian),
+                            text = stringResource(R.string.night_theme),
                             fontSize = 16.sp,
                             color = secondaryColor,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
                     RadioButton(
-                        selected = onRussianSelected,
-                        onClick = { onRussianClick() },
+                        selected = isNightSelected,
+                        onClick = { onNightClick() },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = fiverdColor,
+                            unselectedColor = quaternaryColor
+                        ),
+                    )
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+//            System theme field
+            Card (
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Gray,
+                    contentColor = Color.Gray
+                ),
+                shape = RoundedCornerShape(10.dp),
+                elevation = CardDefaults.cardElevation(7.dp),
+                onClick = { onSystemClick() }
+            ){
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Icon(
+                            modifier = Modifier
+                                .size(45.dp),
+                            painter = painterResource(R.drawable.ic_system_theme),
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Text(
+                            text = stringResource(R.string.system_theme),
+                            fontSize = 16.sp,
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    RadioButton(
+                        selected = isSystemSelected,
+                        onClick = { onSystemClick() },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = fiverdColor,
                             unselectedColor = quaternaryColor

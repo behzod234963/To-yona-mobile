@@ -2,7 +2,6 @@ package com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -22,8 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -63,12 +60,39 @@ fun NewPinScreen(
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
 
-    val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
-    val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+
+    val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+    val primaryColor = when {
+        iSystemTheme.value -> {
+            systemPrimaryColor
+        }
+
+        isDarkTheme.value -> Color.Black
+        else -> Color.White
+    }
+    val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val secondaryColor = when {
+        iSystemTheme.value -> systemSecondaryColor
+        isDarkTheme.value -> Color.White
+        else -> Color.Black
+    }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        iSystemTheme.value -> systemTertiaryColor
+        isDarkTheme.value -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
     val sixrdColor = Color.Blue
+    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenrdColor = when {
+        iSystemTheme.value -> systemSevenrdColor
+        isDarkTheme.value -> Color.Unspecified
+        else -> Color.White
+    }
 
     val pinValueError = remember { mutableStateOf(false) }
     val isPinCodeSetCompleted = remember { mutableStateOf(true) }
@@ -408,7 +432,8 @@ fun NewPinScreen(
 //                    2
                     Card(
                         modifier = Modifier.size(70.dp), colors = CardDefaults.cardColors(
-                            containerColor = tertiaryColor, contentColor = tertiaryColor
+                            containerColor = tertiaryColor
+                            , contentColor = tertiaryColor
                         ), shape = RoundedCornerShape(10.dp), onClick = {
                             if (pinValue.value.length < 4) {
                                 if (pinValue.value.isEmpty() && pinValue.value.isBlank()) {
@@ -523,7 +548,8 @@ fun NewPinScreen(
 //                    5
                     Card(
                         modifier = Modifier.size(70.dp), colors = CardDefaults.cardColors(
-                            containerColor = tertiaryColor, contentColor = tertiaryColor
+                            containerColor = tertiaryColor
+                            , contentColor = tertiaryColor
                         ), shape = RoundedCornerShape(10.dp), onClick = {
                             if (pinValue.value.length < 4) {
                                 if (pinValue.value.isEmpty() && pinValue.value.isBlank()) {

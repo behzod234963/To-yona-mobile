@@ -62,10 +62,32 @@ fun RegistrationScreen(
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
-    val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
-    val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+
+    val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+    val primaryColor = when {
+        iSystemTheme.value -> {
+            systemPrimaryColor
+        }
+
+        isDarkTheme.value -> Color.Black
+        else -> Color.White
+    }
+    val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val secondaryColor = when {
+        iSystemTheme.value -> systemSecondaryColor
+        isDarkTheme.value -> Color.White
+        else -> Color.Black
+    }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        iSystemTheme.value -> systemTertiaryColor
+        isDarkTheme.value -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val quaternaryColor = Color.Red
+
     val containerPadding = remember { mutableIntStateOf(10) }
 
     val phoneFieldError = remember { mutableStateOf(false) }

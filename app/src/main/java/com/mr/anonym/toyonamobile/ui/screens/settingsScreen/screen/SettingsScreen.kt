@@ -46,7 +46,6 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import com.mr.anonym.toyonamobile.presentation.utils.restartApp
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsField
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar
@@ -72,21 +71,49 @@ fun SettingsScreen(
     val sharedPreferences = SharedPreferencesInstance(context)
     val localeManager = LocaleConfigurations(context)
 
-    val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
-    val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+
+    val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+    val primaryColor = when {
+        isSystemTheme.value -> {
+            systemPrimaryColor
+        }
+
+        isDarkTheme.value -> Color.Black
+        else -> Color.White
+    }
+    val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val secondaryColor = when {
+        isSystemTheme.value -> systemSecondaryColor
+        isDarkTheme.value -> Color.White
+        else -> Color.Black
+    }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme.value -> systemTertiaryColor
+        isDarkTheme.value -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
     val sixrdColor = Color.Blue
-    val sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else primaryColor
+    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenrdColor = when {
+        isSystemTheme.value -> systemSevenrdColor
+        isDarkTheme.value -> Color.Unspecified
+        else -> Color.White
+    }
 
-    val isNotificationsChecked = remember { mutableStateOf(
-        ActivityCompat.checkSelfPermission(
-            context,
+    val isNotificationsChecked = remember {
+        mutableStateOf(
+            ActivityCompat.checkSelfPermission(
+                context,
                 Manifest.permission.POST_NOTIFICATIONS
-        ) == PackageManager.PERMISSION_GRANTED
-    ) }
-    val isNotificationContentClicked = rememberSaveable { mutableStateOf( false ) }
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val isNotificationContentClicked = rememberSaveable { mutableStateOf(false) }
 
     val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
     val firstName = dataStore.getFirstname().collectAsState("")
@@ -96,49 +123,50 @@ fun SettingsScreen(
 
     val languageBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     coroutineScope.launch { languageBottomSheetState.hide() }
-    val showLanguageContent = rememberSaveable { mutableStateOf( false ) }
-    val isUzbekSelected = rememberSaveable { mutableStateOf( false ) }
-    val isRussianSelected = rememberSaveable { mutableStateOf( false ) }
-    val localeValue = rememberSaveable { mutableStateOf( sharedPreferences.getLanguage() ) }
-    val isPrimaryLocale = rememberSaveable { mutableStateOf( true ) }
+    val showLanguageContent = rememberSaveable { mutableStateOf(false) }
+    val isUzbekSelected = rememberSaveable { mutableStateOf(false) }
+    val isRussianSelected = rememberSaveable { mutableStateOf(false) }
+    val localeValue = rememberSaveable { mutableStateOf(sharedPreferences.getLanguage()) }
+    val isPrimaryLocale = rememberSaveable { mutableStateOf(true) }
 
     val themeBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     coroutineScope.launch { themeBottomSheetState.hide() }
-    val isDaySelected = rememberSaveable { mutableStateOf( false ) }
-    val isNightSelected = rememberSaveable { mutableStateOf( false ) }
-    val isSystemSelected = rememberSaveable { mutableStateOf( false ) }
-    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val isThemeSelected = rememberSaveable { mutableStateOf( false ) }
-    val showThemeContent = rememberSaveable { mutableStateOf( false ) }
+    val isDaySelected = rememberSaveable { mutableStateOf(false) }
+    val isNightSelected = rememberSaveable { mutableStateOf(false) }
+    val isSystemSelected = rememberSaveable { mutableStateOf(false) }
+    val isThemeSelected = rememberSaveable { mutableStateOf(false) }
+    val showThemeContent = rememberSaveable { mutableStateOf(false) }
 
-    if (!isThemeSelected.value){
-        when{
-            isSystemTheme.value->{
+    if (!isThemeSelected.value) {
+        when {
+            isSystemTheme.value -> {
                 isSystemSelected.value = true
                 isDaySelected.value = false
                 isNightSelected.value = false
             }
-            isDarkTheme.value->{
+
+            isDarkTheme.value -> {
                 isNightSelected.value = true
-                isDaySelected.value  = false
+                isDaySelected.value = false
                 isSystemSelected.value = false
             }
-            !isDarkTheme.value->{
+
+            !isDarkTheme.value -> {
                 isDaySelected.value = true
                 isNightSelected.value = false
                 isSystemSelected.value = false
             }
         }
     }
-    if (isPrimaryLocale.value){
-        when{
-            localeValue.value?.contains("uz") == true ->{
+    if (isPrimaryLocale.value) {
+        when {
+            localeValue.value?.contains("uz") == true -> {
                 isUzbekSelected.value = true
                 isRussianSelected.value = false
                 Log.d("UtilsLogging", "SettingsScreen: ${localeValue.value}")
             }
-            localeValue.value?.contains("ru") == true ->{
+
+            localeValue.value?.contains("ru") == true -> {
                 isRussianSelected.value = true
                 isUzbekSelected.value = false
                 Log.d("UtilsLogging", "SettingsScreen: ${localeValue.value}")
@@ -243,7 +271,7 @@ fun SettingsScreen(
                 contentTitle = stringResource(R.string.theme_settings),
                 isHaveSwitcher = false,
                 isChecked = false,
-                onCheckedChange = {  },
+                onCheckedChange = { },
                 onContentClick = {
                     showThemeContent.value = true
                 }
@@ -261,7 +289,7 @@ fun SettingsScreen(
                 onCheckedChange = { TODO() },
                 onContentClick = { TODO() }
             )
-            if (showLanguageContent.value){
+            if (showLanguageContent.value) {
                 LanguageBottomSheet(
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
@@ -273,7 +301,7 @@ fun SettingsScreen(
                     onUzbekSelected = isUzbekSelected.value,
                     onUzbekClick = {
                         activityContext?.let {
-                            localeManager.setApplicationLocales(it,"uz")
+                            localeManager.setApplicationLocales(it, "uz")
                         }
                         isUzbekSelected.value = true
                         isRussianSelected.value = false
@@ -291,11 +319,11 @@ fun SettingsScreen(
                     showLanguageContent.value = false
                 }
             }
-            if (isNotificationContentClicked.value){
+            if (isNotificationContentClicked.value) {
                 notificationController(context)
                 isNotificationContentClicked.value = false
             }
-            if (showThemeContent.value){
+            if (showThemeContent.value) {
                 ThemeBottomSheet(
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
@@ -308,16 +336,15 @@ fun SettingsScreen(
                     },
                     isDaySelected = isDaySelected.value,
                     onDayClick = {
-                        coroutineScope.launch { 
+                        coroutineScope.launch {
                             dataStore.isDarkTheme(false)
                             dataStore.isSystemTheme(false)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = true
                                 isNightSelected.value = false
                                 isSystemSelected.value = false
                                 showThemeContent.value = false
-                                restartApp(context)
                             }
                         }
                     },
@@ -326,7 +353,7 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             dataStore.isDarkTheme(true)
                             dataStore.isSystemTheme(false)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = false
                                 isNightSelected.value = true
@@ -340,7 +367,7 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             dataStore.isDarkTheme(false)
                             dataStore.isSystemTheme(true)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = false
                                 isNightSelected.value = false

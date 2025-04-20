@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,12 +65,39 @@ fun EnterScreen(
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
 
-    val primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
-    val secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
+    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+
+    val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
+    val primaryColor = when {
+        iSystemTheme.value -> {
+            systemPrimaryColor
+        }
+
+        isDarkTheme.value -> Color.Black
+        else -> Color.White
+    }
+    val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val secondaryColor = when {
+        iSystemTheme.value -> systemSecondaryColor
+        isDarkTheme.value -> Color.White
+        else -> Color.Black
+    }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        iSystemTheme.value -> systemTertiaryColor
+        isDarkTheme.value -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
     val sixrdColor = Color.Blue
+    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenrdColor = when {
+        iSystemTheme.value -> systemSevenrdColor
+        isDarkTheme.value -> Color.Unspecified
+        else -> Color.White
+    }
 
     val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
     val showBiometricSettings = remember { mutableStateOf( false ) }
@@ -156,11 +184,9 @@ fun EnterScreen(
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
                             pinValue.value.length == 4  && pinValue.value != pinCode.value -> { quaternaryColor }
-
                             pinValue.value.length > 2 -> {
                                 fiverdColor
                             }
-
                             else -> {
                                 tertiaryColor
                             }

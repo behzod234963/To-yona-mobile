@@ -49,4 +49,16 @@ class SharedPreferencesInstance(private val context: Context) {
     fun editProfileProcessState(): Boolean{
         return sharedPreferences.getBoolean("editProfileProcess",false)
     }
+    fun openSecurityContent(state: Boolean){
+        sharedPreferences.edit { putBoolean("openSecurityContent",state) }
+    }
+    fun openSecurityContentState(): Boolean{
+        return sharedPreferences.getBoolean("openSecurityContent",false)
+    }
+    fun changePinProcess(state: Boolean){
+        sharedPreferences.edit { putBoolean("changePinProcess",state) }
+    }
+    fun changePinProcessState(): Boolean{
+        return sharedPreferences.getBoolean("changePinProcess",false)
+    }
 }

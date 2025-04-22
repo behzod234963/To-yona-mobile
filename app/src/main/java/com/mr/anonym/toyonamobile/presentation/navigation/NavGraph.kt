@@ -13,6 +13,7 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens.AddCardScreen
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddEventScreen
+import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.screens.ChangePasswordScreen
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
@@ -26,6 +27,7 @@ import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyEventsScre
 import com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.screen.NotificationsScreen
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.screen.OnboardingScreen
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen.ProfileScreen
+import com.mr.anonym.toyonamobile.ui.screens.securityScreen.screens.SecurityScreen
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.screen.SettingsScreen
 import com.mr.anonym.toyonamobile.ui.screens.supportScreen.screen.SupportScreen
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.WalletScreen
@@ -123,6 +125,16 @@ fun NavGraph(
             val cardID = entry.arguments?.getInt("cardID")?:-1
             AddCardScreen(
                 arguments = Arguments(cardId = cardID),
+                navController = navController
+            )
+        }
+        composable (ScreensRouter.SecurityScreen.route){
+            SecurityScreen(
+                navController = navController
+            )
+        }
+        composable (ScreensRouter.ChangePasswordScreen.route){
+            ChangePasswordScreen(
                 navController = navController
             )
         }

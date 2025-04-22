@@ -22,7 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,7 +29,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -92,32 +90,36 @@ fun EnterScreen(
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
     val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
+
 
     val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
-    val showBiometricSettings = remember { mutableStateOf( false ) }
+    val showBiometricSettings = remember { mutableStateOf(false) }
 
-    val isEnterCompleted = dataStore.getIsEnterCompleted().collectAsState(false)
-    val pinValueError = remember { mutableStateOf(false) }
     val pinCode = dataStore.getPinCode().collectAsState("")
     val pinValue = remember { mutableStateOf("") }
     val iconSize = remember { mutableIntStateOf(30) }
 
+    val openSecurityContentState = sharedPreferences.openSecurityContentState()
+
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
     LaunchedEffect(pinValue.value) {
-        if(
+        if (
             pinValue.value.length > 3 &&
             pinValue.value == pinCode.value
-        ){
-            navController.navigate(ScreensRouter.MainScreen.route){
-                popUpTo(route = ScreensRouter.EnterScreen.route){
-                    inclusive = true
+        ) {
+            if (openSecurityContentState) {
+                sharedPreferences.openSecurityContent(false)
+                navController.navigate(ScreensRouter.SecurityScreen.route) {
+                    popUpTo(route = ScreensRouter.EnterScreen.route) {
+                        inclusive = true
+                    }
+                }
+            } else {
+                navController.navigate(ScreensRouter.MainScreen.route) {
+                    popUpTo(route = ScreensRouter.EnterScreen.route) {
+                        inclusive = true
+                    }
                 }
             }
         }
@@ -159,34 +161,14 @@ fun EnterScreen(
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> { quaternaryColor }
-                            pinValue.value.isNotEmpty() -> { fiverdColor }
-                            else -> { tertiaryColor }
-                        },
-                        contentDescription = "null"
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(iconSize.intValue.dp)
-                            .padding(vertical = 7.dp),
-                        painter = painterResource(R.drawable.ic_round),
-                        tint = when {
-                            pinValue.value.length == 4  && pinValue.value != pinCode.value -> { quaternaryColor }
-                            pinValue.value.length > 1 -> { fiverdColor }
-                            else -> { tertiaryColor }
-                        },
-                        contentDescription = "null"
-                    )
-                    Icon(
-                        modifier = Modifier
-                            .size(iconSize.intValue.dp)
-                            .padding(vertical = 7.dp),
-                        painter = painterResource(R.drawable.ic_round),
-                        tint = when {
-                            pinValue.value.length == 4  && pinValue.value != pinCode.value -> { quaternaryColor }
-                            pinValue.value.length > 2 -> {
+                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                                quaternaryColor
+                            }
+
+                            pinValue.value.isNotEmpty() -> {
                                 fiverdColor
                             }
+
                             else -> {
                                 tertiaryColor
                             }
@@ -199,7 +181,49 @@ fun EnterScreen(
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4  && pinValue.value != pinCode.value -> { quaternaryColor }
+                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                                quaternaryColor
+                            }
+
+                            pinValue.value.length > 1 -> {
+                                fiverdColor
+                            }
+
+                            else -> {
+                                tertiaryColor
+                            }
+                        },
+                        contentDescription = "null"
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .size(iconSize.intValue.dp)
+                            .padding(vertical = 7.dp),
+                        painter = painterResource(R.drawable.ic_round),
+                        tint = when {
+                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                                quaternaryColor
+                            }
+
+                            pinValue.value.length > 2 -> {
+                                fiverdColor
+                            }
+
+                            else -> {
+                                tertiaryColor
+                            }
+                        },
+                        contentDescription = "null"
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .size(iconSize.intValue.dp)
+                            .padding(vertical = 7.dp),
+                        painter = painterResource(R.drawable.ic_round),
+                        tint = when {
+                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                                quaternaryColor
+                            }
 
                             pinValue.value.length > 3 -> {
                                 fiverdColor
@@ -515,11 +539,11 @@ fun EnterScreen(
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            if (isBiometricAuthOn.value){
+                            if (isBiometricAuthOn.value) {
                                 CoroutineScope(Dispatchers.Default).launch {
                                     dataStore.saveBiometricAuthState(true)
                                 }
-                            }else{
+                            } else {
                                 showBiometricSettings.value = true
                             }
                         }
@@ -537,7 +561,7 @@ fun EnterScreen(
                             )
                         }
                     }
-                    if (showBiometricSettings.value){
+                    if (showBiometricSettings.value) {
                         EnterScreenDialog(
                             secondaryColor = secondaryColor,
                             tertiaryColor = tertiaryColor,

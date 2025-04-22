@@ -54,11 +54,11 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme.value -> {
             systemPrimaryColor
         }
 
@@ -67,13 +67,13 @@ fun MainScreen(
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
+        isSystemTheme.value -> systemSecondaryColor
         isDarkTheme.value -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
+        isSystemTheme.value -> systemTertiaryColor
         isDarkTheme.value -> Color.DarkGray
         else -> Color.LightGray
     }
@@ -82,7 +82,7 @@ fun MainScreen(
     val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
+        isSystemTheme.value -> systemSevenrdColor
         isDarkTheme.value -> Color.Unspecified
         else -> Color.White
     }

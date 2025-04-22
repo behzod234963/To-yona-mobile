@@ -102,8 +102,8 @@ fun MyEventsScreen(
     )
 
     Scaffold(
-        containerColor = sevenrdColor,
-        contentColor = sevenrdColor,
+        containerColor = primaryColor,
+        contentColor = primaryColor,
         topBar = {
             MyEventTopBar(
                 primaryColor = primaryColor,

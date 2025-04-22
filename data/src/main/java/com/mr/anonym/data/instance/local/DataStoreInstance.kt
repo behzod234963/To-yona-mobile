@@ -51,30 +51,6 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
-    suspend fun saveIsStateOnPause(state: Boolean){
-        val key = booleanPreferencesKey("IsStateOnPause")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getIsStateOnPause(): Flow<Boolean>{
-        val key = booleanPreferencesKey("IsStateOnPause")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
-    suspend fun saveIsEnterCompleted(state: Boolean){
-        val key = booleanPreferencesKey("IsEnterCompleted")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getIsEnterCompleted(): Flow<Boolean>{
-        val key = booleanPreferencesKey("IsEnterCompleted")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
     suspend fun saveAvatar(avatar: Int){
         val key = intPreferencesKey("profileavatar")
         context.dataStore.edit {

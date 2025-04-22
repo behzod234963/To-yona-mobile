@@ -113,4 +113,11 @@
     <string name="day_theme">Дневная тема</string>
     <string name="night_theme">Ночная тема</string>
     <string name="system_theme">Системная тема</string>
+    <string name="change_pin_code">Изменить пин-код</string>
+    <string name="enter_with_fingerprint">Вход по отпечатку пальца</string>
+    <string name="change_password">Изменить пароль</string>
+    <string name="exit">Выход</string>
+    <string name="are_you_sure_to_change_pin_code">Вы действительно хотите изменить пин-код?</string>
+    <string name="are_you_want_to_change_password">Вы действительно хотите изменить пароль?</string>
+    <string name="old_password">Старая пароль</string>
 </resources>

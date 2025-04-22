@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.securityScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
 
 @Composable
-fun SettingsField(
+fun SecurityFields(
     secondaryColor: Color,
     quaternaryColor:Color,
     fiverdColor:Color,
@@ -64,6 +65,8 @@ fun SettingsField(
             verticalAlignment = Alignment.CenterVertically
         ){
             Row (
+                modifier = Modifier
+                    .fillMaxWidth(0.8f),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Image(
@@ -76,7 +79,8 @@ fun SettingsField(
                     text = contentTitle,
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Start
                 )
             }
             if (isHaveSwitcher){
@@ -113,15 +117,15 @@ fun SettingsField(
 
 @Preview
 @Composable
-private fun PreviewSettingsField() {
-    SettingsField(
+private fun PreviewSecurityFields() {
+    SecurityFields (
         secondaryColor = Color.Black,
         quaternaryColor = Color.Red,
         fiverdColor = Color.Green,
         sevenrdColor = Color.Unspecified,
         contentIcon = R.drawable.ic_default_avatar,
         contentTitle = "Personal",
-        isHaveSwitcher = false,
+        isHaveSwitcher = true,
         isChecked = true,
         onCheckedChange = {  },
         onContentClick = {  }

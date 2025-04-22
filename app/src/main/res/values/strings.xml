@@ -112,4 +112,11 @@
     <string name="day_theme">Day theme</string>
     <string name="night_theme">Night theme</string>
     <string name="system_theme">System theme</string>
+    <string name="change_pin_code">Change pin-code</string>
+    <string name="enter_with_fingerprint">Enter with fingerprint</string>
+    <string name="change_password">Change password</string>
+    <string name="exit">Exit</string>
+    <string name="are_you_sure_to_change_pin_code">Are you sure to change pin-code</string>
+    <string name="are_you_want_to_change_password">Are you want to change password</string>
+    <string name="old_password">Old password</string>
 </resources>

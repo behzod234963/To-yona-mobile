@@ -113,4 +113,11 @@
     <string name="day_theme">Kunduzgi</string>
     <string name="night_theme">Tungi</string>
     <string name="system_theme">Sistema mavzusi</string>
+    <string name="change_pin_code">Pin-kodni o\'zgartirish</string>
+    <string name="enter_with_fingerprint">Barmoq izi orqali kirish</string>
+    <string name="change_password">Parolni o\'zgartirish</string>
+    <string name="exit">Chiqish</string>
+    <string name="are_you_sure_to_change_pin_code">Siz pin-kodni o\'zgartirishni xohlaysizmi?</string>
+    <string name="are_you_want_to_change_password">Siz parolni o\'zgartirishni xohlaysizmi?</string>
+    <string name="old_password">Eski parol</string>
 </resources>

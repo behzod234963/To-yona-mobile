@@ -64,7 +64,6 @@ fun SettingsScreen(
 
     val context = LocalContext.current
     val activityContext = LocalActivity.current
-    val appCompat = AppCompatActivity()
     val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
@@ -286,8 +285,11 @@ fun SettingsScreen(
                 contentTitle = stringResource(R.string.security),
                 isHaveSwitcher = false,
                 isChecked = false,
-                onCheckedChange = { TODO() },
-                onContentClick = { TODO() }
+                onCheckedChange = {  },
+                onContentClick = {
+                    sharedPreferences.openSecurityContent(true)
+                    navController.navigate(ScreensRouter.EnterScreen.route)
+                }
             )
             if (showLanguageContent.value) {
                 LanguageBottomSheet(

@@ -94,6 +94,8 @@ fun NewPinScreen(
         else -> Color.White
     }
 
+    val changePinProcessState = sharedPreferences.changePinProcessState()
+
     val pinValueError = remember { mutableStateOf(false) }
     val isPinCodeSetCompleted = remember { mutableStateOf(true) }
 
@@ -108,9 +110,19 @@ fun NewPinScreen(
             confirmPinValue.value.length > 3 &&
             confirmPinValue.value == pinValue.value
         ) {
-            sharedPreferences.saveNewPinState(false)
-            dataStore.savePinCode(pinValue.value)
-            isPinCodeSetCompleted.value = true
+            when{
+                changePinProcessState->{
+                    dataStore.savePinCode(pinValue.value)
+                    navController.navigate(ScreensRouter.SecurityScreen.route){
+                        popUpTo(ScreensRouter.NewPinScreen.route){ inclusive = true }
+                    }
+                }
+                else->{
+                    sharedPreferences.saveNewPinState(false)
+                    dataStore.savePinCode(pinValue.value)
+                    isPinCodeSetCompleted.value = true
+                }
+            }
         } else {
             isPinCodeSetCompleted.value = false
         }
@@ -133,9 +145,6 @@ fun NewPinScreen(
                         dataStore.saveIsBiometricAuthOn(true)
                     }
                     isPinCodeSetCompleted.value = false
-                    coroutineScope.launch {
-                        dataStore.saveIsBiometricAuthOn(true)
-                    }
                     navController.navigate(ScreensRouter.MainScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
                     }

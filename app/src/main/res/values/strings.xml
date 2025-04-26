@@ -119,4 +119,6 @@
     <string name="are_you_sure_to_change_pin_code">Are you sure to change pin-code</string>
     <string name="are_you_want_to_change_password">Are you want to change password</string>
     <string name="old_password">Old password</string>
+    <string name="change_phone_number">Change phone number</string>
+    <string name="are_you_sure_to_logout_from_this_account">Are you sure to logout from this account?</string>
 </resources>

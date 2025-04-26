@@ -120,4 +120,6 @@
     <string name="are_you_sure_to_change_pin_code">Siz pin-kodni o\'zgartirishni xohlaysizmi?</string>
     <string name="are_you_want_to_change_password">Siz parolni o\'zgartirishni xohlaysizmi?</string>
     <string name="old_password">Eski parol</string>
+    <string name="change_phone_number">Telefon raqamni o\'zgartirish</string>
+    <string name="are_you_sure_to_logout_from_this_account">Siz akkauntingizdan chiqishni xoxlaysizmi?</string>
 </resources>

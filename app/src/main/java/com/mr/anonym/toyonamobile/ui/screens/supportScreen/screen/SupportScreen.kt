@@ -1,6 +1,8 @@
 package com.mr.anonym.toyonamobile.ui.screens.supportScreen.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +12,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.ui.screens.supportScreen.components.SupportTopBar
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SupportScreen(
     navController: NavController
@@ -54,6 +59,20 @@ fun SupportScreen(
         else -> Color.White
     }
 
+    Scaffold (
+        containerColor = primaryColor,
+        contentColor = primaryColor,
+        topBar = {
+            SupportTopBar(
+                primaryColor = primaryColor,
+                secondaryColor = secondaryColor,
+                onNavigationClick = { navController.popBackStack() },
+                onActionsClick = { TODO() }
+            )
+        }
+    ){paddingValues ->
+
+    }
 }
 
 @Preview

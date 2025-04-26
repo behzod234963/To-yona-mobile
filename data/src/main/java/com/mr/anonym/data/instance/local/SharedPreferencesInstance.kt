@@ -61,4 +61,10 @@ class SharedPreferencesInstance(private val context: Context) {
     fun changePinProcessState(): Boolean{
         return sharedPreferences.getBoolean("changePinProcess",false)
     }
+    fun changePhoneNumberProcess(state: Boolean){
+        sharedPreferences.edit{ putBoolean("changePhoneNumberProcess",state) }
+    }
+    fun isChangePhoneNumberProcessState(): Boolean{
+        return sharedPreferences.getBoolean("changePhoneNumberProcess",false)
+    }
 }

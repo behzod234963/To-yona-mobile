@@ -24,7 +24,7 @@ fun SecurityDialog(
     secondaryColor: Color,
     quaternaryColor: Color,
     fiverdColor:Color,
-    title: Int,
+    title: String,
     onDismissClick:()-> Unit,
     onConfirmClick:()-> Unit,
     onDismissRequest:()-> Unit
@@ -33,7 +33,7 @@ fun SecurityDialog(
     AlertDialog(
         title = {
             Text(
-                text = stringResource(title),
+                text = title,
                 color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,

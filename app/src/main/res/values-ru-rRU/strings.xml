@@ -120,4 +120,6 @@
     <string name="are_you_sure_to_change_pin_code">Вы действительно хотите изменить пин-код?</string>
     <string name="are_you_want_to_change_password">Вы действительно хотите изменить пароль?</string>
     <string name="old_password">Старая пароль</string>
+    <string name="change_phone_number">Изменить номер телефона</string>
+    <string name="are_you_sure_to_logout_from_this_account">Вы действительно хотите выйти из аккаунта?</string>
 </resources>

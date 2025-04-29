@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +29,7 @@ import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletScree
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletTopBar
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.item.WalletScreenItem
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.viewModel.WalletViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -36,6 +39,8 @@ fun WalletScreen(
 ) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope ()
+
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
@@ -81,7 +86,23 @@ fun WalletScreen(
     val cards = viewModel.cards
     val cardModel = remember { mutableStateOf(CardModel() ) }
     sharedPreferences.addCardProcess(false)
+    val addCardFromDetailsState = dataStore.addCardFromDetailsState().collectAsState(false)
 
+    BackHandler {
+        if (addCardFromDetailsState.value){
+            coroutineScope.launch {
+                dataStore.addCardFromDetails(false)
+            }
+            navController.navigate(ScreensRouter.DetailsScreen.route){
+                popUpTo(ScreensRouter.DetailsScreen.route){
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }else{
+            navController.popBackStack()
+        }
+    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,

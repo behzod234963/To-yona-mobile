@@ -29,6 +29,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
 
 @Composable
 fun RegistrationTextFields(
@@ -69,13 +70,11 @@ fun RegistrationTextFields(
         onValueChange = { onPhoneValueChange(it) },
         modifier = phoneFieldModifier,
         enabled = isPhoneFieldEnabled,
+        visualTransformation = PhoneNumberVisualTransformation(),
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp
         ),
-        prefix = {
-            if (isPhoneFieldEnabled) Text(text = "+998")
-        },
         trailingIcon = {
             if (isPhoneFieldEnabled){
                 IconButton(

@@ -24,9 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -39,21 +37,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.event.ProfileEvent
 import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
+import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -96,25 +99,23 @@ fun ProfileScreen(
         else -> Color.White
     }
 
-    val showAvatarContent = rememberSaveable { mutableStateOf(false) }
-    val avatar = rememberSaveable { mutableIntStateOf(R.drawable.ic_default_avatar) }
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val profileAvatar = viewModel.profileAvatar
+    val isOldUserState = dataStore.isOldUserState().collectAsState(false)
+    val editProfileProcess = sharedPreferences.editProfileProcessState()
 
-    val nameValue = rememberSaveable { mutableStateOf("") }
+    val showAvatarContent = rememberSaveable { mutableStateOf(false) }
+    val avatar = viewModel.profileAvatar
+
+    val firstname = viewModel.firstname
     val nameValueError = rememberSaveable { mutableStateOf(false) }
 
-    val lastnameValue = rememberSaveable { mutableStateOf("") }
+    val lastname = viewModel.lastname
     val lastnameValueError = rememberSaveable { mutableStateOf(false) }
 
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     coroutineScope.launch { bottomSheetState.hide() }
 
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
-    val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
-    val isOldUserState = dataStore.isOldUserState().collectAsState(false)
-    val oldUserFirstName = dataStore.getFirstname().collectAsState("")
-    val oldUserLastName = dataStore.getLastname().collectAsState("")
-
-    val editProfileProcess = sharedPreferences.editProfileProcessState()
 
     Scaffold(
         containerColor = primaryColor,
@@ -150,19 +151,7 @@ fun ProfileScreen(
                     }
                 ) {
                     Image(
-                        painter = when {
-                            isOldUserState.value -> {
-                                painterResource(profileAvatar.value)
-                            }
-
-                            editProfileProcess -> {
-                                painterResource(profileAvatar.value)
-                            }
-
-                            else -> {
-                                painterResource(avatar.intValue)
-                            }
-                        },
+                        painter = painterResource(avatar.value),
                         contentDescription = "man"
                     )
                 }
@@ -170,15 +159,15 @@ fun ProfileScreen(
                 Text(
                     text = when {
                         isOldUserState.value -> {
-                            "${oldUserFirstName.value} ${oldUserLastName.value}"
+                            "${firstname.value} ${lastname.value}"
                         }
 
                         editProfileProcess -> {
-                            "${oldUserFirstName.value} ${oldUserLastName.value}"
+                            "${firstname.value} ${lastname.value}"
                         }
 
                         else -> {
-                            "${nameValue.value} ${lastnameValue.value}"
+                            "${firstname.value} ${lastname.value}"
                         }
                     },
                     color = secondaryColor,
@@ -187,7 +176,7 @@ fun ProfileScreen(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    text = phoneNumber.value,
+                    text = phoneNumber.value.phoneNumberTransformation(),
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
@@ -201,24 +190,30 @@ fun ProfileScreen(
             ) {
                 NameField(
                     secondaryColor = secondaryColor,
-                    nameValue = nameValue.value,
+//                    Firstname field properties
+                    nameValue = firstname.value,
                     onNameValueChange = {
-                        nameValue.value = it
+                        viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
                         nameValueError.value = !it.nameChecker()
                     },
-                    nameValueTrailingIcon = {
-                        nameValue.value = ""
+                    onNameValueEnabledTrailingIconClick = {
+                        viewModel.onEvent(
+                            ProfileEvent.ChangeFirstname(
+                                ""
+                            )
+                        )
                     },
                     nameValueError = nameValueError.value,
-                    surnameValue = lastnameValue.value,
+                    //                    Lastname field properties
+                    surnameValue = lastname.value,
                     onSurnameValueChange = {
-                        lastnameValue.value = it
+                        viewModel.onEvent(ProfileEvent.ChangeLastname(it))
                         lastnameValueError.value = !it.nameChecker()
                     },
-                    surnameValueTrailingIcon = {
-                        lastnameValue.value = ""
-                    },
-                    surnameValueError = lastnameValueError.value
+                    surnameValueError = lastnameValueError.value,
+                    onSurnameEnabledTrailingIconClick = {
+                        viewModel.onEvent(ProfileEvent.ChangeLastname(""))
+                    }
                 )
             }
             Column(
@@ -245,10 +240,11 @@ fun ProfileScreen(
                             when {
                                 isOldUserState.value -> {
                                     coroutineScope.launch {
-                                        dataStore.saveAvatar(avatar.value)
-                                        dataStore.saveFirstname(firstname = nameValue.value)
-                                        dataStore.saveLastname(lastname = lastnameValue.value)
+                                        dataStore.isOldUser(false)
                                     }
+                                    sharedPreferences.saveAvatar(avatar.value)
+                                    sharedPreferences.saveFirstname(firstname.value)
+                                    sharedPreferences.saveLastname(lastname.value)
                                     sharedPreferences.saveIsProfileSettingsState(false)
                                     navController.navigate(ScreensRouter.EnterScreen.route) {
                                         popUpTo(ScreensRouter.ProfileScreen.route) {
@@ -256,21 +252,19 @@ fun ProfileScreen(
                                         }
                                     }
                                 }
-                                editProfileProcess->{
-                                    coroutineScope.launch {
-                                        dataStore.saveAvatar(avatar.intValue)
-                                        dataStore.saveFirstname(nameValue.value)
-                                        dataStore.saveLastname(lastnameValue.value)
-                                    }
+
+                                editProfileProcess -> {
+                                    sharedPreferences.saveAvatar(avatar.value)
+                                    sharedPreferences.saveFirstname(firstname.value)
+                                    sharedPreferences.saveLastname(lastname.value)
                                     sharedPreferences.editProfileProcess(false)
                                     navController.navigate(ScreensRouter.SettingsScreen.route)
                                 }
+
                                 else -> {
-                                    coroutineScope.launch {
-                                        dataStore.saveAvatar(avatar.value)
-                                        dataStore.saveFirstname(firstname = nameValue.value)
-                                        dataStore.saveLastname(lastname = lastnameValue.value)
-                                    }
+                                    sharedPreferences.saveAvatar(avatar.value)
+                                    sharedPreferences.saveFirstname(firstname.value)
+                                    sharedPreferences.saveLastname(lastname.value)
                                     sharedPreferences.saveIsProfileSettingsState(false)
                                     sharedPreferences.saveNewPinState(true)
                                     navController.navigate(ScreensRouter.NewPinScreen.route) {
@@ -306,19 +300,19 @@ fun ProfileScreen(
                         showAvatarContent.value = false
                     },
                     onDefaultAvatarClick = {
-                        avatar.value = it
+                        viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
                         if (bottomSheetState.isVisible) {
                             showAvatarContent.value = false
                         }
                     },
                     onMaleClick = {
-                        avatar.value = it
+                        viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
                         if (bottomSheetState.isVisible) {
                             showAvatarContent.value = false
                         }
                     }
                 ) {
-                    avatar.value = it
+                    viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
                     if (bottomSheetState.isVisible) {
                         showAvatarContent.value = false
                     }

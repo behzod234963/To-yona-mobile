@@ -48,6 +48,7 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
@@ -157,7 +158,7 @@ fun NumberCheckScreen(
                 Spacer(Modifier.height(10.dp))
                 Text(
                     textAlign = TextAlign.Center,
-                    text = stringResource(R.string.enter_code_below, arguments.number),
+                    text = stringResource(R.string.enter_code_below, arguments.number.phoneNumberTransformation()),
                     color = secondaryColor,
                     fontSize = 16.sp,
                 )
@@ -212,8 +213,9 @@ fun NumberCheckScreen(
                                         }
                                     }
                                     isPasswordForgotten.value->{
+                                        val result = arguments.number.substring(4..arguments.number.length-1)
                                         CoroutineScope(Dispatchers.Default).launch {
-                                            dataStore.savePhoneNumber(arguments.number)
+                                            dataStore.savePhoneNumber(result)
                                         }
                                         navController.navigate(ScreensRouter.RegistrationScreen.route){
                                             popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
@@ -349,7 +351,9 @@ fun NumberCheckScreen(
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
-                                        navController.navigate(ScreensRouter.WalletScreen.route)
+                                        navController.navigate(ScreensRouter.WalletScreen.route){
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route + "/"){ inclusive = true }
+                                        }
                                     }else{
                                         viewModel.insertCard(
                                             CardModel(
@@ -364,8 +368,9 @@ fun NumberCheckScreen(
                                     }
                                 }
                                 isPasswordForgotten.value->{
+                                    val result = arguments.number.substring(4..arguments.number.length-1)
                                     CoroutineScope(Dispatchers.Default).launch {
-                                        dataStore.savePhoneNumber(arguments.number)
+                                        dataStore.savePhoneNumber(result)
                                     }
                                     navController.navigate(ScreensRouter.RegistrationScreen.route){
                                         popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }

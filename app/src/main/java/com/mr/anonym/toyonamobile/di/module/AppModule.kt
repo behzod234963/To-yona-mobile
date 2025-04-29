@@ -15,6 +15,10 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideContext(@ApplicationContext context: Context) = context
+
+    @Provides
+    @Singleton
     fun provideLocaleConfigurations(@ApplicationContext context: Context): LocaleConfigurations =
         LocaleConfigurations(context)
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
-import com.mr.anonym.toyonamobile.presentation.utils.CardEvents
+import com.mr.anonym.toyonamobile.presentation.event.CardEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

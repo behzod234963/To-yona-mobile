@@ -20,14 +20,16 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun NameField(
     secondaryColor: Color,
+//    Name field properties
     nameValue: String,
-    onNameValueChange:(String)-> Unit,
-    nameValueTrailingIcon:()->Unit,
+    onNameValueChange: (String) -> Unit,
+    onNameValueEnabledTrailingIconClick: () -> Unit,
     nameValueError: Boolean,
+//    Lastname field properties
     surnameValue: String,
-    onSurnameValueChange:(String)-> Unit,
-    surnameValueTrailingIcon:()-> Unit,
-    surnameValueError:Boolean
+    onSurnameValueChange: (String) -> Unit,
+    surnameValueError: Boolean,
+    onSurnameEnabledTrailingIconClick: () -> Unit,
 ) {
 
     //    name field content
@@ -43,7 +45,7 @@ fun NameField(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    nameValueTrailingIcon()
+                    onNameValueEnabledTrailingIconClick()
                 }
             ) {
                 Icon(
@@ -54,7 +56,7 @@ fun NameField(
             }
         },
         supportingText = {
-            if (nameValueError){
+            if (nameValueError) {
                 Text(
                     text = stringResource(R.string.phone_number_error)
                 )
@@ -83,7 +85,7 @@ fun NameField(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    surnameValueTrailingIcon()
+                    onSurnameEnabledTrailingIconClick()
                 }
             ) {
                 Icon(
@@ -94,7 +96,7 @@ fun NameField(
             }
         },
         supportingText = {
-            if (surnameValueError){
+            if (surnameValueError) {
                 Text(
                     text = stringResource(R.string.phone_number_error)
                 )

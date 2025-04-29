@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
@@ -114,9 +115,9 @@ fun SettingsScreen(
     }
     val isNotificationContentClicked = rememberSaveable { mutableStateOf(false) }
 
-    val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
-    val firstName = dataStore.getFirstname().collectAsState("")
-    val lastName = dataStore.getLastname().collectAsState("")
+    val profileAvatar = sharedPreferences.getAvatar()
+    val firstName = sharedPreferences.getFirstname()
+    val lastName = sharedPreferences.getLastname()
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
     sharedPreferences.editProfileProcess(false)
 
@@ -203,18 +204,18 @@ fun SettingsScreen(
                 Image(
                     modifier = Modifier
                         .size(60.dp),
-                    painter = painterResource(profileAvatar.value),
+                    painter = painterResource(profileAvatar),
                     contentDescription = ""
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
-                    text = "${firstName.value} ${lastName.value}",
+                    text = "$firstName $lastName",
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = phoneNumber.value,
+                    text = phoneNumber.value.phoneNumberTransformation(),
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold

@@ -30,8 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenFAB
@@ -50,6 +52,7 @@ fun MainScreen(
     val activityContext = LocalActivity.current
 
     val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
     val permissionController = PermissionController(context)
     val coroutineScope = rememberCoroutineScope()
 
@@ -93,9 +96,9 @@ fun MainScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
-    val firstName = dataStore.getFirstname().collectAsState("")
-    val lastName = dataStore.getLastname().collectAsState("")
+    val profileAvatar = sharedPreferences.getAvatar()
+    val firstName = sharedPreferences.getFirstname()
+    val lastName = sharedPreferences.getLastname()
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
     val searchValue = rememberSaveable { mutableStateOf("") }
@@ -177,21 +180,19 @@ fun MainScreen(
         drawerContent = {
             MainScreenModalDrawerSheet(
                 smallFontSize = smallFontSize.value,
-                mediumFontSize = mediumFontSize.value,
-                largeFontSize = largeFontSize.value,
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
-                profileTitle = "${firstName.value} ${lastName.value}",
-                profileAvatar = profileAvatar.value,
-                phoneNumber = phoneNumber.value,
-                onContactsClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.ContactsScreen.route)
-                },
+                profileTitle = "$firstName $lastName",
+                profileAvatar = profileAvatar,
+                phoneNumber = phoneNumber.value.phoneNumberTransformation(),
                 onMainClick = {
                     if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
                     navController.navigate(ScreensRouter.MainScreen.route)
+                },
+                onContactsClick = {
+                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
+                    navController.navigate(ScreensRouter.ContactsScreen.route)
                 },
                 onMyEventsClick = {
                     if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
@@ -208,12 +209,11 @@ fun MainScreen(
                 onSettingsClick = {
                     if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
                     navController.navigate(ScreensRouter.SettingsScreen.route)
-                },
-                onSupportClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.SupportScreen.route)
                 }
-            )
+            ) {
+                if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
+                navController.navigate(ScreensRouter.SupportScreen.route)
+            }
         }
     ) {
         Scaffold(
@@ -231,7 +231,7 @@ fun MainScreen(
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
                     title = stringResource(R.string.app_name),
-                    navigationIcon = profileAvatar.value,
+                    navigationIcon = profileAvatar,
                     onActionsClick = {
                         navController.navigate(ScreensRouter.NotificationsScreen.route)
                     }

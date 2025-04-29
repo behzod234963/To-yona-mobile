@@ -29,15 +29,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
 
 @Composable
 fun LoginTextFields(
     secondaryColor: Color,
+//    Phone number field properties
     phoneFieldValue: String,
     onPhoneValueChange:(String)-> Unit,
     phoneFieldTrailingFunction:()-> Unit,
     phoneFieldError: Boolean,
     phoneFieldModifier: Modifier,
+//    Password field properties
     passwordValue: String,
     onPasswordValueChange:(String)-> Unit,
     passwordValueError: Boolean,
@@ -67,11 +70,12 @@ fun LoginTextFields(
             color = secondaryColor,
             fontSize = 16.sp
         ),
-        prefix = {
-            Text(
-                text = "+998"
-            )
-        },
+        visualTransformation = PhoneNumberVisualTransformation(),
+//        prefix = {
+//            Text(
+//                text = "+998"
+//            )
+//        },
         trailingIcon = {
             IconButton(
                 onClick = {

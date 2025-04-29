@@ -3,9 +3,15 @@ package com.mr.anonym.data.instance.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.mr.anonym.data.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SharedPreferencesInstance(private val context: Context) {
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref",
+    private val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref",
         Context.MODE_PRIVATE)
     fun saveLanguage(language: String){
         sharedPreferences.edit { putString("saveLanguage", language) }
@@ -61,10 +67,25 @@ class SharedPreferencesInstance(private val context: Context) {
     fun changePinProcessState(): Boolean{
         return sharedPreferences.getBoolean("changePinProcess",false)
     }
-    fun changePhoneNumberProcess(state: Boolean){
-        sharedPreferences.edit{ putBoolean("changePhoneNumberProcess",state) }
+
+    fun saveAvatar(avatar: Int){
+        sharedPreferences.edit { putInt("avatar", avatar) }
     }
-    fun isChangePhoneNumberProcessState(): Boolean{
-        return sharedPreferences.getBoolean("changePhoneNumberProcess",false)
+    fun getAvatar(): Int{
+        return sharedPreferences.getInt("avatar",R.drawable.ic_default_avatar)
+    }
+
+    fun saveFirstname(firstname: String){
+        sharedPreferences.edit { putString("firstname",firstname) }
+    }
+    fun getFirstname(): String {
+        return sharedPreferences.getString("firstname","")?:""
+    }
+
+    fun saveLastname(lastname: String){
+        sharedPreferences.edit{ putString("lastname",lastname) }
+    }
+    fun getLastname(): String{
+        return sharedPreferences.getString("lastname","")?:""
     }
 }

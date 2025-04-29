@@ -121,4 +121,18 @@
     <string name="old_password">Old password</string>
     <string name="change_phone_number">Change phone number</string>
     <string name="are_you_sure_to_logout_from_this_account">Are you sure to logout from this account?</string>
+    <string name="how_to_add_a_card">How to add a card?</string>
+    <string name="how_to_change_language">How to change language?</string>
+    <string name="change_language_instruction">Open «Settings» -> «Change language» and choose need one.</string>
+    <string name="card_support_instruction">How to add or delete bank card?</string>
+    <string name="card_support_instruction_content">Open the «Wallet», press «+»,check photo or input data manually. For delete — press delete above the bank card.</string>
+    <string name="history_support_title">How to see history of transactions?</string>
+    <string name="uzs">UZS</string>
+    <string name="user_is_not_found">User is not found</string>
+    <string name="receiver">Receiver</string>
+    <string name="sender">Sender</string>
+    <string name="you_have_not_active_card">You have not active card</string>
+    <string name="the_field_must_not_be_empty_or_can_contain_only_digits">The field must not be empty and can contain only digits</string>
+    <string name="transfer_amount">Transfer amount</string>
+    <string name="successfully">Successfully!</string>
 </resources>

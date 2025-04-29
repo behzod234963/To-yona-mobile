@@ -122,4 +122,18 @@
     <string name="old_password">Старая пароль</string>
     <string name="change_phone_number">Изменить номер телефона</string>
     <string name="are_you_sure_to_logout_from_this_account">Вы действительно хотите выйти из аккаунта?</string>
+    <string name="how_to_add_a_card">Как добавить карту?</string>
+    <string name="how_to_change_language">Каким образом можно сменить язык интерфейса?</string>
+    <string name="change_language_instruction">Откройте «Настройки» -> «Сменить язык» и выберите удобный вариант из списка.</string>
+    <string name="card_support_instruction">Как добавить или удалить банковскую карту?</string>
+    <string name="history_support_title">Как посмотреть историю операций?</string>
+    <string name="uzs">сум</string>
+    <string name="card_support_instruction_content">Перейдите в раздел «Карты», нажмите «Добавить карту», сфотографируйте её или введите данные вручную. Для удаления — выберите карту и нажмите «Удалить».</string>
+    <string name="user_is_not_found">Пользователь не найден</string>
+    <string name="receiver">Получатель</string>
+    <string name="sender">Отправитель</string>
+    <string name="you_have_not_active_card">У вас нет подключенных карт</string>
+    <string name="the_field_must_not_be_empty_or_can_contain_only_digits">Поля должен содержать только цифр и не должно быть пустым </string>
+    <string name="transfer_amount">Сумма перевода</string>
+    <string name="successfully">Успешно!</string>
 </resources>

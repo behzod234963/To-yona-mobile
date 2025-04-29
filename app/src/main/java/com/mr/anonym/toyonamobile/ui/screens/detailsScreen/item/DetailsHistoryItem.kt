@@ -47,11 +47,12 @@ fun DetailsHistoryItem(
     fiverdColor: Color,
     sevenrdColor: Color,
     partyModel: PartyModel,
+    priceFieldError: Boolean,
     onTransferClick:(String)-> Unit
 ) {
 
     val isExpanded = rememberSaveable { mutableStateOf( false ) }
-    var priceHistoryValue by remember { mutableStateOf(TextFieldValue("") ) }
+    var priceHistoryValue = remember { mutableStateOf("" ) }
 
     Card(
         modifier = Modifier
@@ -115,13 +116,13 @@ fun DetailsHistoryItem(
                         Text(
                             text = stringResource(R.string.event),
                             color = secondaryColor,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = partyModel.type,
                             color = secondaryColor,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -139,13 +140,13 @@ fun DetailsHistoryItem(
                                 .fillMaxWidth(0.5f),
                             text = stringResource(R.string.event_date_and_time),
                             color = secondaryColor,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = partyModel.dateTime,
                             color = secondaryColor,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -161,7 +162,7 @@ fun DetailsHistoryItem(
                         Text(
                             text = stringResource(R.string.requisites),
                             color = secondaryColor,
-                            fontSize = 18.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -221,24 +222,13 @@ fun DetailsHistoryItem(
                             .fillMaxWidth()
                             .height(55.dp),
                         secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
                         fiverdColor = fiverdColor,
-                        value = priceHistoryValue.text,
+                        value = priceHistoryValue.value,
+                        priceFieldError = priceFieldError,
                         onValueChange = { newValue ->
-                            val cleanText = newValue.filter { it.isDigit() }
-
-                            val formattedText = if (cleanText.isNotEmpty()){
-                                cleanText.toDouble().moneyType()
-                            }else{
-                                ""
-                            }
-                            priceHistoryValue = TextFieldValue().copy(
-                                text = formattedText,
-                                selection = TextRange(priceHistoryValue.selection.end)
-                            )
-                        },
-                        onTransferClick = { onTransferClick(priceHistoryValue.text) }
-                    )
+                            priceHistoryValue.value = newValue
+                        }
+                    ) { onTransferClick(priceHistoryValue.value) }
                 }
             }
         }
@@ -254,6 +244,7 @@ private fun PreviewDetailsHistoryItem() {
         fiverdColor = Color.Green,
         sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
         onTransferClick = {  },
+        priceFieldError = true,
         partyModel = PartyModel(
             id = 2,
             userID = 2,

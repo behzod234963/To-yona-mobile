@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -102,6 +103,9 @@ fun LogInScreen(
     val passwordValue = rememberSaveable { mutableStateOf("") }
     val passwordValueError = rememberSaveable { mutableStateOf(false) }
 
+    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val password = dataStore.getPassword().collectAsState("")
+
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -150,8 +154,8 @@ fun LogInScreen(
                     secondaryColor = secondaryColor,
                     phoneFieldValue = phoneFieldValue.value,
                     onPhoneValueChange = {
-                        phoneFieldValue.value = it
-                        phoneFieldError.value = !it.phoneChecker()
+                        phoneFieldValue.value = it.take(9)
+                        if (it.length < 10) phoneFieldError.value = !it.phoneChecker()
                     },
                     phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                     phoneFieldError = phoneFieldError.value,
@@ -226,12 +230,23 @@ fun LogInScreen(
                             !phoneFieldError.value &&
                             !passwordValueError.value
                         ) {
-                            coroutineScope.launch {
-                                dataStore.isOldUser(true)
-                            }
-                            val result = "+998" + phoneFieldValue.value
-                            navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
-                                popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                            if (
+                                phoneFieldValue.value == phoneNumber.value &&
+                                passwordValue.value == password.value
+                            ){
+                                coroutineScope.launch {
+                                    dataStore.isOldUser(true)
+                                }
+                                val result = "+998" + phoneFieldValue.value
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
+                                    popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                                }
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.user_is_not_found),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         } else {
                             Toast.makeText(

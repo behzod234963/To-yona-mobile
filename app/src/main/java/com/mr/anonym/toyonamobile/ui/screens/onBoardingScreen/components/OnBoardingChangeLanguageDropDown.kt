@@ -57,7 +57,7 @@ fun OnBoardingChangeLanguageDropDown(
                 Image(
                     modifier = Modifier
                         .size(35.dp),
-                    painter = if (value.contains("русский")) painterResource(R.drawable.ic_ru_flag) else painterResource(
+                    painter = if (value.contains("Русский")) painterResource(R.drawable.ic_ru_flag) else painterResource(
                         R.drawable.ic_uz_flag
                     ),
                     contentDescription = "leading icon for locales"

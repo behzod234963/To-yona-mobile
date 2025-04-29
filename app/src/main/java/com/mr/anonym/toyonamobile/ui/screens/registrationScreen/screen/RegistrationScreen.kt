@@ -162,9 +162,9 @@ fun RegistrationScreen(
                     phoneFieldValue = if (isPasswordForgotten.value) phoneNumber.value else phoneFieldValue.value,
                     phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                     onPhoneValueChange = {
-                        phoneFieldValue.value = it
+                        phoneFieldValue.value = it.take(9)
 //                        if (it.isEmpty()) phoneFieldValue.value = "+998"
-                        phoneFieldError.value = !it.phoneChecker()
+                        if(it.length < 10 ) phoneFieldError.value = !it.phoneChecker()
                     },
                     passwordValue = passwordValue.value,
                     onPasswordValueChange = {
@@ -216,6 +216,9 @@ fun RegistrationScreen(
                                     !isPasswordForgotten.value -> {
                                 if (confirmValue.value == passwordValue.value) {
                                     val result = "+998" + phoneFieldValue.value
+                                    coroutineScope.launch {
+                                        dataStore.savePassword(confirmValue.value)
+                                    }
                                     navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                         popUpTo(ScreensRouter.RegistrationScreen.route) {
                                             inclusive = true
@@ -232,6 +235,7 @@ fun RegistrationScreen(
                                     coroutineScope.launch {
                                         dataStore.isPasswordForgotten(false)
                                         dataStore.isOldUser(true)
+                                        dataStore.savePhoneNumber("+998${phoneNumber.value}")
                                     }
                                     sharedPreferences.saveIsLoggedIn(true)
                                     sharedPreferences.saveIsProfileSettingsState(true)

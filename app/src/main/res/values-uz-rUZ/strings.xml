@@ -99,7 +99,6 @@
     <string name="card_field_must_contains_16_digit">Karta raqami 16 raqam bo\'lishi lozim</string>
     <string name="expire_date">Tugash muddati</string>
     <string name="mm_yy">OO/YY</string>
-    <string name="add_cart">Karta qo\'shish</string>
     <string name="card_delete_alert">Siz bu bank kartasini o\'chirishni xohlaysizmi?</string>
     <string name="yes">Xa</string>
     <string name="no">Yo\'q</string>
@@ -122,4 +121,18 @@
     <string name="old_password">Eski parol</string>
     <string name="change_phone_number">Telefon raqamni o\'zgartirish</string>
     <string name="are_you_sure_to_logout_from_this_account">Siz akkauntingizdan chiqishni xoxlaysizmi?</string>
+    <string name="how_to_add_a_card">Qanday qilib kartani qo\'shish mumkin?</string>
+    <string name="how_to_change_language">Qanday qilib tilni o\'zgartirish mumkin?</string>
+    <string name="change_language_instruction">«Sozlamalar» -> «Tilni o\'zgartirish» va o\'zingizga qulay tilni tanlang.</string>
+    <string name="card_support_instruction">Qanday qilib bank kartasini qo\'shish yoki o\'chirish mumkin?</string>
+    <string name="card_support_instruction_content"> «Hamyon» bo\'limiga o\'ting,«+» ni bosing,karta ma\'lumotlarini kiriting. O\'chirish uchun kerakli kartaning o\'chirish tugmasini bosing.</string>
+    <string name="history_support_title">Qanday qilib o\'tkazmalar tarixini ko\'rish mumkin?</string>
+    <string name="uzs">so\'m</string>
+    <string name="user_is_not_found">Foldalanuvchi topilmadi</string>
+    <string name="receiver">Qabul qiluvchi</string>
+    <string name="sender">O\'tkazuvchi</string>
+    <string name="you_have_not_active_card">Sizda karta qo\'shilmagan</string>
+    <string name="the_field_must_not_be_empty_or_can_contain_only_digits">Maydonlar faqat raqamlarni o\'z ichiga olishi kerak va bo\'sh bo\'lmasligi kerak</string>
+    <string name="transfer_amount">O\'kazma miqdori</string>
+    <string name="successfully">Muvaffaqiyatli!</string>
 </resources>

@@ -51,42 +51,6 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
-    suspend fun saveAvatar(avatar: Int){
-        val key = intPreferencesKey("profileavatar")
-        context.dataStore.edit {
-            it[key] = avatar
-        }
-    }
-    fun getAvatar(): Flow<Int>{
-        val key = intPreferencesKey("profileavatar")
-        return context.dataStore.data.map {
-            it[key]?: R.drawable.ic_default_avatar
-        }
-    }
-    suspend fun saveFirstname(firstname: String){
-        val key = stringPreferencesKey("firstname")
-        context.dataStore.edit {
-            it[key] = firstname
-        }
-    }
-    fun getFirstname(): Flow<String>{
-        val key = stringPreferencesKey("firstname")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
-    suspend fun saveLastname(lastname: String){
-        val key = stringPreferencesKey("lastname")
-        context.dataStore.edit {
-            it[key] = lastname
-        }
-    }
-    fun getLastname(): Flow<String>{
-        val key = stringPreferencesKey("lastname")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
     suspend fun savePhoneNumber(phoneNumber: String){
         val key = stringPreferencesKey("phoneNumber")
         context.dataStore.edit {
@@ -95,6 +59,18 @@ class DataStoreInstance(private val context: Context) {
     }
     fun getPhoneNumber(): Flow<String>{
         val key = stringPreferencesKey("phoneNumber")
+        return context.dataStore.data.map {
+            it[key]?:""
+        }
+    }
+    suspend fun savePassword(password: String){
+        val key = stringPreferencesKey("savePassword")
+        context.dataStore.edit {
+            it[key] = password
+        }
+    }
+    fun getPassword(): Flow<String>{
+        val key = stringPreferencesKey("savePassword")
         return context.dataStore.data.map {
             it[key]?:""
         }
@@ -205,6 +181,18 @@ class DataStoreInstance(private val context: Context) {
         val key = booleanPreferencesKey("isSystemThemeApplied")
         return context.dataStore.data.map{
             it[key]?:true
+        }
+    }
+    suspend fun addCardFromDetails(state: Boolean){
+        val key = booleanPreferencesKey("addCardFromDetails")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun addCardFromDetailsState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("addCardFromDetails")
+        return context.dataStore.data.map {
+            it[key]?:false
         }
     }
 }

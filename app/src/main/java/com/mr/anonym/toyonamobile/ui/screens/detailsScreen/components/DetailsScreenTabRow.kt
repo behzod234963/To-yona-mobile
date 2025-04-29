@@ -71,7 +71,7 @@ fun DetailsScreenTabRow(
                     Text(
                         text = item.title,
                         color = secondaryColor,
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }

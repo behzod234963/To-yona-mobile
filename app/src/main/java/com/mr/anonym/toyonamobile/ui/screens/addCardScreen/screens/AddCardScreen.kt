@@ -45,7 +45,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardHolderChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.presentation.utils.CardEvents
+import com.mr.anonym.toyonamobile.presentation.event.CardEvents
 import com.mr.anonym.toyonamobile.presentation.utils.CardScannerIO
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.presentation.utils.startScanning

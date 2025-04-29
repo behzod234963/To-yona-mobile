@@ -2,9 +2,11 @@ package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -35,8 +37,6 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun MainScreenModalDrawerSheet(
     smallFontSize:Int,
-    mediumFontSize:Int,
-    largeFontSize: Int,
     primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
@@ -61,13 +61,15 @@ fun MainScreenModalDrawerSheet(
     val isSupportSelected = remember { mutableStateOf( false) }
 
     ModalDrawerSheet(
+        modifier = Modifier
+            .width(intrinsicSize = IntrinsicSize.Max),
         drawerContentColor = primaryColor,
-        drawerContainerColor = primaryColor
+        drawerContainerColor = primaryColor,
     ) {
         Column(
             modifier = Modifier
-                .width(300.dp)
-                .padding(vertical = 10.dp),
+                .wrapContentWidth()
+                .padding(vertical = 10.dp, horizontal = 25.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
@@ -95,41 +97,6 @@ fun MainScreenModalDrawerSheet(
                 fontSize = 16.sp
             )
         }
-        HorizontalDivider()
-//        Main content
-        NavigationDrawerItem(
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    tint = secondaryColor,
-                    contentDescription = ""
-                )
-            },
-            label = {
-                Text(
-                    text = stringResource(R.string.main),
-                    color = secondaryColor,
-                    fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            },
-            selected = isMainSelected.value,
-            shape = RectangleShape,
-            colors = NavigationDrawerItemDefaults.colors(
-                selectedContainerColor = tertiaryColor,
-                unselectedContainerColor = primaryColor
-            ),
-            onClick = {
-                isMainSelected.value = true
-                isContactsSelected.value = false
-                isMyEvents.value = false
-                isMonitoringSelected.value = false
-                isWalletSelected.value = false
-                isSettingsSelected.value = false
-                isSupportSelected.value = false
-                onMainClick()
-            }
-        )
         HorizontalDivider()
 //        Contacts
         NavigationDrawerItem(

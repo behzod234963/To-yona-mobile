@@ -16,14 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -36,28 +37,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.moneyType
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsScreenTabRow
+import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferCheckDialog
+import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferDetailsBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.item.DetailsHistoryItem
+import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.viewModel.DetailsViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailsScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -65,6 +75,7 @@ fun DetailsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
     val permissionController = PermissionController(context)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
@@ -101,15 +112,13 @@ fun DetailsScreen(
         else -> Color.White
     }
 
-    val verticalScrollState = rememberScrollState()
-
-    val profileAvatar = dataStore.getAvatar().collectAsState(R.drawable.ic_default_avatar)
+    val profileAvatar = sharedPreferences.getAvatar()
 
     val selectedTab = rememberSaveable { mutableStateOf(1) }
 
-    val priceValue = remember { mutableStateOf("" ) }
+    val priceValue = remember { mutableStateOf("") }
 
-    val userModel = UserModel(
+    val friendsModel = UserModel(
         id = 1,
         name = "Ойбек",
         surName = "Худайкулов",
@@ -149,9 +158,38 @@ fun DetailsScreen(
         ),
     )
 
+    val showTransferDetails = remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    coroutineScope.launch { bottomSheetState.hide() }
+    val isExpanded = remember { mutableStateOf(false) }
+    val isPriceFieldEnabled = remember { mutableStateOf(false) }
+    val receiverCardNumber = "000111122223333"
+    val senderCardNumber = viewModel.senderCard
+    val cards = viewModel.cards
+    val priceFieldError = rememberSaveable { mutableStateOf(false) }
+    val showCheckDetails = rememberSaveable { mutableStateOf( false ) }
+
+    val userModel = UserModel(
+        id = 1,
+        name = "BEKHZOD",
+        surName = "KHUDAYBERGENOV",
+        phone = "+998973570498",
+        cardNumber = senderCardNumber.value,
+        password = "0000",
+        dateTime = "04.06.1998"
+    )
+    val transactionsModel = TransactionsModel(
+        id = 1,
+        userId = userModel.id,
+        sender = userModel.cardNumber,
+        receiver = friendsModel.cardNumber,
+        price = priceValue.value.toDouble(),
+        dateTime = "30.04.2025"
+    )
+
     Scaffold(
         containerColor = primaryColor,
-       contentColor = primaryColor
+        contentColor = primaryColor
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -193,14 +231,14 @@ fun DetailsScreen(
                         Image(
                             modifier = Modifier
                                 .size(70.dp),
-                            painter = painterResource(profileAvatar.value),
+                            painter = painterResource(profileAvatar),
                             contentDescription = ""
                         )
                         Spacer(Modifier.height(10.dp))
                         Text(
                             text = "Бехзод Худайбергенов",
                             color = secondaryColor,
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center
                         )
@@ -208,7 +246,7 @@ fun DetailsScreen(
                         Text(
                             text = "+998973570498",
                             color = secondaryColor,
-                            fontSize = 22.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -232,7 +270,7 @@ fun DetailsScreen(
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(10.dp)
+                                        .padding(horizontal = 10.dp)
                                 ) {
                                     Row(
                                         modifier = Modifier
@@ -242,13 +280,13 @@ fun DetailsScreen(
                                         Text(
                                             text = stringResource(R.string.event),
                                             color = secondaryColor,
-                                            fontSize = 18.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                         Text(
                                             text = partyModel.type,
                                             color = secondaryColor,
-                                            fontSize = 18.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                     }
@@ -266,13 +304,13 @@ fun DetailsScreen(
                                                 .fillMaxWidth(0.5f),
                                             text = stringResource(R.string.event_date_and_time),
                                             color = secondaryColor,
-                                            fontSize = 18.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                         Text(
                                             text = partyModel.dateTime,
                                             color = secondaryColor,
-                                            fontSize = 18.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
                                             textAlign = TextAlign.End
                                         )
@@ -288,7 +326,7 @@ fun DetailsScreen(
                                         Text(
                                             text = stringResource(R.string.requisites),
                                             color = secondaryColor,
-                                            fontSize = 18.sp,
+                                            fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold
                                         )
                                     }
@@ -333,7 +371,7 @@ fun DetailsScreen(
                                             fontWeight = FontWeight.SemiBold
                                         )
                                         Text(
-                                            text = "9860030160619356",
+                                            text = receiverCardNumber.cardNumberSeparator(),
                                             color = secondaryColor,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
@@ -347,38 +385,106 @@ fun DetailsScreen(
                                 DetailsPriceFields(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(55.dp),
+                                        .height(if (priceValue.value.isEmpty()) 100.dp else 100.dp),
                                     secondaryColor = secondaryColor,
-                                    tertiaryColor = tertiaryColor,
                                     fiverdColor = fiverdColor,
                                     value = priceValue.value,
+                                    priceFieldError = priceFieldError.value,
                                     onValueChange = { newValue ->
                                         priceValue.value = newValue
-                                    },
-                                    onTransferClick = { TODO() }
-                                )
+                                    }
+                                ) {
+                                    if (
+                                        priceValue.value.isDigitsOnly() &&
+                                        priceValue.value.isNotEmpty() &&
+                                        priceValue.value.isNotBlank() &&
+                                        priceValue.value.toInt() >= 1000
+                                    ) {
+                                        showTransferDetails.value = true
+                                    } else {
+                                        priceFieldError.value = true
+                                    }
+                                }
                             }
                         }
-
                         1 -> {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
-                                items(partyList){ model->
+                                items(partyList) { model ->
                                     DetailsHistoryItem(
                                         secondaryColor = secondaryColor,
                                         tertiaryColor = tertiaryColor,
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
                                         partyModel = model,
-                                        onTransferClick = {  }
+                                        priceFieldError = priceFieldError.value,
+                                        onTransferClick = { }
                                     )
                                 }
                             }
                         }
                     }
                 }
+            )
+        }
+        if (showTransferDetails.value) {
+            TransferDetailsBottomSheet(
+                primaryColor = primaryColor,
+                secondaryColor = secondaryColor,
+                tertiaryColor = tertiaryColor,
+                quaternaryColor = quaternaryColor,
+                state = bottomSheetState,
+                onConfirmButtonClick = {
+                    showCheckDetails.value = true
+                },
+                onDismissRequest = {
+                    showTransferDetails.value = false
+                    isPriceFieldEnabled.value = false
+                },
+                receiverCardNumber = receiverCardNumber,
+                senderCardNumber = senderCardNumber.value,
+                onSelectCardClick = {
+                    isExpanded.value = true
+                },
+//                Price field properties
+                isFieldEnabled = isPriceFieldEnabled.value,
+                priceValue = priceValue.value,
+                onValueChange = {
+                    priceValue.value = it
+                },
+                onTrailingIconClick = {
+                    isPriceFieldEnabled.value = true
+                },
+//                DropDown menu properties
+                userCards = cards.value,
+                onDropDownDismissRequest = {
+                    isExpanded.value = false
+                },
+                onItemClick = {
+                    viewModel.changeSenderCard(it)
+                    isExpanded.value = false
+                },
+                onAddCardClick = {
+                    isExpanded.value = false
+                    coroutineScope.launch {
+                        dataStore.addCardFromDetails(true)
+                    }
+                    navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                },
+                isExpanded = isExpanded.value
+            )
+        }
+        if (showCheckDetails.value){
+            TransferCheckDialog(
+                secondaryColor = secondaryColor,
+                quaternaryColor = quaternaryColor,
+                userModel = TODO(),
+                friendsModel = TODO(),
+                transactionsModel = TODO(),
+                onDismissClick = TODO(),
+                onConfirmClick = TODO()
             )
         }
     }

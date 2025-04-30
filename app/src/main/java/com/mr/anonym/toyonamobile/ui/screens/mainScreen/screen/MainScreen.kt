@@ -41,6 +41,7 @@ import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenMod
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenSearchField
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTopBar
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.item.MainScreenItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,6 +56,7 @@ fun MainScreen(
     val sharedPreferences = SharedPreferencesInstance(context)
     val permissionController = PermissionController(context)
     val coroutineScope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
     val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
@@ -93,8 +95,6 @@ fun MainScreen(
     val smallFontSize = remember { mutableIntStateOf(14) }
     val mediumFontSize = remember { mutableIntStateOf(18) }
     val largeFontSize = remember { mutableIntStateOf(22) }
-
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val profileAvatar = sharedPreferences.getAvatar()
     val firstName = sharedPreferences.getFirstname()
@@ -187,32 +187,67 @@ fun MainScreen(
                 profileAvatar = profileAvatar,
                 phoneNumber = phoneNumber.value.phoneNumberTransformation(),
                 onMainClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.MainScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.MainScreen.route)
+                        }
+                    }
                 },
                 onContactsClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.ContactsScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.ContactsScreen.route)
+                        }
+                    }
                 },
                 onMyEventsClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.MyEventsScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.MyEventsScreen.route)
+                        }
+                    }
                 },
                 onMonitoringClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.MonitoringScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.MonitoringScreen.route)
+                        }
+                    }
                 },
                 onWalletClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.WalletScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.WalletScreen.route)
+                        }
+                    }
                 },
                 onSettingsClick = {
-                    if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                    navController.navigate(ScreensRouter.SettingsScreen.route)
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            navController.navigate(ScreensRouter.SettingsScreen.route)
+                        }
+                    }
                 }
             ) {
-                if (drawerState.isOpen) coroutineScope.launch { drawerState.close() }
-                navController.navigate(ScreensRouter.SupportScreen.route)
+                if (drawerState.isOpen) {
+                    coroutineScope.launch {
+                        drawerState.close()
+                        delay(250)
+                        navController.navigate(ScreensRouter.SupportScreen.route)
+                    }
+                }
             }
         }
     ) {

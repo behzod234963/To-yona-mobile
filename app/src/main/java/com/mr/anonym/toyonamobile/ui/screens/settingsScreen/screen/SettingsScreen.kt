@@ -137,6 +137,8 @@ fun SettingsScreen(
     val isThemeSelected = rememberSaveable { mutableStateOf(false) }
     val showThemeContent = rememberSaveable { mutableStateOf(false) }
 
+    val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
+
     if (!isThemeSelected.value) {
         when {
             isSystemTheme.value -> {
@@ -288,7 +290,14 @@ fun SettingsScreen(
                 isChecked = false,
                 onCheckedChange = {  },
                 onContentClick = {
-                    sharedPreferences.openSecurityContent(true)
+                    coroutineScope.launch {
+                        if (isBiometricAuthOn){
+                            dataStore.showBiometricAuthManually(true)
+                        }else{
+                            dataStore.showBiometricAuthManually(false)
+                        }
+                        dataStore.openSecurityContent(true)
+                    }
                     navController.navigate(ScreensRouter.EnterScreen.route)
                 }
             )

@@ -92,14 +92,14 @@ fun EnterScreen(
     val sixrdColor = Color.Blue
 
 
-    val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
+    val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val showBiometricSettings = remember { mutableStateOf(false) }
 
     val pinCode = dataStore.getPinCode().collectAsState("")
     val pinValue = remember { mutableStateOf("") }
     val iconSize = remember { mutableIntStateOf(30) }
 
-    val openSecurityContentState = sharedPreferences.openSecurityContentState()
+    val openSecurityContentState = dataStore.openSecurityContentState().collectAsState(false)
 
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
@@ -108,13 +108,13 @@ fun EnterScreen(
             pinValue.value.length > 3 &&
             pinValue.value == pinCode.value
         ) {
-            if (openSecurityContentState) {
-                sharedPreferences.openSecurityContent(false)
+            if (openSecurityContentState.value) {
                 navController.navigate(ScreensRouter.SecurityScreen.route) {
                     popUpTo(route = ScreensRouter.EnterScreen.route) {
                         inclusive = true
                     }
                 }
+                dataStore.openSecurityContent(false)
             } else {
                 navController.navigate(ScreensRouter.MainScreen.route) {
                     popUpTo(route = ScreensRouter.EnterScreen.route) {
@@ -539,10 +539,11 @@ fun EnterScreen(
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            if (isBiometricAuthOn.value) {
-                                CoroutineScope(Dispatchers.Default).launch {
-                                    dataStore.saveBiometricAuthState(true)
+                            if (isBiometricAuthOn) {
+                                coroutineScope.launch {
+                                    dataStore.showBiometricAuthManually(true)
                                 }
+                                sharedPreferences.saveBiometricAuthState(true)
                             } else {
                                 showBiometricSettings.value = true
                             }
@@ -569,21 +570,17 @@ fun EnterScreen(
                             sixrdColor = sixrdColor,
                             title = stringResource(R.string.allow_fingerprint),
                             confirmButton = {
-                                coroutineScope.launch {
-                                    dataStore.saveIsBiometricAuthOn(true)
-                                }
+                                sharedPreferences.saveIsBiometricAuthOn(true)
                                 showBiometricSettings.value = false
                             },
                             dismissButton = {
-                                coroutineScope.launch {
-                                    dataStore.saveIsBiometricAuthOn(false)
-                                }
+                                coroutineScope.launch { dataStore.showBiometricAuthManually(false)}
+                                sharedPreferences.saveIsBiometricAuthOn(false)
                                 showBiometricSettings.value = false
                             },
                             onDismissRequest = {
-                                coroutineScope.launch {
-                                    dataStore.saveIsBiometricAuthOn(false)
-                                }
+                                coroutineScope.launch { dataStore.showBiometricAuthManually(false)}
+                                sharedPreferences.saveIsBiometricAuthOn(false)
                                 showBiometricSettings.value = false
                             }
                         )

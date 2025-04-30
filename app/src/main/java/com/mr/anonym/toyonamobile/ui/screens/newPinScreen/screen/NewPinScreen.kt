@@ -141,9 +141,7 @@ fun NewPinScreen(
                 title = stringResource(R.string.allow_fingerprint),
                 confirmButton = {
                     sharedPreferences.saveNewPinState(false)
-                    coroutineScope.launch {
-                        dataStore.saveIsBiometricAuthOn(true)
-                    }
+                    sharedPreferences.saveIsBiometricAuthOn(true)
                     isPinCodeSetCompleted.value = false
                     navController.navigate(ScreensRouter.MainScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
@@ -152,9 +150,7 @@ fun NewPinScreen(
                 dismissButton = {
                     sharedPreferences.saveNewPinState(false)
                     isPinCodeSetCompleted.value = false
-                    coroutineScope.launch {
-                        dataStore.saveIsBiometricAuthOn(false)
-                    }
+                    sharedPreferences.saveIsBiometricAuthOn(false)
                     navController.navigate(ScreensRouter.MainScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
                     }
@@ -162,9 +158,7 @@ fun NewPinScreen(
                 onDismissRequest = {
                     sharedPreferences.saveNewPinState(false)
                     isPinCodeSetCompleted.value = false
-                    coroutineScope.launch {
-                        dataStore.saveIsBiometricAuthOn(false)
-                    }
+                    sharedPreferences.saveIsBiometricAuthOn(false)
                     navController.navigate(ScreensRouter.MainScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
                     }

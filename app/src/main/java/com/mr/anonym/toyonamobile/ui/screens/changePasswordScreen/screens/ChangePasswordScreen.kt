@@ -3,15 +3,12 @@ package com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,11 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.components.ChangePasswordFields
 import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.components.ChangePasswordTopBar
-import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -49,6 +47,8 @@ fun ChangePasswordScreen(
 ) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     val dataStore = DataStoreInstance(context)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
@@ -85,46 +85,47 @@ fun ChangePasswordScreen(
         else -> Color.White
     }
 
-    val oldPasswordValue = rememberSaveable { mutableStateOf( "" ) }
-    val oldPasswordError = rememberSaveable { mutableStateOf( false ) }
-    val newPasswordValue = rememberSaveable { mutableStateOf( "" ) }
-    val newPasswordError = rememberSaveable { mutableStateOf( false ) }
-    val confirmNewPasswordValue = rememberSaveable { mutableStateOf( "" ) }
-    val confirmNewPasswordError = rememberSaveable { mutableStateOf( false ) }
+    val oldPassword = dataStore.getPassword().collectAsState("")
+    val oldPasswordValue = rememberSaveable { mutableStateOf("") }
+    val oldPasswordError = rememberSaveable { mutableStateOf(false) }
+    val newPasswordValue = rememberSaveable { mutableStateOf("") }
+    val newPasswordError = rememberSaveable { mutableStateOf(false) }
+    val confirmNewPasswordValue = rememberSaveable { mutableStateOf("") }
+    val confirmNewPasswordError = rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
             .imePadding(),
         containerColor = primaryColor,
         contentColor = primaryColor,
-        topBar = { 
+        topBar = {
             ChangePasswordTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 onNavigationClick = { navController.popBackStack() }
             )
         }
-    ) {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(paddingValues)
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.85f)
                     .padding(10.dp)
-            ){
-                Row (
+            ) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
-                        text = "To change password you need to enter an old password and new password then confirm new password",
+                        text = stringResource(R.string.to_change_password_you_need_to_enter_an_old_password_and_new_password_then_confirm_new_password),
                         fontSize = 18.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold,
@@ -156,33 +157,41 @@ fun ChangePasswordScreen(
                     isConfirmPasswordError = confirmNewPasswordError.value
                 )
             }
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.7f)
                     .padding(horizontal = 10.dp),
                 verticalArrangement = Arrangement.Bottom
-            ){
+            ) {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
                     onClick = {
-                        when{
+                        when {
                             oldPasswordValue.value.isNotBlank() &&
                                     oldPasswordValue.value.isNotEmpty() &&
                                     !oldPasswordError.value &&
                                     newPasswordValue.value.isNotEmpty() &&
                                     newPasswordValue.value.isNotBlank() &&
-                                    !newPasswordError.value ->{
-                                        if (newPasswordValue.value == confirmNewPasswordValue.value){
-                                            navController.navigate(ScreensRouter.SecurityScreen.route){
-                                                popUpTo(ScreensRouter.ChangePasswordScreen.route){ inclusive = true }
-                                            }
-                                        }else{
-                                            confirmNewPasswordError.value = true
+                                    !newPasswordError.value -> {
+                                if (
+                                    oldPasswordValue.value == oldPassword.value &&
+                                    newPasswordValue.value == confirmNewPasswordValue.value
+                                    ) {
+                                    coroutineScope.launch {
+                                        dataStore.savePassword(confirmNewPasswordValue.value)
+                                    }
+                                    navController.navigate(ScreensRouter.SecurityScreen.route) {
+                                        popUpTo(ScreensRouter.ChangePasswordScreen.route) {
+                                            inclusive = true
                                         }
                                     }
+                                } else {
+                                    confirmNewPasswordError.value = true
+                                }
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(

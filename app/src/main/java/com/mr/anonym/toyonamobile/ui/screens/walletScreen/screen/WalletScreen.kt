@@ -110,7 +110,21 @@ fun WalletScreen(
             WalletTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                navigationClick = { navController.popBackStack() },
+                navigationClick = {
+                    if (addCardFromDetailsState.value){
+                        coroutineScope.launch {
+                            dataStore.addCardFromDetails(false)
+                        }
+                        navController.navigate(ScreensRouter.DetailsScreen.route){
+                            popUpTo(ScreensRouter.DetailsScreen.route){
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }else{
+                        navController.popBackStack()
+                    }
+                },
                 onActionsClick = { navController.navigate(ScreensRouter.AddCardScreen.route + "/-1") }
             ) 
         }

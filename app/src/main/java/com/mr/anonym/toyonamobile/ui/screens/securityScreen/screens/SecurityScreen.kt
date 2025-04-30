@@ -79,14 +79,14 @@ fun SecurityScreen(
     val isChangePhoneNumberProcess = remember { mutableStateOf(false) }
     val isExitProcess = remember { mutableStateOf(false) }
 
-    val biometricAuthState = dataStore.getBiometricAuthState().collectAsState(false)
-    val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
-    val isFingerprintChecked = remember { mutableStateOf(isBiometricAuthOn.value) }
+    val biometricAuthState = sharedPreferences.getBiometricAuthState()
+    val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
+    val isFingerprintChecked = remember { mutableStateOf(isBiometricAuthOn) }
 
     BackHandler(
         enabled = true
     ) {
-        coroutineScope.launch { dataStore.saveIsBiometricAuthOn(isFingerprintChecked.value) }
+        sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
         navController.popBackStack()
     }
 
@@ -98,9 +98,7 @@ fun SecurityScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationClick = {
-                    coroutineScope.launch {
-                        dataStore.saveIsBiometricAuthOn(isFingerprintChecked.value)
-                    }
+                    sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
                     navController.popBackStack()
                 }
             )
@@ -179,11 +177,7 @@ fun SecurityScreen(
                             isChangePinProcess.value = false
                         },
                         onConfirmClick = {
-                            coroutineScope.launch {
-                                dataStore.saveIsBiometricAuthOn(
-                                    isFingerprintChecked.value
-                                )
-                            }
+                            sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
                             sharedPreferences.changePinProcess(true)
                             navController.navigate(ScreensRouter.NewPinScreen.route)
                             isChangePinProcess.value = false
@@ -191,6 +185,7 @@ fun SecurityScreen(
                         onDismissRequest = { isChangePinProcess.value = false }
                     )
                 }
+
                 isChangePasswordProcess.value -> {
                     SecurityDialog(
                         secondaryColor = secondaryColor,
@@ -199,18 +194,15 @@ fun SecurityScreen(
                         title = stringResource(R.string.are_you_want_to_change_password),
                         onDismissClick = { isChangePasswordProcess.value = false },
                         onConfirmClick = {
-                            coroutineScope.launch {
-                                dataStore.saveIsBiometricAuthOn(
-                                    isFingerprintChecked.value
-                                )
-                            }
+                            sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
                             navController.navigate(ScreensRouter.ChangePasswordScreen.route)
                             isChangePasswordProcess.value = false
                         },
                         onDismissRequest = { isChangePasswordProcess.value = false }
                     )
                 }
-                isExitProcess.value->{
+
+                isExitProcess.value -> {
                     SecurityDialog(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
@@ -218,13 +210,11 @@ fun SecurityScreen(
                         title = stringResource(R.string.are_you_sure_to_logout_from_this_account),
                         onDismissClick = { isExitProcess.value = false },
                         onConfirmClick = {
-                            coroutineScope.launch {
-                                dataStore.saveIsBiometricAuthOn(false)
-                                dataStore.saveBiometricAuthState(false)
-                            }
+                            sharedPreferences.saveIsBiometricAuthOn(false)
+                            sharedPreferences.saveBiometricAuthState(false)
                             sharedPreferences.saveIsLoggedIn(false)
-                            navController.navigate(ScreensRouter.LoginScreen.route){
-                                popUpTo(navController.graph.startDestinationId){
+                            navController.navigate(ScreensRouter.LoginScreen.route) {
+                                popUpTo(navController.graph.startDestinationId) {
                                     inclusive = true
                                 }
                                 launchSingleTop = true
@@ -232,7 +222,7 @@ fun SecurityScreen(
                             isExitProcess.value = false
                         },
                         onDismissRequest = { isExitProcess.value = false }
-                    ) 
+                    )
                 }
             }
         }

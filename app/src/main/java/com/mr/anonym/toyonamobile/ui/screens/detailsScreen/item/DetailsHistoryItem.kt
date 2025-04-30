@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.presentation.extensions.moneyType
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
 
@@ -207,7 +208,7 @@ fun DetailsHistoryItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "9860030160619356",
+                            text = "9860030160619356".cardNumberFormatter(),
                             color = secondaryColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -220,7 +221,7 @@ fun DetailsHistoryItem(
                     DetailsPriceFields(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(55.dp),
+                            .height(100.dp),
                         secondaryColor = secondaryColor,
                         fiverdColor = fiverdColor,
                         value = priceHistoryValue.value,

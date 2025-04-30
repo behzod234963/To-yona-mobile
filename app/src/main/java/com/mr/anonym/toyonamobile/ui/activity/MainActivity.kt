@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
@@ -32,13 +33,13 @@ import com.mr.anonym.toyonamobile.presentation.utils.BiometricAuthManager
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricResult
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.utils.shareTransfer
-import com.mr.anonym.toyonamobile.ui.activity.viewModel.MainActivityViewModel
 import com.mr.anonym.toyonamobile.ui.theme.ToyonaMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.mr.anonym.toyonamobile.R
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -49,8 +50,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var localeConfig: LocaleConfigurations
     @Inject lateinit var sharedPreferences: SharedPreferencesInstance
     @Inject lateinit var dataStore: DataStoreInstance
-    private val viewModel: MainActivityViewModel by viewModels()
-    var isScanning: State<Boolean>  = mutableStateOf( false )
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,10 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         enableEdgeToEdge()
         setContent {
-
             val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
             val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-
             ToyonaMobileTheme(
                 darkTheme =
                 when{
@@ -80,8 +77,10 @@ class MainActivity : AppCompatActivity() {
                 NavGraph(navController)
                 val coroutineScope = rememberCoroutineScope()
                 val isStateOnPause = remember { mutableStateOf(false) }
-                val biometricAuthState = dataStore.getBiometricAuthState().collectAsState(false)
-                val isBiometricAuthOn = dataStore.getIsBiometricAuthOn().collectAsState(false)
+                val biometricAuthState = sharedPreferences.getBiometricAuthState()
+                val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
+                val showBiometricAuthState = dataStore.showBiometricAuthManuallyState().collectAsState(false)
+                val openSecurityContentState = dataStore.openSecurityContentState().collectAsState(false)
                 val isBiometricAuthSuccess = remember { mutableStateOf(false) }
                 val biometricResult by promptManager.promptResult.collectAsState(null)
                 val enrollLauncher = rememberLauncherForActivityResult(
@@ -95,24 +94,41 @@ class MainActivity : AppCompatActivity() {
                     }
                 )
                 LaunchedEffect(
-                    isBiometricAuthOn.value,
-                    biometricAuthState.value,
-                    isBiometricAuthSuccess.value
+                    isBiometricAuthOn,
+                    biometricAuthState,
+                    isBiometricAuthSuccess.value,
+                    showBiometricAuthState.value
                 ) {
-                    if (isBiometricAuthOn.value && biometricAuthState.value && !isBiometricAuthSuccess.value) {
+                    if (isBiometricAuthOn && biometricAuthState && !isBiometricAuthSuccess.value || showBiometricAuthState.value) {
+                        coroutineScope.launch {
+                            dataStore.showBiometricAuthManually(false)
+                        }
                         promptManager.showBiometricPrompt(
-                            title = "Please go fuck",
-                            description = "ABCDEFG",
-                            negativeButtonText = "Cancel"
+                            title = getString(R.string.please_verify),
+                            description = "",
+                            negativeButtonText = getString(R.string.cancel)
                         )
                     }
                 }
                 LaunchedEffect(biometricResult) {
                     when (biometricResult) {
                         is BiometricResult.AuthenticationSuccess -> {
-                            isBiometricAuthSuccess.value = true
-                            dataStore.saveBiometricAuthState(false)
-                            navController.navigate(ScreensRouter.MainScreen.route)
+                            if (!openSecurityContentState.value){
+                                coroutineScope.launch {
+                                    dataStore.showBiometricAuthManually(false)
+                                }
+                                isBiometricAuthSuccess.value = true
+                                sharedPreferences.saveBiometricAuthState(false)
+                                navController.navigate(ScreensRouter.MainScreen.route)
+                            }else{
+                                coroutineScope.launch {
+                                    dataStore.showBiometricAuthManually(false)
+                                    dataStore.openSecurityContent(false)
+                                }
+                                isBiometricAuthSuccess.value = true
+                                sharedPreferences.saveBiometricAuthState(false)
+                                navController.navigate(ScreensRouter.SecurityScreen.route)
+                            }
                         }
 
                         is BiometricResult.AuthenticationError -> {
@@ -150,18 +166,20 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         CoroutineScope(Dispatchers.Default).launch {
-            dataStore.saveBiometricAuthState(true)
             dataStore.isPasswordForgotten(false)
+            dataStore.openSecurityContent(false)
         }
+        sharedPreferences.saveBiometricAuthState(true)
         sharedPreferences.addCardProcess(false)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         sharedPreferences.addCardProcess(false)
+        sharedPreferences.saveBiometricAuthState(true)
         CoroutineScope(Dispatchers.Default).launch {
-            dataStore.saveBiometricAuthState(true)
             dataStore.isPasswordForgotten(false)
+            dataStore.openSecurityContent(false)
         }
     }
 }

@@ -136,7 +136,7 @@ fun MonitoringScreen(
     val monitoringList = listOf<MonitoringModel>(
         MonitoringModel(
             id = 1,
-            monthIndex = 3,
+            monthIndex = 1,
             eventName = "Wedding",
             eventOwnerName = "Bekhzod",
             eventOwnerLastName = "Khudaybergenov",

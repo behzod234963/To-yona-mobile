@@ -30,7 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.PartyModel
-import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizer
+import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
 
 @Composable
 fun MainScreenItem(
@@ -87,13 +87,13 @@ fun MainScreenItem(
                         verticalArrangement = Arrangement.Center
                     ){
                         Text(
-                            text = partyModel.type.stringEqualizer(),
+                            text = partyModel.type.stringEqualizerForMainScreen(),
                             color = secondaryColor,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = partyModel.type.stringEqualizer(),
+                            text = partyModel.type.stringEqualizerForMainScreen(),
                             color = tertiaryColor,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold

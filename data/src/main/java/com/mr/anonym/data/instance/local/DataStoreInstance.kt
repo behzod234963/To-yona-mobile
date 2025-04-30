@@ -1,6 +1,7 @@
 package com.mr.anonym.data.instance.local
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -14,19 +15,6 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("dataStore")
 class DataStoreInstance(private val context: Context) {
-
-    suspend fun saveBiometricAuthState(state: Boolean){
-        val key = booleanPreferencesKey("bioState")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getBiometricAuthState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("bioState")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
     suspend fun savePinCode(pinCode: String){
         val key = stringPreferencesKey("pinCode")
         context.dataStore.edit {
@@ -37,18 +25,6 @@ class DataStoreInstance(private val context: Context) {
         val key = stringPreferencesKey("pinCode")
         return context.dataStore.data.map {
             it[key]?:""
-        }
-    }
-    suspend fun saveIsBiometricAuthOn(state: Boolean){
-        val key = booleanPreferencesKey("BiometricAuthOff")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getIsBiometricAuthOn(): Flow<Boolean>{
-        val key = booleanPreferencesKey("BiometricAuthOff")
-        return context.dataStore.data.map {
-            it[key]?:false
         }
     }
     suspend fun savePhoneNumber(phoneNumber: String){
@@ -191,6 +167,30 @@ class DataStoreInstance(private val context: Context) {
     }
     fun addCardFromDetailsState(): Flow<Boolean>{
         val key = booleanPreferencesKey("addCardFromDetails")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
+    suspend fun showBiometricAuthManually(state: Boolean){
+        val key = booleanPreferencesKey("showBiometricAuthManually")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun showBiometricAuthManuallyState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("showBiometricAuthManually")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
+    suspend fun openSecurityContent(state: Boolean){
+        val key = booleanPreferencesKey("openSecurityContent")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun openSecurityContentState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("openSecurityContent")
         return context.dataStore.data.map {
             it[key]?:false
         }

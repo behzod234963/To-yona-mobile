@@ -3,6 +3,7 @@ package com.mr.anonym.data.instance.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -55,12 +56,6 @@ class SharedPreferencesInstance(private val context: Context) {
     fun editProfileProcessState(): Boolean{
         return sharedPreferences.getBoolean("editProfileProcess",false)
     }
-    fun openSecurityContent(state: Boolean){
-        sharedPreferences.edit { putBoolean("openSecurityContent",state) }
-    }
-    fun openSecurityContentState(): Boolean{
-        return sharedPreferences.getBoolean("openSecurityContent",false)
-    }
     fun changePinProcess(state: Boolean){
         sharedPreferences.edit { putBoolean("changePinProcess",state) }
     }
@@ -74,7 +69,6 @@ class SharedPreferencesInstance(private val context: Context) {
     fun getAvatar(): Int{
         return sharedPreferences.getInt("avatar",R.drawable.ic_default_avatar)
     }
-
     fun saveFirstname(firstname: String){
         sharedPreferences.edit { putString("firstname",firstname) }
     }
@@ -87,5 +81,18 @@ class SharedPreferencesInstance(private val context: Context) {
     }
     fun getLastname(): String{
         return sharedPreferences.getString("lastname","")?:""
+    }
+
+    fun saveBiometricAuthState(state: Boolean){
+        sharedPreferences.edit { putBoolean("bioState",state) }
+    }
+    fun getBiometricAuthState(): Boolean{
+        return sharedPreferences.getBoolean("bioState",false)
+    }
+    fun saveIsBiometricAuthOn(state: Boolean){
+        sharedPreferences.edit { putBoolean("BiometricAuthOff",state) }
+    }
+    fun getIsBiometricAuthOn(): Boolean{
+        return sharedPreferences.getBoolean("BiometricAuthOff",false)
     }
 }

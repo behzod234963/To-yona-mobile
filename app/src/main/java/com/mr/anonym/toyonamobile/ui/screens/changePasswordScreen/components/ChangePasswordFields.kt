@@ -69,10 +69,7 @@ fun ChangePasswordFields(
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(
-                modifier = Modifier
-                    .padding(start = 10.dp),
                 text = stringResource(R.string.old_password),
-                fontSize = 14.sp
             )
         },
         trailingIcon = {
@@ -117,10 +114,7 @@ fun ChangePasswordFields(
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(
-                modifier = Modifier
-                    .padding(start = 10.dp),
                 text = stringResource(R.string.new_password),
-                fontSize = 14.sp
             )
         },
         trailingIcon = {
@@ -165,10 +159,7 @@ fun ChangePasswordFields(
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(
-                modifier = Modifier
-                    .padding(start = 10.dp),
                 text = stringResource(R.string.confirm_new_password),
-                fontSize = 14.sp
             )
         },
         trailingIcon = {

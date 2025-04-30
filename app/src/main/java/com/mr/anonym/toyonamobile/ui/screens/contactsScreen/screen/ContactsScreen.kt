@@ -1,6 +1,8 @@
 package com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.provider.ContactsContract
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.domain.model.FriendsModel
+import com.mr.anonym.toyonamobile.presentation.utils.OpenNewContactMethod
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
+import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.components.ContactsFAB
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.components.ContactsTopBar
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.item.ContactsItem
 
@@ -74,6 +78,8 @@ fun ContactsScreen(
     val searchBarValue = rememberSaveable { mutableStateOf("") }
     val showSearchBar = rememberSaveable { mutableStateOf(false) }
 
+    val contactsLauncher = OpenNewContactMethod(context)
+
     val contactList = listOf<FriendsModel>(
         FriendsModel(
             id = 1,
@@ -116,6 +122,17 @@ fun ContactsScreen(
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
+        floatingActionButton = {
+            ContactsFAB(
+                primaryColor = primaryColor,
+                quaternaryColor = quaternaryColor
+            ) {
+                val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
+                    type = ContactsContract.RawContacts.CONTENT_TYPE
+                }
+                contactsLauncher.launch(intent)
+            }
+        },
         topBar = {
             ContactsTopBar(
                 primaryColor = primaryColor,

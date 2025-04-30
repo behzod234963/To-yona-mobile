@@ -54,7 +54,7 @@
     <string name="requisites">Реквизиты</string>
     <string name="card_holder_name">Имя владельца</string>
     <string name="card_number">Номер карты</string>
-    <string name="more_details">More details</string>
+    <string name="more_details">Подробнее</string>
     <string name="my_events">Мои мероприятия</string>
     <string name="create_event">Создать мероприятия</string>
     <string name="wedding">Свадьба</string>
@@ -136,4 +136,8 @@
     <string name="the_field_must_not_be_empty_or_can_contain_only_digits">Поля должен содержать только цифр и не должно быть пустым </string>
     <string name="transfer_amount">Сумма перевода</string>
     <string name="successfully">Успешно!</string>
+    <string name="please_verify">Подтвердите личность</string>
+    <string name="to_change_password_you_need_to_enter_an_old_password_and_new_password_then_confirm_new_password">
+        Чтобы изменить пароль сначала вам надо ввести старый пароль,потом новый пароль и подтвердить новый пароль.
+    </string>
 </resources>

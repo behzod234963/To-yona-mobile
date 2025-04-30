@@ -47,10 +47,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
@@ -118,14 +120,14 @@ fun DetailsScreen(
 
     val priceValue = remember { mutableStateOf("") }
 
-    val friendsModel = UserModel(
+    val friendsModel = FriendsModel(
         id = 1,
         name = "Ойбек",
-        surName = "Худайкулов",
+        surname = "Худайкулов",
         phone = "+998973570498",
         cardNumber = "9860030160619356",
-        password = "",
-        dateTime = ""
+        userId = 1,
+        datetime = "01.01.1900",
     )
     val partyModel = PartyModel(
         id = 1,
@@ -160,14 +162,18 @@ fun DetailsScreen(
 
     val showTransferDetails = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    coroutineScope.launch { bottomSheetState.hide() }
     val isExpanded = remember { mutableStateOf(false) }
     val isPriceFieldEnabled = remember { mutableStateOf(false) }
     val receiverCardNumber = "000111122223333"
     val senderCardNumber = viewModel.senderCard
     val cards = viewModel.cards
     val priceFieldError = rememberSaveable { mutableStateOf(false) }
-    val showCheckDetails = rememberSaveable { mutableStateOf( false ) }
+    val showCheckDetails = rememberSaveable { mutableStateOf(false) }
+
+    val priceHistoryValue = rememberSaveable { mutableStateOf("") }
+    val priceHistoryValueError = rememberSaveable { mutableStateOf(false) }
+    val showHistoryTransferDetails = rememberSaveable { mutableStateOf(false) }
+    val showHistoryTransferCheck = rememberSaveable { mutableStateOf(false) }
 
     val userModel = UserModel(
         id = 1,
@@ -183,7 +189,7 @@ fun DetailsScreen(
         userId = userModel.id,
         sender = userModel.cardNumber,
         receiver = friendsModel.cardNumber,
-        price = priceValue.value.toDouble(),
+        price = if (priceValue.value.isEmpty()) 0.0 else priceValue.value.toDouble(),
         dateTime = "30.04.2025"
     )
 
@@ -272,6 +278,7 @@ fun DetailsScreen(
                                         .fillMaxSize()
                                         .padding(horizontal = 10.dp)
                                 ) {
+//                                    Event content
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -293,6 +300,7 @@ fun DetailsScreen(
                                     Spacer(Modifier.height(5.dp))
                                     HorizontalDivider()
                                     Spacer(Modifier.height(10.dp))
+//                                    Event date and time content
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -318,6 +326,7 @@ fun DetailsScreen(
                                     Spacer(Modifier.height(5.dp))
                                     HorizontalDivider()
                                     Spacer(Modifier.height(10.dp))
+//                                    Requisites content
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -331,6 +340,7 @@ fun DetailsScreen(
                                         )
                                     }
                                     Spacer(Modifier.height(10.dp))
+//                                    Cardholder content
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -356,6 +366,7 @@ fun DetailsScreen(
                                     Spacer(Modifier.height(5.dp))
                                     HorizontalDivider()
                                     Spacer(Modifier.height(10.dp))
+//                                    Card number content
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -371,7 +382,7 @@ fun DetailsScreen(
                                             fontWeight = FontWeight.SemiBold
                                         )
                                         Text(
-                                            text = receiverCardNumber.cardNumberSeparator(),
+                                            text = receiverCardNumber.cardNumberFormatter(),
                                             color = secondaryColor,
                                             fontSize = 16.sp,
                                             fontWeight = FontWeight.SemiBold,
@@ -385,7 +396,7 @@ fun DetailsScreen(
                                 DetailsPriceFields(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(if (priceValue.value.isEmpty()) 100.dp else 100.dp),
+                                        .height(100.dp),
                                     secondaryColor = secondaryColor,
                                     fiverdColor = fiverdColor,
                                     value = priceValue.value,
@@ -407,6 +418,7 @@ fun DetailsScreen(
                                 }
                             }
                         }
+
                         1 -> {
                             LazyColumn(
                                 modifier = Modifier
@@ -419,8 +431,11 @@ fun DetailsScreen(
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
                                         partyModel = model,
-                                        priceFieldError = priceFieldError.value,
-                                        onTransferClick = { }
+                                        priceFieldError = priceHistoryValueError.value,
+                                        onTransferClick = { price ->
+                                            priceHistoryValue.value = price
+                                            showHistoryTransferDetails.value = true
+                                        }
                                     )
                                 }
                             }
@@ -428,72 +443,140 @@ fun DetailsScreen(
                     }
                 }
             )
-        }
-        if (showTransferDetails.value) {
-            TransferDetailsBottomSheet(
-                primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
-                tertiaryColor = tertiaryColor,
-                quaternaryColor = quaternaryColor,
-                state = bottomSheetState,
-                onConfirmButtonClick = {
-                    showCheckDetails.value = true
-                },
-                onDismissRequest = {
-                    showTransferDetails.value = false
-                    isPriceFieldEnabled.value = false
-                },
-                receiverCardNumber = receiverCardNumber,
-                senderCardNumber = senderCardNumber.value,
-                onSelectCardClick = {
-                    isExpanded.value = true
-                },
+            if (showTransferDetails.value) {
+                TransferDetailsBottomSheet(
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    quaternaryColor = quaternaryColor,
+                    state = bottomSheetState,
+                    onConfirmButtonClick = {
+                        showCheckDetails.value = true
+                    },
+                    onDismissRequest = {
+                        showTransferDetails.value = false
+                        if (bottomSheetState.isVisible) {
+                            coroutineScope.launch { bottomSheetState.hide() }
+                        }
+                        isPriceFieldEnabled.value = false
+                    },
+                    receiverCardNumber = receiverCardNumber,
+                    senderCardNumber = senderCardNumber.value,
+                    onSelectCardClick = {
+                        isExpanded.value = true
+                    },
 //                Price field properties
-                isFieldEnabled = isPriceFieldEnabled.value,
-                priceValue = priceValue.value,
-                onValueChange = {
-                    priceValue.value = it
-                },
-                onTrailingIconClick = {
-                    isPriceFieldEnabled.value = true
-                },
+                    isFieldEnabled = isPriceFieldEnabled.value,
+                    priceValue = priceValue.value,
+                    onValueChange = {
+                        priceValue.value = it
+                    },
+                    onTrailingIconClick = {
+                        isPriceFieldEnabled.value = true
+                    },
 //                DropDown menu properties
-                userCards = cards.value,
-                onDropDownDismissRequest = {
-                    isExpanded.value = false
-                },
-                onItemClick = {
-                    viewModel.changeSenderCard(it)
-                    isExpanded.value = false
-                },
-                onAddCardClick = {
-                    isExpanded.value = false
-                    coroutineScope.launch {
-                        dataStore.addCardFromDetails(true)
+                    userCards = cards.value,
+                    onDropDownDismissRequest = {
+                        isExpanded.value = false
+                    },
+                    onItemClick = {
+                        viewModel.changeSenderCard(it)
+                        isExpanded.value = false
+                    },
+                    onAddCardClick = {
+                        isExpanded.value = false
+                        coroutineScope.launch {
+                            dataStore.addCardFromDetails(true)
+                        }
+                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                    },
+                    isExpanded = isExpanded.value
+                )
+            }
+            if (showCheckDetails.value) {
+                TransferCheckDialog(
+                    secondaryColor = secondaryColor,
+                    quaternaryColor = quaternaryColor,
+                    userModel = userModel,
+                    friendsModel = friendsModel,
+                    transactionsModel = transactionsModel,
+                    onDismissClick = { showCheckDetails.value = false },
+                    onConfirmClick = {
+                        showCheckDetails.value = false
                     }
-                    navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
-                },
-                isExpanded = isExpanded.value
-            )
-        }
-        if (showCheckDetails.value){
-            TransferCheckDialog(
-                secondaryColor = secondaryColor,
-                quaternaryColor = quaternaryColor,
-                userModel = TODO(),
-                friendsModel = TODO(),
-                transactionsModel = TODO(),
-                onDismissClick = TODO(),
-                onConfirmClick = TODO()
-            )
+                )
+            }
+            if (showHistoryTransferDetails.value){
+                TransferDetailsBottomSheet(
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    quaternaryColor = quaternaryColor,
+                    state = bottomSheetState,
+                    isFieldEnabled = isPriceFieldEnabled.value,
+                    priceValue = priceHistoryValue.value,
+                    onValueChange = {
+                        priceHistoryValue.value = it
+                    },
+                    onTrailingIconClick = {
+                        isPriceFieldEnabled.value = true
+                    },
+                    receiverCardNumber = receiverCardNumber,
+                    senderCardNumber = senderCardNumber.value,
+                    onConfirmButtonClick = {
+                        showHistoryTransferCheck.value = true
+                    },
+                    onDismissRequest = {
+                        showHistoryTransferDetails.value = false
+                        if (bottomSheetState.isVisible) {
+                            coroutineScope.launch { bottomSheetState.hide() }
+                        }
+                        isPriceFieldEnabled.value = false
+                    },
+                    onSelectCardClick = {
+                        isExpanded.value = true
+                    },
+                    userCards = cards.value,
+                    onDropDownDismissRequest = {
+                        isExpanded.value = false
+                    },
+                    onItemClick = {
+                        viewModel.changeSenderCard(it)
+                        isExpanded.value = false
+                    },
+                    onAddCardClick = {
+                        isExpanded.value = false
+                        coroutineScope.launch {
+                            dataStore.addCardFromDetails(true)
+                        }
+                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                    },
+                    isExpanded = isExpanded.value
+                )
+            }
+            if (showHistoryTransferCheck.value){
+                TransferCheckDialog(
+                    secondaryColor = secondaryColor,
+                    quaternaryColor = quaternaryColor,
+                    userModel = userModel,
+                    friendsModel = friendsModel,
+                    transactionsModel = transactionsModel,
+                    onDismissClick = {
+                        showHistoryTransferCheck.value = false
+                    },
+                    onConfirmClick = {
+                        showHistoryTransferCheck.value = false
+                    }
+                )
+            }
         }
     }
 }
 
-@Preview
-@Composable
-private fun PreviewDetailsScreen() {
-    DetailsScreen(
-        NavController(LocalContext.current)
-    )
-}
+    @Preview
+    @Composable
+    private fun PreviewDetailsScreen() {
+        DetailsScreen(
+            NavController(LocalContext.current)
+        )
+    }

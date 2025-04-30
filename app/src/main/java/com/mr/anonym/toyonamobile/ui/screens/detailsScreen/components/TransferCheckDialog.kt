@@ -8,12 +8,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,6 +32,11 @@ import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
+import com.mr.anonym.toyonamobile.presentation.extensions.moneySeparator
+import com.mr.anonym.toyonamobile.presentation.extensions.moneyType
+import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForDetails
 
 @Composable
 fun TransferCheckDialog(
@@ -38,9 +48,13 @@ fun TransferCheckDialog(
     onDismissClick: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
+    val commission = 500.0
+    val scrollState = rememberScrollState()
     AlertDialog(
         icon = {
             Image(
+                modifier = Modifier
+                    .size(60.dp),
                 painter = painterResource(R.drawable.ic_check),
                 contentDescription = ""
             )
@@ -58,16 +72,20 @@ fun TransferCheckDialog(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .verticalScroll(state = scrollState),
                 verticalArrangement = Arrangement.Center
             ) {
 //                Date time
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.time_of_the_event),
                         fontSize = 16.sp,
                         color = secondaryColor,
@@ -80,121 +98,153 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Amount
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.transfer_amount),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.price.toString(),
+                        text = "${transactionsModel.price.moneyType()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Commission
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.commission),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "500 сум",
+                        text = "${commission.moneyType()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Receiver name
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.receiver_name),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${friendsModel.name} ${friendsModel.surname}",
+                        text = "${friendsModel.name} ${if (friendsModel.surname.length > 10) friendsModel.surname.stringEqualizerForDetails() else friendsModel.surname }",
                         fontSize = 16.sp,
                         color = secondaryColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.End
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Receiver card
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.receiver_card),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.receiver,
+                        text = transactionsModel.receiver.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Sender name
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.sender_name),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${userModel.name} ${userModel.surName}",
+                        text = "${userModel.name} ${if (userModel.surName.length > 10) userModel.surName.stringEqualizerForDetails() else userModel.surName}",
                         fontSize = 16.sp,
                         color = secondaryColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.End
                     )
                 }
+                HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
 //                Sender card
                 Row (
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
                         text = stringResource(R.string.sender_card),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.sender,
+                        text = transactionsModel.sender.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
@@ -223,6 +273,7 @@ fun TransferCheckDialog(
         },
         onDismissRequest = { onDismissClick() },
         properties = DialogProperties(
+            usePlatformDefaultWidth = true,
             dismissOnBackPress = true,
             dismissOnClickOutside = true
         )

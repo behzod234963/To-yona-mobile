@@ -191,6 +191,7 @@ fun NumberCheckScreen(
                                                     cardNumber = cardNumber.value,
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
+                                                    isActive = true
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
@@ -204,6 +205,7 @@ fun NumberCheckScreen(
                                                     cardNumber = cardNumber.value,
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
+                                                    isActive = true
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
@@ -348,6 +350,7 @@ fun NumberCheckScreen(
                                                 cardNumber = cardNumber.value,
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
+                                                isActive = true
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
@@ -361,6 +364,7 @@ fun NumberCheckScreen(
                                                 cardNumber = cardNumber.value,
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
+                                                isActive = true
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)

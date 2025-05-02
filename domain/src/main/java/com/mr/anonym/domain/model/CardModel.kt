@@ -7,8 +7,11 @@ import androidx.room.PrimaryKey
 data class CardModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
+    val bankName: String = "",
+    val paymentSystem: String = "",
     val cardNumber: String = "",
     val cardHolder: String = "",
     val expiryDate: String = "",
-    val cvv: String = ""
+    val cvv: String = "",
+    val isActive: Boolean = true
 )

@@ -139,4 +139,10 @@
     <string name="to_change_password_you_need_to_enter_an_old_password_and_new_password_then_confirm_new_password">
         Parolni o\'zgratirish uchun birinchi eski keyin yangi parolni va yangi parolni tasdiqlashingiz kerak.
     </string>
+    <string name="no_data">Ma\'lumot yo\'q</string>
+    <string name="add_cart">Karta qo\'shish</string>
+    <string name="card_data">Karta ma\'lumotlari</string>
+    <string name="add_other_payment_methods">Boshqa bank kartasini qo\'shish</string>
+    <string name="this_card_will_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinadi</string>
+    <string name="this_card_will_not_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinmaydi</string>
 </resources>

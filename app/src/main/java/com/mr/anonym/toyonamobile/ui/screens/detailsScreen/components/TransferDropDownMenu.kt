@@ -35,7 +35,7 @@ fun TransferDropDownMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = stringResource(R.string.add_card),
+                        text = stringResource(R.string.add_cart),
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold

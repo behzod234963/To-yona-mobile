@@ -39,13 +39,16 @@ fun WalletScreen(
 ) {
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope ()
+    val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
     val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+
+    val addCardFromDetailsState = dataStore.addCardFromDetailsState().collectAsState(false)
+    val addCardFromAddEvent = dataStore.addCardFromAddEventState().collectAsState(false)
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
@@ -79,28 +82,41 @@ fun WalletScreen(
     }
 
     val whiteGreen = Color(5, 114, 5, 255)
-    val cardBackgroundBrush = Brush.linearGradient(colors = listOf(whiteGreen,fiverdColor))
+    val cardBackgroundBrush = Brush.linearGradient(colors = listOf(whiteGreen, fiverdColor))
 
-    val showDeleteDialog = rememberSaveable { mutableStateOf( false ) }
+    val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
 
     val cards = viewModel.cards
-    val cardModel = remember { mutableStateOf(CardModel() ) }
+    val cardModel = remember { mutableStateOf(CardModel()) }
     sharedPreferences.addCardProcess(false)
-    val addCardFromDetailsState = dataStore.addCardFromDetailsState().collectAsState(false)
 
     BackHandler {
-        if (addCardFromDetailsState.value){
-            coroutineScope.launch {
-                dataStore.addCardFromDetails(false)
-            }
-            navController.navigate(ScreensRouter.DetailsScreen.route){
-                popUpTo(ScreensRouter.DetailsScreen.route){
-                    inclusive = true
+        when {
+            addCardFromDetailsState.value -> {
+                coroutineScope.launch {
+                    dataStore.addCardFromDetails(false)
                 }
-                launchSingleTop = true
+                navController.navigate(ScreensRouter.DetailsScreen.route) {
+                    popUpTo(ScreensRouter.DetailsScreen.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
             }
-        }else{
-            navController.popBackStack()
+            addCardFromAddEvent.value->{
+                coroutineScope.launch {
+                    dataStore.addCardFromAddEvent(false)
+                }
+                navController.navigate(ScreensRouter.AddEventScreen.route) {
+                    popUpTo(ScreensRouter.AddEventScreen.route) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+            else -> {
+                navController.popBackStack()
+            }
         }
     }
     Scaffold(
@@ -111,25 +127,39 @@ fun WalletScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationClick = {
-                    if (addCardFromDetailsState.value){
-                        coroutineScope.launch {
-                            dataStore.addCardFromDetails(false)
-                        }
-                        navController.navigate(ScreensRouter.DetailsScreen.route){
-                            popUpTo(ScreensRouter.DetailsScreen.route){
-                                inclusive = true
+                    when {
+                        addCardFromDetailsState.value -> {
+                            coroutineScope.launch {
+                                dataStore.addCardFromDetails(false)
                             }
-                            launchSingleTop = true
+                            navController.navigate(ScreensRouter.DetailsScreen.route) {
+                                popUpTo(ScreensRouter.DetailsScreen.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
                         }
-                    }else{
-                        navController.popBackStack()
+                        addCardFromAddEvent.value->{
+                            coroutineScope.launch {
+                                dataStore.addCardFromAddEvent(false)
+                            }
+                            navController.navigate(ScreensRouter.AddEventScreen.route) {
+                                popUpTo(ScreensRouter.AddEventScreen.route) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                        else -> {
+                            navController.popBackStack()
+                        }
                     }
                 },
                 onActionsClick = { navController.navigate(ScreensRouter.AddCardScreen.route + "/-1") }
-            ) 
+            )
         }
     ) { paddingValues ->
-        if (showDeleteDialog.value){
+        if (showDeleteDialog.value) {
             WalletScreenDialog(
                 secondaryColor = secondaryColor,
                 quaternaryColor = quaternaryColor,
@@ -142,13 +172,13 @@ fun WalletScreen(
                 onDismissRequest = { showDeleteDialog.value = false }
             )
         }
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(10.dp)
-        ){
-            items(cards.value){model->
+        ) {
+            items(cards.value) { model ->
                 WalletScreenItem(
                     secondaryColor = secondaryColor,
                     brush = cardBackgroundBrush,

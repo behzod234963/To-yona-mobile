@@ -139,4 +139,9 @@
     <string name="to_change_password_you_need_to_enter_an_old_password_and_new_password_then_confirm_new_password">
         To change password you need to enter an old password and new password,then confirm new password.
     </string>
+    <string name="no_data">No data</string>
+    <string name="card_data">Card data</string>
+    <string name="add_other_payment_methods">Add other bank card</string>
+    <string name="this_card_will_be_shown_in_your_events">This card will be shown in your events</string>
+    <string name="this_card_will_not_be_shown_in_your_events">This card will not be shown in your events</string>
 </resources>

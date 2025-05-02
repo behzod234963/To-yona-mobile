@@ -1,8 +1,5 @@
-package com.mr.anonym.domain.repository
+package com.mr.anonym.domain.repository.local
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
 import com.mr.anonym.domain.model.NotificationsModel
 import kotlinx.coroutines.flow.Flow
 

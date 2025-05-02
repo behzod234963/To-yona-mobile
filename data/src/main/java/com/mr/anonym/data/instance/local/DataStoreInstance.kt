@@ -195,4 +195,16 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
+    suspend fun addCardFromAddEvent(state: Boolean){
+        val key = booleanPreferencesKey("addCardFromAddEvent")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun addCardFromAddEventState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("addCardFromAddEvent")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
 }

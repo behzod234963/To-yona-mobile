@@ -1,17 +1,16 @@
 package com.mr.anonym.toyonamobile.di.module
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
-import com.mr.anonym.data.implementations.CardRepositoryImpl
-import com.mr.anonym.data.implementations.NotificationsRepositoryImpl
+import com.mr.anonym.data.implementations.local.CardRepositoryImpl
+import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.data.instance.local.room.CardDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
-import com.mr.anonym.domain.repository.CardRepository
-import com.mr.anonym.domain.repository.NotificationsRepository
+import com.mr.anonym.domain.repository.local.CardRepository
+import com.mr.anonym.domain.repository.local.NotificationsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

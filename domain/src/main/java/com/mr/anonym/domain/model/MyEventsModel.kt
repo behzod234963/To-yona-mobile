@@ -1,5 +1,7 @@
 package com.mr.anonym.domain.model
 
+import androidx.room.Entity
+
 data class MyEventsModel(
     val eventStatus: Boolean,
     val eventType: String,

@@ -4,9 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.MonitoringModel
+import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.domain.model.NotificationsModel
 
-@Database(entities = [NotificationsModel::class, CardModel::class], version = 1)
+@Database(entities = [NotificationsModel::class, CardModel::class,], version = 1)
 abstract class RoomInstance : RoomDatabase(){
 
     abstract val notificationsDAO: NotificationsDAO

@@ -140,4 +140,9 @@
     <string name="to_change_password_you_need_to_enter_an_old_password_and_new_password_then_confirm_new_password">
         Чтобы изменить пароль сначала вам надо ввести старый пароль,потом новый пароль и подтвердить новый пароль.
     </string>
+    <string name="no_data">Нет данных</string>
+    <string name="card_data">Данные карты</string>
+    <string name="add_other_payment_methods">Добавить другую банковскую карту</string>
+    <string name="this_card_will_be_shown_in_your_events">Данная карта будет видна в ваших событиях</string>
+    <string name="this_card_will_not_be_shown_in_your_events">Данная карта не будет видна в ваших событиях</string>
 </resources>

@@ -13,22 +13,30 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.twotone.AddCircle
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,16 +49,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventCardField
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventDropDownMenu
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventFAB
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventOtherField
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
+import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
+import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel.AddEventViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -59,9 +70,11 @@ import java.util.Locale
 @Composable
 fun AddEventScreen(
     navController: NavController,
+    viewModel: AddEventViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val calendarInstance = Calendar.getInstance()
     val dataStore = DataStoreInstance(context)
@@ -135,12 +148,11 @@ fun AddEventScreen(
 
     val eventDate = rememberSaveable { mutableStateOf("") }
 
-    val cards = listOf<String>(
-        "9860030160619356",
-        "9860030160619350"
-    )
-    val cardValue = rememberSaveable { mutableStateOf(cards[0]) }
-
+    val cards = viewModel.cards
+    val cardValue = viewModel.cardValue
+    val isCardError = rememberSaveable { mutableStateOf(false) }
+    val cardValueIndex = rememberSaveable { mutableStateOf(0) }
+    val scaffoldState = remember { SnackbarHostState() }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -157,7 +169,8 @@ fun AddEventScreen(
                 quaternaryColor = quaternaryColor,
                 onFabClick = { TODO() }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(scaffoldState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -354,7 +367,7 @@ fun AddEventScreen(
                             .fillMaxWidth(),
                     ) {
                         Text(
-                            text = "${startDate.value} , ${endDate.value}",
+                            text = "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}",
                             modifier = Modifier
                                 .padding(start = 10.dp),
                             color = secondaryColor,
@@ -434,33 +447,134 @@ fun AddEventScreen(
             Spacer(Modifier.height(5.dp))
             HorizontalDivider()
             Spacer(Modifier.height(10.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f),
-                    text = stringResource(R.string.card_number),
-                    fontSize = 16.sp,
-                    color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
-                )
-                AddEventCardField(
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    value = cardValue.value.drop(12),
-                    values = cards,
-                    onClick = { string ->
-                        cardValue.value = string
+            if (cards.value.isNotEmpty()){
+                LazyColumn {
+                    items(cards.value) { card ->
+                        Spacer(Modifier.height(5.dp))
+                        HorizontalDivider()
+                        Spacer(Modifier.height(10.dp))
+                        AddEventCardItem(
+                            secondaryColor = secondaryColor,
+                            quaternaryColor = quaternaryColor,
+                            fiverdColor = fiverdColor,
+                            value = card.cardNumber,
+                            isChecked = card.isActive,
+                            onCheckedChange = {
+                                viewModel.updateActiveStatus(card.id ?: -1, status = it)
+                                if (it){
+                                    coroutineScope.launch { 
+                                        scaffoldState.showSnackbar(
+                                            message = context.getString(R.string.this_card_will_be_shown_in_your_events)
+                                        )
+                                    }
+                                }else{
+                                    coroutineScope.launch {
+                                        scaffoldState.showSnackbar(
+                                            message = context.getString(R.string.this_card_will_not_be_shown_in_your_events)
+                                        )
+                                    }
+                                }
+                            },
+                        )
                     }
-                )
+                }
+                Spacer(Modifier.height(5.dp))
+                HorizontalDivider()
+                Spacer(Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_other_payment_methods),
+                        color = tertiaryColor,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(Modifier.height(5.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = tertiaryColor,
+                        contentColor = tertiaryColor
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            dataStore.addCardFromAddEvent(true)
+                        }
+                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                    }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.AddCircle,
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text(
+                            text = stringResource(R.string.add_cart),
+                            fontSize = 16.sp,
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }else{
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.you_have_not_active_card),
+                        color = tertiaryColor,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(Modifier.height(5.dp))
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = tertiaryColor,
+                        contentColor = tertiaryColor
+                    ),
+                    shape = RoundedCornerShape(10.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            dataStore.addCardFromAddEvent(true)
+                        }
+                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                    }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.AddCircle,
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Text(
+                            text = stringResource(R.string.add_cart),
+                            fontSize = 16.sp,
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
             }
-            Spacer(Modifier.height(5.dp))
-            HorizontalDivider()
         }
     }
 }

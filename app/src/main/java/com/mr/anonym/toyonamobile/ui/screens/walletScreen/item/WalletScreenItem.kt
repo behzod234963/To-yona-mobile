@@ -133,7 +133,8 @@ private fun PreviewWalletScreenItem() {
             cardNumber = "9860 0301 6061 9356",
             cardHolder = "BEKHZOD KHUDAYBERGENOV",
             expiryDate = "08/25",
-            cvv = "762"
+            cvv = "762",
+            isActive = true
         ),
         onChangeClick = {  },
         onDeleteClick = {  },

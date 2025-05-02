@@ -9,5 +9,7 @@ data class LocalUseCases(
     val insertCardUseCase:InsertCardUseCase,
     val getCardsUseCase:GetCardsUseCase,
     val getCardByIdUseCase:GetCardByIdUseCase,
-    val deleteCardUseCase:DeleteCardUseCase
+    val deleteCardUseCase:DeleteCardUseCase,
+    val updateActiveStatusUseCase:UpdateActiveStatusUseCase,
+    val getActiveCardsUseCase:GetActiveCardsUseCase
 )

@@ -1,7 +1,7 @@
 package com.mr.anonym.domain.useCases.local
 
 import com.mr.anonym.domain.model.NotificationsModel
-import com.mr.anonym.domain.repository.NotificationsRepository
+import com.mr.anonym.domain.repository.local.NotificationsRepository
 
 class ClearNotificationsUseCase(private val notificationsRepository: NotificationsRepository) {
     suspend operator fun invoke(notifications: List<NotificationsModel>){

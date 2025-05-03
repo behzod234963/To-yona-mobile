@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -52,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventDropDownMenu
@@ -150,6 +149,7 @@ fun AddEventScreen(
 
     val cards = viewModel.cards
     val cardValue = viewModel.cardValue
+    val cardModel = viewModel.card
     val isCardError = rememberSaveable { mutableStateOf(false) }
     val cardValueIndex = rememberSaveable { mutableStateOf(0) }
     val scaffoldState = remember { SnackbarHostState() }
@@ -448,36 +448,23 @@ fun AddEventScreen(
             HorizontalDivider()
             Spacer(Modifier.height(10.dp))
             if (cards.value.isNotEmpty()){
-                LazyColumn {
-                    items(cards.value) { card ->
-                        Spacer(Modifier.height(5.dp))
-                        HorizontalDivider()
-                        Spacer(Modifier.height(10.dp))
-                        AddEventCardItem(
-                            secondaryColor = secondaryColor,
-                            quaternaryColor = quaternaryColor,
-                            fiverdColor = fiverdColor,
-                            value = card.cardNumber,
-                            isChecked = card.isActive,
-                            onCheckedChange = {
-                                viewModel.updateActiveStatus(card.id ?: -1, status = it)
-                                if (it){
-                                    coroutineScope.launch { 
-                                        scaffoldState.showSnackbar(
-                                            message = context.getString(R.string.this_card_will_be_shown_in_your_events)
-                                        )
-                                    }
-                                }else{
-                                    coroutineScope.launch {
-                                        scaffoldState.showSnackbar(
-                                            message = context.getString(R.string.this_card_will_not_be_shown_in_your_events)
-                                        )
-                                    }
-                                }
-                            },
-                        )
-                    }
-                }
+                AddEventCardItem(
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    value = cardValue.value,
+                    cards = cards.value,
+                    onClick = {
+                        viewModel.changeCardModel(it)
+                        viewModel.changeCardValue(it.cardNumber)
+                    },
+                    onAddCardClick = {
+                        coroutineScope.launch {
+                            dataStore.addCardFromAddEvent(true)
+                        }
+                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                    },
+                    cardModel = cardModel.value
+                )
                 Spacer(Modifier.height(5.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(10.dp))

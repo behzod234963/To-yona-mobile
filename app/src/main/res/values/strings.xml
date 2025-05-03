@@ -144,4 +144,5 @@
     <string name="add_other_payment_methods">Add other bank card</string>
     <string name="this_card_will_be_shown_in_your_events">This card will be shown in your events</string>
     <string name="this_card_will_not_be_shown_in_your_events">This card will not be shown in your events</string>
+    <string name="empty">Empty</string>
 </resources>

@@ -145,4 +145,5 @@
     <string name="add_other_payment_methods">Boshqa bank kartasini qo\'shish</string>
     <string name="this_card_will_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinadi</string>
     <string name="this_card_will_not_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinmaydi</string>
+    <string name="empty">Bo\'sh</string>
 </resources>

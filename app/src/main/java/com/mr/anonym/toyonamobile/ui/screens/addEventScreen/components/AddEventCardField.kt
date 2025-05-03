@@ -39,7 +39,7 @@ fun AddEventCardField(
     tertiaryColor: Color,
     value:String,
     values: List<CardModel>,
-    onClick:(String)-> Unit,
+    onClick:(CardModel)-> Unit,
     onAddCardClick:()-> Unit
 ) {
 
@@ -54,7 +54,7 @@ fun AddEventCardField(
         onExpandedChange = { isExpanded.value = !isExpanded.value },
     ) {
         OutlinedTextField(
-            value = value,
+            value = if (values.isNotEmpty()) value.cardNumberFormatter() else value,
             onValueChange = {  },
             readOnly = true,
             modifier = Modifier
@@ -90,7 +90,7 @@ fun AddEventCardField(
                     },
                 )
             }else{
-                values.forEach { string ->
+                values.forEach { card ->
                     DropdownMenuItem(
                         text = {
                             Row (
@@ -99,7 +99,7 @@ fun AddEventCardField(
                                 horizontalArrangement = Arrangement.Center
                             ){
                                 Text(
-                                    text = string.cardNumber.cardNumberFormatter(),
+                                    text = card.cardNumber.cardNumberFormatter(),
                                     fontSize = 14.sp,
                                     color = secondaryColor,
                                     fontWeight = FontWeight.SemiBold
@@ -108,7 +108,7 @@ fun AddEventCardField(
                         },
                         onClick = {
                             isExpanded.value = false
-                            onClick(string.cardNumber)
+                            onClick(card)
                         },
                     )
                 }

@@ -29,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
 
 @Composable
@@ -39,8 +41,9 @@ fun MainScreenItem(
     tertiaryColor: Color,
     sevenrdColor: Color,
     smallFontSize: Int,
-    mediumFontSize: Int,
     partyModel: PartyModel,
+    friendsModel: FriendsModel,
+    showContacts: Boolean,
     onItemClick: () -> Unit
 ) {
     Column {
@@ -82,18 +85,21 @@ fun MainScreenItem(
                         )
                     }
                     Spacer(Modifier.width(2.dp))
-                    Column (
+                    Column(
                         modifier = Modifier,
                         verticalArrangement = Arrangement.Center
-                    ){
+                    ) {
                         Text(
-                            text = partyModel.type.stringEqualizerForMainScreen(),
+                            text = if (showContacts)
+                                "${friendsModel.name} ${friendsModel.surname}".stringEqualizerForMainScreen()
+                            else partyModel.type.stringEqualizerForMainScreen(),
                             color = secondaryColor,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = partyModel.type.stringEqualizerForMainScreen(),
+                            text = if (showContacts) friendsModel.phone.phoneNumberTransformation()
+                            else partyModel.type.stringEqualizerForMainScreen(),
                             color = tertiaryColor,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold
@@ -107,7 +113,7 @@ fun MainScreenItem(
                 Text(
                     modifier = Modifier
                         .padding(end = 5.dp),
-                    text = partyModel.dateTime,
+                    text = if (showContacts) "" else partyModel.dateTime,
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
                     textAlign = TextAlign.Center
@@ -126,7 +132,16 @@ private fun PreviewMainScreen() {
         tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
         sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
         smallFontSize = 16,
-        mediumFontSize = 18,
+        friendsModel = FriendsModel(
+            id = 1,
+            userId = 1,
+            name = "Bekhzod",
+            surname = "Khudaybergenov",
+            phone = "+998973570498",
+            cardNumber = "9860030160619356",
+            datetime = "04.06.1998"
+        ),
+        showContacts = true,
         partyModel = PartyModel(
             id = 1,
             userID = 1,

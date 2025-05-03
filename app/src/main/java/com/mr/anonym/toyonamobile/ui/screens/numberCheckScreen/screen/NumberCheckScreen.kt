@@ -31,7 +31,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,7 +65,6 @@ fun NumberCheckScreen(
 ) {
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
@@ -89,21 +87,7 @@ fun NumberCheckScreen(
         isDarkTheme.value -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
-        else -> Color.LightGray
-    }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
 
     val containerPadding = remember { mutableIntStateOf(10) }
 
@@ -377,15 +361,6 @@ fun NumberCheckScreen(
                                         dataStore.savePhoneNumber(result)
                                     }
                                     navController.navigate(ScreensRouter.RegistrationScreen.route){
-                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
-                                    }
-                                }
-                                isPinForgotten.value->{
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        dataStore.savePhoneNumber(arguments.number)
-                                    }
-                                    sharedPreferences.saveNewPinState(true)
-                                    navController.navigate(ScreensRouter.NewPinScreen.route){
                                         popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
                                     }
                                 }

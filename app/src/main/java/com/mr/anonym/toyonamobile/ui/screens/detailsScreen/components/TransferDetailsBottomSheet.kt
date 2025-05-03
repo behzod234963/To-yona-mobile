@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,58 +91,89 @@ fun TransferDetailsBottomSheet(
                 isFieldEnabled = isFieldEnabled
             )
             Spacer(Modifier.height(10.dp))
-            Text(
-                text = stringResource(R.string.receiver),
-                color = secondaryColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = receiverCardNumber,
-                color = secondaryColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(Modifier.height(5.dp))
-            HorizontalDivider()
-            Spacer(Modifier.height(5.dp))
-            Text(
-                text = stringResource(R.string.sender),
-                color = secondaryColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            )
             Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Bottom
             ){
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                ){
+                    Text(
+                        text = stringResource(R.string.receiver),
+                        color = secondaryColor,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Palankas Tygankas",
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 Text(
-                    text = senderCardNumber,
+                    text = receiverCardNumber.cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Box{
-                    IconButton(
-                        onClick = { onSelectCardClick() }
-                    ) {
-                        Icon(
-                            imageVector = if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            tint = secondaryColor,
-                            contentDescription = ""
+            }
+            Spacer(Modifier.height(5.dp))
+            HorizontalDivider(color = secondaryColor)
+            Spacer(Modifier.height(5.dp))
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ){
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                ){
+                    Text(
+                        text = stringResource(R.string.sender),
+                        color = secondaryColor,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "Palankas Tygankas",
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Row (
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = senderCardNumber.cardNumberFormatter(),
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Box{
+                        IconButton(
+                            onClick = { onSelectCardClick() }
+                        ) {
+                            Icon(
+                                imageVector = if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                tint = secondaryColor,
+                                contentDescription = ""
+                            )
+                        }
+                        TransferDropDownMenu(
+                            primaryColor = primaryColor,
+                            secondaryColor = secondaryColor,
+                            isExpanded = isExpanded,
+                            onDismissRequest = { onDropDownDismissRequest() },
+                            onItemClick = { onItemClick(it) },
+                            userCards = userCards,
+                            onAddCardClick = { onAddCardClick() }
                         )
                     }
-                    TransferDropDownMenu(
-                        primaryColor = primaryColor,
-                        secondaryColor = secondaryColor,
-                        isExpanded = isExpanded,
-                        onDismissRequest = { onDropDownDismissRequest() },
-                        onItemClick = { onItemClick(it) },
-                        userCards = userCards,
-                        onAddCardClick = { onAddCardClick() }
-                    )
                 }
             }
             Spacer(Modifier.height(10.dp))

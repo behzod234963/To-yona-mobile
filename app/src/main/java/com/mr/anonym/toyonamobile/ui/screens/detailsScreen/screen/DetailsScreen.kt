@@ -1,7 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -53,9 +52,7 @@ import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
-import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsScreenTabRow
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferCheckDialog
@@ -73,12 +70,10 @@ fun DetailsScreen(
 ) {
 
     val context = LocalContext.current
-    val activityContext = LocalActivity.current
     val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
-    val permissionController = PermissionController(context)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
     val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
@@ -106,7 +101,6 @@ fun DetailsScreen(
     }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         iSystemTheme.value -> systemSevenrdColor
@@ -136,7 +130,8 @@ fun DetailsScreen(
         cardNumber = "9860030160619356",
         dateTime = "21-22-mart 2025,17:00"
     )
-    val partyList = listOf<PartyModel>(
+
+    val partyList = listOf(
         PartyModel(
             id = 1,
             userID = 1,
@@ -339,7 +334,6 @@ fun DetailsScreen(
                                             fontWeight = FontWeight.SemiBold
                                         )
                                     }
-                                    Spacer(Modifier.height(10.dp))
 //                                    Cardholder content
                                     Row(
                                         modifier = Modifier
@@ -389,7 +383,7 @@ fun DetailsScreen(
                                             textAlign = TextAlign.End
                                         )
                                     }
-                                    Spacer(Modifier.height(5.dp))
+                                    Spacer(Modifier.height(10.dp))
                                     HorizontalDivider()
                                     Spacer(Modifier.height(10.dp))
                                 }
@@ -503,6 +497,12 @@ fun DetailsScreen(
                     onDismissClick = { showCheckDetails.value = false },
                     onConfirmClick = {
                         showCheckDetails.value = false
+                        navController.navigate(ScreensRouter.MainScreen.route){
+                            popUpTo(ScreensRouter.MainScreen.route){
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
                 )
             }

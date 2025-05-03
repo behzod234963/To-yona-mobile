@@ -3,7 +3,6 @@ package com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -45,8 +45,6 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.components.EnterScreenDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,8 +98,6 @@ fun EnterScreen(
     val iconSize = remember { mutableIntStateOf(30) }
 
     val openSecurityContentState = dataStore.openSecurityContentState().collectAsState(false)
-
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
     LaunchedEffect(pinValue.value) {
         if (
@@ -647,19 +643,21 @@ fun EnterScreen(
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                coroutineScope.launch {
-                                    dataStore.isPinForgotten(true)
-                                }
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}")
-                            },
-                        text = stringResource(R.string.forgot_pin_code),
-                        color = sixrdColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    TextButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                dataStore.isPinForgotten(true)
+                            }
+                            navController.navigate(ScreensRouter.LoginScreen.route)
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.forgot_pin_code),
+                            color = sixrdColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

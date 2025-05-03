@@ -27,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,7 +43,6 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.components.EnterScreenDialog
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -55,7 +53,6 @@ fun NewPinScreen(
 ) {
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
@@ -87,19 +84,12 @@ fun NewPinScreen(
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
     val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
 
     val changePinProcessState = sharedPreferences.changePinProcessState()
 
     val pinValueError = remember { mutableStateOf(false) }
     val isPinCodeSetCompleted = remember { mutableStateOf(true) }
 
-    val pinCode = dataStore.getPinCode().collectAsState("")
     val pinValue = remember { mutableStateOf("") }
     val confirmPinValue = remember { mutableStateOf("") }
 

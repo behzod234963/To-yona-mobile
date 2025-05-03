@@ -145,4 +145,5 @@
     <string name="add_other_payment_methods">Добавить другую банковскую карту</string>
     <string name="this_card_will_be_shown_in_your_events">Данная карта будет видна в ваших событиях</string>
     <string name="this_card_will_not_be_shown_in_your_events">Данная карта не будет видна в ваших событиях</string>
+    <string name="empty">Пусто</string>
 </resources>

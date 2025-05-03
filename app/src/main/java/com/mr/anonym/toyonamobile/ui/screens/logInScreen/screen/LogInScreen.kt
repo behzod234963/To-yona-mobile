@@ -1,7 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
@@ -56,6 +57,9 @@ fun LogInScreen(
     val coroutineScope = rememberCoroutineScope ()
 
     val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
+
+    val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
 
     val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
     val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
@@ -75,21 +79,7 @@ fun LogInScreen(
         isDarkTheme.value -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
-        else -> Color.LightGray
-    }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
 
     val containerPadding = rememberSaveable { mutableIntStateOf(10) }
     val focusRequester = remember { FocusRequester() }
@@ -106,11 +96,13 @@ fun LogInScreen(
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
     val password = dataStore.getPassword().collectAsState("")
 
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
         modifier = Modifier
-            .imePadding()
+            .imePadding(),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -223,7 +215,8 @@ fun LogInScreen(
                         containerColor = quaternaryColor
                     ),
                     shape = RoundedCornerShape(10.dp),
-                    onClick = {
+                    onClick ={
+                        val result = "+998"+phoneFieldValue.value
                         if (
                             phoneFieldValue.value.isNotEmpty() &&
                             phoneFieldValue.value.isNotBlank() &&
@@ -231,29 +224,38 @@ fun LogInScreen(
                             !passwordValueError.value
                         ) {
                             if (
-                                phoneFieldValue.value == phoneNumber.value &&
+                                result == phoneNumber.value &&
                                 passwordValue.value == password.value
                             ){
-                                coroutineScope.launch {
-                                    dataStore.isOldUser(true)
-                                }
-                                val result = "+998" + phoneFieldValue.value
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
-                                    popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                                when{
+                                    isPinForgotten.value->{
+                                        sharedPreferences.saveNewPinState(true)
+                                        navController.navigate(ScreensRouter.NewPinScreen.route){
+                                            popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                                        }
+                                    }
+                                    else->{
+                                        coroutineScope.launch {
+                                            dataStore.isOldUser(true)
+                                        }
+                                        navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result"){
+                                            popUpTo(ScreensRouter.LoginScreen.route){ inclusive = true }
+                                        }
+                                    }
                                 }
                             }else{
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.user_is_not_found),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = context.getString(R.string.user_is_not_found)
+                                    )
+                                }
                             }
                         } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.please_check_validate_places),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.please_check_validate_places)
+                                )
+                            }
                         }
                     }
                 ) {

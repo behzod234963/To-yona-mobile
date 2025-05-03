@@ -169,6 +169,7 @@ fun MonitoringScreen(
         contentColor = primaryColor,
         topBar = {
             MonitoringTopBar(
+                primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 onNavigationClick = { navController.popBackStack() },
                 onActionsClick = {
@@ -214,7 +215,6 @@ fun MonitoringScreen(
                                     )
                                 }
                             }
-
                             1 -> {
                                 items(monitoringList) { item ->
                                     MonitoringItem(

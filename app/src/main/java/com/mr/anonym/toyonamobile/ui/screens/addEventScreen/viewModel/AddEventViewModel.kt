@@ -21,8 +21,10 @@ class AddEventViewModel @Inject constructor(
 
     private val _cards = mutableStateOf(LocalDataState().cards)
     val cards: State<List<CardModel>> = _cards
-    private val _cardValue = mutableStateOf( context.getString(R.string.you_have_not_active_card) )
+    private val _cardValue = mutableStateOf(context.getString(R.string.empty) )
     val cardValue: State<String> = _cardValue
+    private val _card = mutableStateOf(CardModel() )
+    val card: State<CardModel> = _card
 
     init {
         getCards()
@@ -30,12 +32,16 @@ class AddEventViewModel @Inject constructor(
     fun getCards() = viewModelScope.launch {
         localUseCases.getCardsUseCase().collect {
             _cards.value = it
+            if (it.isNotEmpty()) {
+                _cardValue.value = it[0].cardNumber
+                _card.value = it[0]
+            }
         }
-    }
-    fun updateActiveStatus(id: Int,status: Boolean) = viewModelScope.launch {
-        localUseCases.updateActiveStatusUseCase.execute(id,status)
     }
     fun changeCardValue(card: String){
         _cardValue.value = card
+    }
+    fun changeCardModel(card: CardModel) = viewModelScope.launch {
+        _card.value = card
     }
 }

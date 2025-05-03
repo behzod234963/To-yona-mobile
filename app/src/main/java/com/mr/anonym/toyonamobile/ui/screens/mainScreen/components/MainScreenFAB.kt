@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MainScreenFAB(
-    primaryColor: Color,
+    secondaryColor: Color,
     quaternaryColor:Color,
     onFabClick:()-> Unit
 ) {
@@ -26,7 +26,7 @@ fun MainScreenFAB(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            tint = primaryColor,
+            tint = secondaryColor,
             contentDescription = "new event button"
         )
     }

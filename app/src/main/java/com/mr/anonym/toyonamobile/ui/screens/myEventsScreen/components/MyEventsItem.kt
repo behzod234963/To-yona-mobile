@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -29,8 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
 @Composable
 fun MyEventsItem(
@@ -40,11 +42,9 @@ fun MyEventsItem(
     sevenrdColor: Color,
     myEventsModel: MyEventsModel,
     onEditClick:()->Unit,
+    onDeleteClick:()-> Unit,
     onCheckedChange:(Boolean)-> Unit
 ) {
-
-    val eventsStatus = rememberSaveable { mutableStateOf( false ) }
-
     Card(
         modifier = Modifier
             .padding(7.dp),
@@ -81,14 +81,21 @@ fun MyEventsItem(
                             contentDescription = ""
                         )
                     }
-                    Spacer(Modifier.width(10.dp))
+                    IconButton(
+                        onClick = { onDeleteClick() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                    }
                     MyEventSwitch(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
                         fiverdColor = fiverdColor,
-                        isChecked = eventsStatus.value,
+                        isChecked = myEventsModel.eventStatus,
                         onCheckedChange = {
-                            eventsStatus.value = it
                             onCheckedChange(it)
                         }
                     )
@@ -107,7 +114,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (eventsStatus.value)
+                    text = if (myEventsModel.eventStatus)
                         stringResource(R.string.is_on)
                     else
                         stringResource(R.string.is_off),
@@ -130,7 +137,15 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = myEventsModel.eventType,
+                    text = if (myEventsModel.eventType.isDigitsOnly()){
+                        when(myEventsModel.eventType.toInt()){
+                            1->{ stringResource(R.string.wedding) }
+                            2->{ stringResource(R.string.sunnat_wedding) }
+                            else->{ stringResource(R.string.birthday) }
+                        }
+                    }else{
+                        myEventsModel.eventType
+                    },
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -216,7 +231,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = myEventsModel.cardNumber,
+                    text = myEventsModel.cardNumber.cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
@@ -243,7 +258,7 @@ private fun PreviewMyEventsItem() {
             cardHolder = "BEKHZOD KHUDAYBERGENOV",
             cardNumber = "9860030160619356"
         ),
-        onCheckedChange = {  },
-        onEditClick = {  }
-    )
+        onEditClick = {  },
+        onDeleteClick = {  }
+    ) { }
 }

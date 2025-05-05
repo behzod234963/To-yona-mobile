@@ -5,7 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,17 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventsItem
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.viewModel.MyEventsViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MyEventsScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MyEventsViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -41,7 +44,6 @@ fun MyEventsScreen(
         iSystemTheme.value -> {
             systemPrimaryColor
         }
-
         isDarkTheme.value -> Color.Black
         else -> Color.White
     }
@@ -69,36 +71,7 @@ fun MyEventsScreen(
 
     val isEventStatus = rememberSaveable { mutableStateOf(true) }
 
-    val events = listOf<MyEventsModel>(
-        MyEventsModel(
-            eventStatus = true,
-            eventType = "Wedding",
-            eventDateTime = "05.04.2025 , 06.04.2025  12:00",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            cardNumber = "9860030160619356"
-        ),
-        MyEventsModel(
-            eventStatus = false,
-            eventType = "Wedding",
-            eventDateTime = "05.04.2025 , 06.04.2025  12:00",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            cardNumber = "9860030160619356"
-        ),
-        MyEventsModel(
-            eventStatus = false,
-            eventType = "Wedding",
-            eventDateTime = "05.04.2025 , 06.04.2025  12:00",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            cardNumber = "9860030160619356"
-        ),
-        MyEventsModel(
-            eventStatus = false,
-            eventType = "Wedding",
-            eventDateTime = "05.04.2025 , 06.04.2025  12:00",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            cardNumber = "9860030160619356"
-        )
-    )
+    val events = viewModel.events
 
     Scaffold(
         containerColor = primaryColor,
@@ -116,7 +89,7 @@ fun MyEventsScreen(
                 .padding(paddingValues)
                 .padding(10.dp)
         ){
-            items(events){ model->
+            itemsIndexed(events.value){ index,model->
                 MyEventsItem(
                     secondaryColor = secondaryColor,
                     quaternaryColor = quaternaryColor,
@@ -124,21 +97,16 @@ fun MyEventsScreen(
                     sevenrdColor = sevenrdColor,
                     myEventsModel = model,
                     onEditClick = {
-                        navController.navigate(ScreensRouter.AddEventScreen.route)
+                        navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
+                    },
+                    onDeleteClick = {
+                        viewModel.deleteEvent(model)
                     },
                     onCheckedChange = {
-
-                    }
-                )
+                        viewModel.updateEventStatus(model.id?:-1,it)
+                    },
+                ) 
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewMyEventsScreen() {
-    MyEventsScreen(
-        NavController(LocalContext.current)
-    )
 }

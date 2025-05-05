@@ -2,7 +2,6 @@ package com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen
 
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -30,14 +29,14 @@ import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.domain.model.MonitoringModel
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.pdfGenerator
 import com.mr.anonym.toyonamobile.presentation.utils.shareTransfer
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringBottomSheet
-import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringItem
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringScrollableTabRow
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringTopBar
+import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.items.MonitoringItem
 import kotlinx.coroutines.launch
-import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -85,7 +84,6 @@ fun MonitoringScreen(
     }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         iSystemTheme.value -> systemSevenrdColor
@@ -118,7 +116,7 @@ fun MonitoringScreen(
         )
     }
 
-    val months = mapOf<Int, String>(
+    val months = mapOf(
         0 to stringResource(R.string.january),
         1 to stringResource(R.string.february),
         2 to stringResource(R.string.march),
@@ -132,8 +130,7 @@ fun MonitoringScreen(
         10 to stringResource(R.string.november),
         11 to stringResource(R.string.december)
     ).mapKeys { it.key }
-
-    val monitoringList = listOf<MonitoringModel>(
+    val monitoringList = listOf(
         MonitoringModel(
             id = 1,
             monthIndex = 1,
@@ -173,10 +170,7 @@ fun MonitoringScreen(
                 secondaryColor = secondaryColor,
                 onNavigationClick = { navController.popBackStack() },
                 onActionsClick = {
-                    val calendar = Calendar.getInstance()
-                    val monthIndex = calendar.get(Calendar.MONTH)
-                    val month = DateFormatSymbols().months[monthIndex]
-                    Log.e("UtilsLogging", "MonitoringScreen: $month $monthIndex")
+                    navController.navigate(ScreensRouter.MonitoringFilterScreen.route)
                 }
             )
         }

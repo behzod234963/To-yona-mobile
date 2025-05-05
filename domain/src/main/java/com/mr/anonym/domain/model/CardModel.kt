@@ -13,5 +13,4 @@ data class CardModel(
     val cardHolder: String = "",
     val expiryDate: String = "",
     val cvv: String = "",
-    val isActive: Boolean = true
 )

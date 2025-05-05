@@ -280,7 +280,7 @@ fun MainScreen(
                 MainScreenFAB(
                     secondaryColor = secondaryColor,
                     quaternaryColor = quaternaryColor,
-                    onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route) }
+                    onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
                 )
             },
             topBar = {

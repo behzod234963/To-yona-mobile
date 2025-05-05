@@ -21,4 +21,5 @@ sealed class ScreensRouter (val route:String){
     data object AddCardScreen: ScreensRouter("AddCardScreen")
     data object SecurityScreen: ScreensRouter("SecurityScreen")
     data object ChangePasswordScreen: ScreensRouter("ChangePasswordScreen")
+    data object MonitoringFilterScreen: ScreensRouter("MonitoringFilterScreen")
 }

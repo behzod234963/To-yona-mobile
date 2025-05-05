@@ -175,7 +175,6 @@ fun NumberCheckScreen(
                                                     cardNumber = cardNumber.value,
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
-                                                    isActive = true
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
@@ -189,7 +188,6 @@ fun NumberCheckScreen(
                                                     cardNumber = cardNumber.value,
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
-                                                    isActive = true
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
@@ -334,7 +332,6 @@ fun NumberCheckScreen(
                                                 cardNumber = cardNumber.value,
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
-                                                isActive = true
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
@@ -348,11 +345,12 @@ fun NumberCheckScreen(
                                                 cardNumber = cardNumber.value,
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
-                                                isActive = true
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
-                                        navController.navigate(ScreensRouter.WalletScreen.route)
+                                        navController.navigate(ScreensRouter.WalletScreen.route){
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route + "/"){ inclusive = true }
+                                        }
                                     }
                                 }
                                 isPasswordForgotten.value->{

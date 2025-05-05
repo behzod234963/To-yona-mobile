@@ -13,11 +13,6 @@ class CardRepositoryImpl(private val cardDAO: CardDAO) : CardRepository {
     }
     override fun getCards(): Flow<List<CardModel>> = cardDAO.getCards()
     override fun getCardById(id: Int): Flow<CardModel> = cardDAO.getCardById(id)
-    override fun getActiveCards(): Flow<List<CardModel>> = cardDAO.getActiveACards()
-    override suspend fun updateActiveStatus(id: Int, status: Boolean) {
-        cardDAO.updateActiveStatus(id,status)
-    }
-
     override suspend fun deleteCard(card: CardModel) {
         cardDAO.deleteCard(card)
     }

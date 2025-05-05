@@ -47,6 +47,7 @@ fun AddEventSetDate(
                     onClick = {
                         val selectedStartDateMillis = dateRangePickerState.selectedStartDateMillis
                         val selectedEndDateMillis = dateRangePickerState.selectedEndDateMillis
+
                         confirmButton(selectedStartDateMillis,selectedEndDateMillis?:0L)
                     }
                 ) {

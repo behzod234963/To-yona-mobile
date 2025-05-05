@@ -3,13 +3,16 @@ package com.mr.anonym.toyonamobile.di.module
 import android.content.Context
 import androidx.room.Room
 import com.mr.anonym.data.implementations.local.CardRepositoryImpl
+import com.mr.anonym.data.implementations.local.MyEventsRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.data.instance.local.room.CardDAO
+import com.mr.anonym.data.instance.local.room.MyEventsDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
 import com.mr.anonym.domain.repository.local.CardRepository
+import com.mr.anonym.domain.repository.local.MyEventsRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import dagger.Module
 import dagger.Provides
@@ -43,6 +46,10 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideMyEventsDAO(roomInstance: RoomInstance): MyEventsDAO = roomInstance.myEventsDAO
+
+    @Provides
+    @Singleton
     fun provideNotificationRepository(notificationsDAO: NotificationsDAO): NotificationsRepository =
         NotificationsRepositoryImpl(notificationsDAO)
 
@@ -50,6 +57,11 @@ class DataModule {
     @Singleton
     fun provideCardRepository(cardDAO: CardDAO): CardRepository =
         CardRepositoryImpl(cardDAO)
+
+    @Provides
+    @Singleton
+    fun provideMyEventsRepository(myEventsDAO: MyEventsDAO): MyEventsRepository =
+        MyEventsRepositoryImpl(myEventsDAO)
 
     @Provides
     @Singleton

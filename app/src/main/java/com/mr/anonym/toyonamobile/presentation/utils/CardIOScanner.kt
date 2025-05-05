@@ -28,7 +28,6 @@ fun CardScannerIO(
                             cardNumber = scanResult.formattedCardNumber,
                             cardHolder = scanResult.cardholderName ?: "",
                             expiryDate = "${scanResult.expiryMonth} ${scanResult.expiryYear}",
-                            isActive = true
                         )
                     )
                 }

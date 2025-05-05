@@ -50,9 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
-import com.mr.anonym.domain.model.CardModel
+import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventDropDownMenu
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventFAB
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventOtherField
@@ -68,6 +69,7 @@ import java.util.Locale
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AddEventScreen(
+    arguments: Arguments,
     navController: NavController,
     viewModel: AddEventViewModel = hiltViewModel()
 ) {
@@ -112,7 +114,22 @@ fun AddEventScreen(
         else -> Color.White
     }
 
-    val selectedEventIndex = rememberSaveable { mutableStateOf(0) }
+    val isCardError = rememberSaveable { mutableStateOf(true) }
+    val cards = viewModel.cards
+    val cardValue = viewModel.cardValue
+    val cardModel = viewModel.card
+    val scaffoldState = remember { SnackbarHostState() }
+    val eventModel = viewModel.eventModel
+
+    val selectedEventIndex = rememberSaveable { mutableStateOf(
+        if (arguments.eventID == -1) {
+            0
+        }else if (eventModel.value.eventType.toInt() > 3){
+            4
+        }else{
+            eventModel.value.eventType.toInt()
+        }
+    ) }
     val selectedEvent = rememberSaveable { mutableStateOf(0) }
     val anOwnEvent = rememberSaveable { mutableStateOf("") }
     val isExpanded = rememberSaveable { mutableStateOf(false) }
@@ -140,19 +157,22 @@ fun AddEventScreen(
     )
 
     val showDatePicker = rememberSaveable { mutableStateOf(false) }
-    val isDateSet = rememberSaveable { mutableStateOf(false) }
+    val isDateSet = rememberSaveable { mutableStateOf(
+        arguments.eventID != -1
+    ) }
     val startDate = rememberSaveable { mutableStateOf(context.getString(R.string.not_selected)) }
     val endDate = rememberSaveable { mutableStateOf(context.getString(R.string.not_selected)) }
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
-    val eventDate = rememberSaveable { mutableStateOf("") }
+    /*
+    * Selected event index values
+    * 0-> nothing was selected
+    * 1-> Wedding
+    * 2-> Sunnat
+    * 3-> Birthday
+    * 4-> Other (when 4 was selected , event type will be select from textField value
+    * */
 
-    val cards = viewModel.cards
-    val cardValue = viewModel.cardValue
-    val cardModel = viewModel.card
-    val isCardError = rememberSaveable { mutableStateOf(false) }
-    val cardValueIndex = rememberSaveable { mutableStateOf(0) }
-    val scaffoldState = remember { SnackbarHostState() }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -160,14 +180,62 @@ fun AddEventScreen(
             AddEventTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                navigationIconClick = { navController.popBackStack() }
+                navigationIconClick = {
+                    navController.popBackStack()
+                }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },
         floatingActionButton = {
             AddEventFAB(
                 secondaryColor = secondaryColor,
                 quaternaryColor = quaternaryColor,
-                onFabClick = { TODO() }
+                onFabClick = {
+                    if (
+                        selectedEventIndex.value > 0 &&
+                        isDateSet.value &&
+                        !isCardError.value
+                    ) {
+                        val endDateResult =
+                            if (!endDate.value.contains("2025")) "" else endDate.value
+
+                        if (arguments.eventID == -1){
+                            viewModel.insertEvent(
+                                MyEventsModel(
+                                    eventStatus = true,
+                                    eventType = if (isOtherClicked.value) otherEventValue.value else selectedEventIndex.value.toString(),
+                                    eventDateTime = "${startDate.value} , $endDateResult : ${time.value}",
+                                    cardHolder = cardModel.value.cardHolder,
+                                    cardNumber = cardModel.value.cardNumber
+                                )
+                            )
+                            navController.navigate(ScreensRouter.MainScreen.route){
+                                popUpTo(ScreensRouter.AddEventScreen.route){ inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }else{
+                            viewModel.insertEvent(
+                                MyEventsModel(
+                                    id = eventModel.value.id,
+                                    eventStatus = true,
+                                    eventType = if (isOtherClicked.value) otherEventValue.value else selectedEventIndex.value.toString(),
+                                    eventDateTime = "${startDate.value},${endDateResult} , ${time.value}",
+                                    cardHolder = cardModel.value.cardHolder,
+                                    cardNumber = cardModel.value.cardNumber
+                                )
+                            )
+                            navController.navigate(ScreensRouter.MainScreen.route){
+                                popUpTo(ScreensRouter.AddEventScreen.route){ inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }else{
+                        coroutineScope.launch {
+                            scaffoldState.showSnackbar(
+                                context.getString(R.string.please_check_validate_places)
+                            )
+                        }
+                    }
+                }
             )
         },
         snackbarHost = { SnackbarHost(scaffoldState) }
@@ -221,11 +289,6 @@ fun AddEventScreen(
                                 4 -> {
                                     stringResource(R.string.other)
                                 }
-
-                                5 -> {
-                                    anOwnEvent.value
-                                }
-
                                 else -> {
                                     ""
                                 }
@@ -253,25 +316,21 @@ fun AddEventScreen(
                                 onWeddingClick = {
                                     selectedEventIndex.value = 1
                                     isExpanded.value = false
-                                    selectedEvent.value = R.string.wedding
                                     isOtherClicked.value = false
                                 },
                                 onSunnatClick = {
                                     selectedEventIndex.value = 2
                                     isExpanded.value = false
-                                    selectedEvent.value = R.string.sunnat_wedding
                                     isOtherClicked.value = false
                                 },
                                 onBirthdayClick = {
                                     selectedEventIndex.value = 3
                                     isExpanded.value = false
-                                    selectedEvent.value = R.string.birthday
                                     isOtherClicked.value = false
                                 },
                                 onOtherClick = {
                                     selectedEventIndex.value = 4
                                     isExpanded.value = false
-                                    selectedEvent.value = R.string.other
                                     isOtherClicked.value = true
                                 }
                             )
@@ -367,7 +426,11 @@ fun AddEventScreen(
                             .fillMaxWidth(),
                     ) {
                         Text(
-                            text = "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}",
+                            text = if (arguments.eventID == -1){
+                                "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}"
+                            }else{
+                                eventModel.value.eventDateTime
+                            },
                             modifier = Modifier
                                 .padding(start = 10.dp),
                             color = secondaryColor,
@@ -437,7 +500,11 @@ fun AddEventScreen(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "BEKHZOD KHUDAYBERGENOV",
+                    text = if (arguments.eventID == -1){
+                        cardModel.value.cardHolder
+                    }else{
+                        eventModel.value.cardHolder
+                    },
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
@@ -447,7 +514,8 @@ fun AddEventScreen(
             Spacer(Modifier.height(5.dp))
             HorizontalDivider()
             Spacer(Modifier.height(10.dp))
-            if (cards.value.isNotEmpty()){
+            if (cards.value.isNotEmpty()) {
+                isCardError.value = false
                 AddEventCardItem(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
@@ -514,7 +582,7 @@ fun AddEventScreen(
                         )
                     }
                 }
-            }else{
+            } else {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -564,12 +632,4 @@ fun AddEventScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewAddEventScreen() {
-    AddEventScreen(
-        NavController(LocalContext.current)
-    )
 }

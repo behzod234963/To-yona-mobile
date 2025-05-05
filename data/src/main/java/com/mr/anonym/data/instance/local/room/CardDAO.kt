@@ -20,12 +20,6 @@ interface CardDAO {
     @Query("SELECT * FROM cardModel WHERE id =:id ")
     fun getCardById(id: Int): Flow<CardModel>
 
-    @Query("SELECT * FROM cardModel WHERE isActive = 1")
-    fun getActiveACards(): Flow<List<CardModel>>
-
-    @Query("UPDATE cardModel SET isActive=:status WHERE id=:id")
-    suspend fun updateActiveStatus(id: Int,status: Boolean)
-
     @Delete
     suspend fun deleteCard(card: CardModel)
 }

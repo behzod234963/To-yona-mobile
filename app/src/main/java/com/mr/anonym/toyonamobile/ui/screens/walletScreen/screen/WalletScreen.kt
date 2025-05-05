@@ -107,7 +107,7 @@ fun WalletScreen(
                 coroutineScope.launch {
                     dataStore.addCardFromAddEvent(false)
                 }
-                navController.navigate(ScreensRouter.AddEventScreen.route) {
+                navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") {
                     popUpTo(ScreensRouter.AddEventScreen.route) {
                         inclusive = true
                     }
@@ -143,7 +143,7 @@ fun WalletScreen(
                             coroutineScope.launch {
                                 dataStore.addCardFromAddEvent(false)
                             }
-                            navController.navigate(ScreensRouter.AddEventScreen.route) {
+                            navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") {
                                 popUpTo(ScreensRouter.AddEventScreen.route) {
                                     inclusive = true
                                 }

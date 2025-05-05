@@ -146,4 +146,6 @@
     <string name="this_card_will_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinadi</string>
     <string name="this_card_will_not_be_shown_in_your_events">Bu karta endi sizning tadbirlaringizda ko\rinmaydi</string>
     <string name="empty">Bo\'sh</string>
+    <string name="filter">Filter</string>
+    <string name="by_card">Kartalar bo\'yicha</string>
 </resources>

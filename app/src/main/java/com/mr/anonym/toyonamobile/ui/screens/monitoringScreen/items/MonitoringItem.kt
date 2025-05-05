@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.items
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement

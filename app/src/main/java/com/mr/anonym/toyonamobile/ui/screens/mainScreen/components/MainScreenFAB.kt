@@ -27,7 +27,7 @@ fun MainScreenFAB(
         Icon(
             imageVector = Icons.Default.Add,
             tint = secondaryColor,
-            contentDescription = "new event button"
+            contentDescription = "new index button"
         )
     }
 }

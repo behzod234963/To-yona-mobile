@@ -8,7 +8,6 @@ import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

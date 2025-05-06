@@ -3,6 +3,7 @@ package com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens
 import android.annotation.SuppressLint
 import android.app.TimePickerDialog
 import android.widget.TimePicker
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,6 +61,7 @@ import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventS
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel.AddEventViewModel
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -105,8 +106,6 @@ fun AddEventScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         iSystemTheme.value -> systemSevenrdColor
@@ -117,62 +116,61 @@ fun AddEventScreen(
     val isCardError = rememberSaveable { mutableStateOf(true) }
     val cards = viewModel.cards
     val cardValue = viewModel.cardValue
+    val cardHolderValue = viewModel.cardHolderValue
     val cardModel = viewModel.card
     val scaffoldState = remember { SnackbarHostState() }
     val eventModel = viewModel.eventModel
 
-    val selectedEventIndex = rememberSaveable { mutableStateOf(
-        if (arguments.eventID == -1) {
-            0
-        }else if (eventModel.value.eventType.toInt() > 3){
-            4
-        }else{
-            eventModel.value.eventType.toInt()
-        }
-    ) }
-    val selectedEvent = rememberSaveable { mutableStateOf(0) }
-    val anOwnEvent = rememberSaveable { mutableStateOf("") }
+    val selectedEventIndex = viewModel.selectedEventIndex
+    val selectedOldEventIndex = viewModel.selectedOldEventIndex
+    val selectedOldEventValue = viewModel.selectedOldEventValue
     val isExpanded = rememberSaveable { mutableStateOf(false) }
 
     val otherEventValue = rememberSaveable { mutableStateOf("") }
     val isValueConfirmed = rememberSaveable { mutableStateOf(false) }
     val isOtherClicked = rememberSaveable { mutableStateOf(false) }
     val isOtherEventError = rememberSaveable { mutableStateOf(false) }
-
+    val isDateReEntered = rememberSaveable { mutableStateOf(false) }
 
     val showTimePicker = rememberSaveable { mutableStateOf(false) }
-    val time = remember { mutableStateOf("") }
-    val selectedTime = remember { mutableStateOf(System.currentTimeMillis()) }
+    val time = viewModel.time
     val pickedHour = calendarInstance.get(android.icu.util.Calendar.HOUR_OF_DAY)
     val pickedMinute = calendarInstance.get(android.icu.util.Calendar.MINUTE)
+    val isDateSet = rememberSaveable {
+        mutableStateOf(
+            arguments.eventID != -1
+        )
+    }
     val timePickerDialog = TimePickerDialog(
         context,
         { _: TimePicker, hourOfDay, minute ->
-            time.value = if (minute == 0) "$hourOfDay:${minute}0" else "$hourOfDay:$minute"
+            isDateReEntered.value = true
             calendarInstance.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendarInstance.set(Calendar.MINUTE, minute)
             calendarInstance.set(Calendar.SECOND, 0)
-            selectedTime.value = calendarInstance.time.time
+            viewModel.onEvent(AddEventState.ChangeTime(if (minute == 0) "$hourOfDay:${0}0" else "$hourOfDay:$minute"))
+            isDateSet.value = true
         }, pickedHour, pickedMinute, true
     )
 
     val showDatePicker = rememberSaveable { mutableStateOf(false) }
-    val isDateSet = rememberSaveable { mutableStateOf(
-        arguments.eventID != -1
-    ) }
-    val startDate = rememberSaveable { mutableStateOf(context.getString(R.string.not_selected)) }
-    val endDate = rememberSaveable { mutableStateOf(context.getString(R.string.not_selected)) }
+    val startDate = viewModel.startDate
+    val endDate = viewModel.endDate
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+    val oldEventDateTime = viewModel.oldEventDateTime
 
     /*
-    * Selected event index values
+    * Selected index index values
     * 0-> nothing was selected
     * 1-> Wedding
     * 2-> Sunnat
     * 3-> Birthday
-    * 4-> Other (when 4 was selected , event type will be select from textField value
+    * 4-> Other (when 4 was selected , index type will be select from textField value
     * */
 
+    BackHandler {
+        navController.popBackStack()
+    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -190,49 +188,53 @@ fun AddEventScreen(
                 secondaryColor = secondaryColor,
                 quaternaryColor = quaternaryColor,
                 onFabClick = {
-                    if (
-                        selectedEventIndex.value > 0 &&
-                        isDateSet.value &&
-                        !isCardError.value
-                    ) {
-                        val endDateResult =
-                            if (!endDate.value.contains("2025")) "" else endDate.value
+                    val endDateResult =
+                        if (!endDate.value.contains("2025")) "" else {
+                            " , ${endDate.value}"
+                        }
 
-                        if (arguments.eventID == -1){
+                    if (arguments.eventID == -1) {
+                        if (
+                            selectedEventIndex.value > 0 &&
+                            isDateSet.value &&
+                            !isCardError.value
+                        ) {
                             viewModel.insertEvent(
                                 MyEventsModel(
                                     eventStatus = true,
                                     eventType = if (isOtherClicked.value) otherEventValue.value else selectedEventIndex.value.toString(),
-                                    eventDateTime = "${startDate.value} , $endDateResult : ${time.value}",
-                                    cardHolder = cardModel.value.cardHolder,
-                                    cardNumber = cardModel.value.cardNumber
+                                    isOtherEventSelected = isOtherClicked.value,
+                                    eventDateTime = "${startDate.value}${endDateResult}  ${time.value}",
+                                    cardHolder = cardHolderValue.value,
+                                    cardNumber = cardValue.value
                                 )
                             )
-                            navController.navigate(ScreensRouter.MainScreen.route){
-                                popUpTo(ScreensRouter.AddEventScreen.route){ inclusive = true }
+                            navController.navigate(ScreensRouter.MainScreen.route) {
+                                popUpTo(ScreensRouter.AddEventScreen.route) { inclusive = true }
                                 launchSingleTop = true
                             }
-                        }else{
-                            viewModel.insertEvent(
-                                MyEventsModel(
-                                    id = eventModel.value.id,
-                                    eventStatus = true,
-                                    eventType = if (isOtherClicked.value) otherEventValue.value else selectedEventIndex.value.toString(),
-                                    eventDateTime = "${startDate.value},${endDateResult} , ${time.value}",
-                                    cardHolder = cardModel.value.cardHolder,
-                                    cardNumber = cardModel.value.cardNumber
+                        } else {
+                            coroutineScope.launch {
+                                scaffoldState.showSnackbar(
+                                    context.getString(R.string.please_check_validate_places)
                                 )
-                            )
-                            navController.navigate(ScreensRouter.MainScreen.route){
-                                popUpTo(ScreensRouter.AddEventScreen.route){ inclusive = true }
-                                launchSingleTop = true
                             }
                         }
-                    }else{
-                        coroutineScope.launch {
-                            scaffoldState.showSnackbar(
-                                context.getString(R.string.please_check_validate_places)
+                    } else {
+                        viewModel.insertEvent(
+                            MyEventsModel(
+                                id = eventModel.value.id,
+                                eventStatus = true,
+                                eventType = if (isOtherClicked.value) selectedOldEventValue.value else selectedEventIndex.value.toString(),
+                                isOtherEventSelected = isOtherClicked.value,
+                                eventDateTime = if (!isDateReEntered.value) oldEventDateTime.value else "${startDate.value},${endDateResult} , ${time.value}",
+                                cardHolder = cardHolderValue.value,
+                                cardNumber = cardValue.value
                             )
+                        )
+                        navController.navigate(ScreensRouter.MyEventsScreen.route) {
+                            popUpTo(ScreensRouter.AddEventScreen.route) { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
                 }
@@ -273,24 +275,49 @@ fun AddEventScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = when (selectedEventIndex.value) {
-                                1 -> {
-                                    stringResource(R.string.wedding)
-                                }
+                            text = if (arguments.eventID == -1) {
+                                when (selectedEventIndex.value) {
+                                    1 -> {
+                                        stringResource(R.string.wedding)
+                                    }
 
-                                2 -> {
-                                    stringResource(R.string.sunnat_wedding)
-                                }
+                                    2 -> {
+                                        stringResource(R.string.sunnat_wedding)
+                                    }
 
-                                3 -> {
-                                    stringResource(R.string.birthday)
-                                }
+                                    3 -> {
+                                        stringResource(R.string.birthday)
+                                    }
 
-                                4 -> {
-                                    stringResource(R.string.other)
+                                    4 -> {
+                                        stringResource(R.string.other)
+                                    }
+
+                                    else -> {
+                                        ""
+                                    }
                                 }
-                                else -> {
-                                    ""
+                            } else {
+                                if (!eventModel.value.isOtherEventSelected) {
+                                    when (selectedOldEventIndex.value) {
+                                        1 -> {
+                                            stringResource(R.string.wedding)
+                                        }
+
+                                        2 -> {
+                                            stringResource(R.string.sunnat_wedding)
+                                        }
+
+                                        3 -> {
+                                            stringResource(R.string.birthday)
+                                        }
+
+                                        else -> {
+                                            ""
+                                        }
+                                    }
+                                } else {
+                                    selectedOldEventValue.value.ifBlank{ context.getString(R.string.other) }
                                 }
                             },
                             textAlign = TextAlign.End,
@@ -314,22 +341,38 @@ fun AddEventScreen(
                                 isExpanded = isExpanded.value,
                                 onDismissRequest = { isExpanded.value = false },
                                 onWeddingClick = {
-                                    selectedEventIndex.value = 1
+                                    if (arguments.eventID == -1) {
+                                        viewModel.onEvent(AddEventState.ChangeEventIndex(1))
+                                    } else {
+                                        viewModel.onEvent(AddEventState.ChangeEventOldIndex(1))
+                                    }
                                     isExpanded.value = false
                                     isOtherClicked.value = false
                                 },
                                 onSunnatClick = {
-                                    selectedEventIndex.value = 2
+                                    if (arguments.eventID == -1) {
+                                        viewModel.onEvent(AddEventState.ChangeEventIndex(2))
+                                    } else {
+                                        viewModel.onEvent(AddEventState.ChangeEventOldIndex(2))
+                                    }
                                     isExpanded.value = false
                                     isOtherClicked.value = false
                                 },
                                 onBirthdayClick = {
-                                    selectedEventIndex.value = 3
+                                    if (arguments.eventID == -1) {
+                                        viewModel.onEvent(AddEventState.ChangeEventIndex(3))
+                                    } else {
+                                        viewModel.onEvent(AddEventState.ChangeEventOldIndex(3))
+                                    }
                                     isExpanded.value = false
                                     isOtherClicked.value = false
                                 },
                                 onOtherClick = {
-                                    selectedEventIndex.value = 4
+                                    if (arguments.eventID == -1) {
+                                        viewModel.onEvent(AddEventState.ChangeEventIndex(4))
+                                    } else {
+                                        viewModel.onEvent(AddEventState.ChangeEventOldIndex(4))
+                                    }
                                     isExpanded.value = false
                                     isOtherClicked.value = true
                                 }
@@ -344,13 +387,22 @@ fun AddEventScreen(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
                     isEventError = isOtherEventError.value,
-                    value = otherEventValue.value,
+                    value = if (arguments.eventID == -1) otherEventValue.value else selectedOldEventValue.value,
                     onValueChange = {
-                        otherEventValue.value = it
+                        if (arguments.eventID == -1) {
+                            otherEventValue.value = it
+                        } else {
+                            viewModel.onEvent(AddEventState.ChangeEventOldValue(it))
+                        }
                     },
                     isValueConfirmed = isValueConfirmed.value,
                     onConfirmClick = {
-                        if (otherEventValue.value.isNotEmpty()) {
+                        if (
+                            selectedOldEventValue.value.isNotBlank() &&
+                            selectedOldEventValue.value.isNotBlank() ||
+                            otherEventValue.value.isNotEmpty() &&
+                            otherEventValue.value.isNotBlank()
+                            ) {
                             isValueConfirmed.value = true
                             isOtherEventError.value = false
                         } else {
@@ -426,10 +478,14 @@ fun AddEventScreen(
                             .fillMaxWidth(),
                     ) {
                         Text(
-                            text = if (arguments.eventID == -1){
+                            text = if (arguments.eventID == -1) {
                                 "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}"
-                            }else{
-                                eventModel.value.eventDateTime
+                            } else {
+                                if (isDateReEntered.value) {
+                                    "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}"
+                                } else {
+                                    oldEventDateTime.value
+                                }
                             },
                             modifier = Modifier
                                 .padding(start = 10.dp),
@@ -439,7 +495,7 @@ fun AddEventScreen(
                         )
                         Spacer(Modifier.width(15.dp))
                         Text(
-                            text = time.value,
+                            text = time.value ,
                             modifier = Modifier
                                 .padding(end = 10.dp),
                             color = secondaryColor,
@@ -453,15 +509,18 @@ fun AddEventScreen(
                 AddEventSetDate(
                     showDialog = showDatePicker.value,
                     onDismissRequest = {
+                        isDateReEntered.value = it
                         showDatePicker.value = false
                     },
-                    confirmButton = { start, end ->
-                        startDate.value = formatter.format(start)
-                        endDate.value = formatter.format(end)
-                        showDatePicker.value = false
+                    confirmButton = { start, end, reEnteredDate ->
+                        isDateReEntered.value = reEnteredDate
                         isDateSet.value = true
+                        viewModel.onEvent(AddEventState.ChangeStartDate(formatter.format(start)))
+                        viewModel.onEvent(AddEventState.ChangeEndDate(formatter.format(end)))
+                        showDatePicker.value = false
                     },
                     dismissButton = {
+                        isDateReEntered.value = it
                         showDatePicker.value = false
                     }
                 )
@@ -500,11 +559,7 @@ fun AddEventScreen(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = if (arguments.eventID == -1){
-                        cardModel.value.cardHolder
-                    }else{
-                        eventModel.value.cardHolder
-                    },
+                    text = cardHolderValue.value,
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
@@ -522,8 +577,9 @@ fun AddEventScreen(
                     value = cardValue.value,
                     cards = cards.value,
                     onClick = {
-                        viewModel.changeCardModel(it)
-                        viewModel.changeCardValue(it.cardNumber)
+                        viewModel.onEvent(AddEventState.ChangeCardModel(it))
+                        viewModel.onEvent(AddEventState.ChangeCardNumber(it.cardNumber))
+                        viewModel.onEvent(AddEventState.ChangeCardHolder(it.cardHolder))
                     },
                     onAddCardClick = {
                         coroutineScope.launch {

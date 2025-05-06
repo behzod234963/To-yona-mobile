@@ -3,73 +3,142 @@ package com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel
 import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.viewModel.MyEventsViewModel
 
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
     context: Context,
     savedState: SavedStateHandle,
     private val localUseCases: LocalUseCases
-) : ViewModel(){
+) : ViewModel() {
 
-    private val _id = mutableStateOf( -1 )
+    private val _id = mutableStateOf(-1)
+
+    private val _eventModel = mutableStateOf(MyEventsModel())
+    val eventModel: State<MyEventsModel> = _eventModel
+
     private val _cards = mutableStateOf(LocalDataState().cards)
     val cards: State<List<CardModel>> = _cards
-    private val _card = mutableStateOf(CardModel() )
+    private val _card = mutableStateOf(CardModel())
     val card: State<CardModel> = _card
-    private val _eventModel = mutableStateOf(MyEventsModel() )
-    val eventModel: State<MyEventsModel> = _eventModel
-    private val _cardValue = mutableStateOf(
-        if (_id.value == -1){
-            context.getString(R.string.empty)
-        }else{
-            _eventModel.value.cardNumber
-        }
-    )
+    private val _cardValue = mutableStateOf(context.getString(R.string.empty))
     val cardValue: State<String> = _cardValue
+    private val _cardHolderValue = mutableStateOf("")
+    val cardHolderValue: State<String> = _cardHolderValue
+    private val _startDate = mutableStateOf("")
+    val startDate: State<String> = _startDate
+    private val _endDate = mutableStateOf("")
+    val endDate: State<String> = _endDate
+    private val _time = mutableStateOf("")
+    val time: State<String> = _time
+    private val _oldEventDateTime = mutableStateOf("")
+    val oldEventDateTime: State<String> = _oldEventDateTime
+
+    private val _selectedEventIndex = mutableStateOf(0)
+    val selectedEventIndex: State<Int> = _selectedEventIndex
+    private val _selectedOldEventIndex = mutableStateOf(0)
+    val selectedOldEventIndex: State<Int> = _selectedOldEventIndex
+    private val _selectedOldEventValue = mutableStateOf("")
+    val selectedOldEventValue: State<String> = _selectedOldEventValue
 
     init {
-        savedState.get<Int>("eventID")?.let { eventID->
-            if (eventID != -1){
+        savedState.get<Int>("eventID")?.let { eventID ->
+            _id.value = eventID
+            if (eventID != -1) {
+                getCards()
                 getEventByID(eventID)
-                _id.value = eventID
-            }else{
+            } else {
                 getCards()
             }
         }
     }
+
     fun getCards() = viewModelScope.launch {
         localUseCases.getCardsUseCase().collect {
             _cards.value = it
-            if (it.isNotEmpty()) {
+            if (
+                it.isNotEmpty() &&
+                _id.value == -1
+            ) {
                 _cardValue.value = it[0].cardNumber
+                _cardHolderValue.value = it[0].cardHolder
                 _card.value = it[0]
             }
         }
     }
-    fun getEventByID(id:Int) = viewModelScope.launch {
+
+    fun getEventByID(id: Int) = viewModelScope.launch {
         localUseCases.getEventByIdUseCase.execute(id).collect {
             _eventModel.value = it
+            _cardValue.value = it.cardNumber
+            _cardHolderValue.value = it.cardHolder
+            _oldEventDateTime.value = it.eventDateTime
+            if (
+                !it.isOtherEventSelected &&
+                it.eventType.isNotEmpty() &&
+                it.eventType.isNotBlank() &&
+                it.eventType.isDigitsOnly()
+            ) {
+                _selectedOldEventIndex.value = it.eventType.toInt()
+            } else {
+                _selectedOldEventValue.value = it.eventType
+            }
         }
     }
+
     fun insertEvent(event: MyEventsModel) = viewModelScope.launch {
         localUseCases.insertEventUseCase.execute(event)
     }
-    fun changeCardValue(card: String){
-        _cardValue.value = card
-    }
-    fun changeCardModel(card: CardModel) = viewModelScope.launch {
-        _card.value = card
+
+    fun onEvent(event: AddEventState) {
+        when (event) {
+            is AddEventState.ChangeCardHolder -> {
+                _cardHolderValue.value = event.holder
+            }
+
+            is AddEventState.ChangeCardNumber -> {
+                _cardValue.value = event.cardNumber
+            }
+
+            is AddEventState.ChangeEndDate -> {
+                _endDate.value = event.endDate
+            }
+
+            is AddEventState.ChangeEventIndex -> {
+                _selectedEventIndex.value = event.index
+            }
+
+            is AddEventState.ChangeStartDate -> {
+                _startDate.value = event.startDate
+            }
+
+            is AddEventState.ChangeTime -> {
+                _time.value = event.time
+            }
+
+            is AddEventState.ChangeCardModel -> {
+                _card.value = event.card
+            }
+
+            is AddEventState.ChangeEventOldIndex -> {
+                _selectedOldEventIndex.value = event.oldIndex
+            }
+
+            is AddEventState.ChangeEventOldValue -> {
+                _selectedOldEventValue.value = event.oldValue
+            }
+        }
     }
 }

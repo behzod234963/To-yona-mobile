@@ -18,8 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
@@ -38,12 +35,12 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 fun MyEventsItem(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor:Color,
+    fiverdColor: Color,
     sevenrdColor: Color,
     myEventsModel: MyEventsModel,
-    onEditClick:()->Unit,
-    onDeleteClick:()-> Unit,
-    onCheckedChange:(Boolean)-> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -66,7 +63,24 @@ fun MyEventsItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.wedding),
+                    text =
+                        if (!myEventsModel.isOtherEventSelected) {
+                            when (myEventsModel.eventType.toInt()) {
+                                1 -> {
+                                    stringResource(R.string.wedding)
+                                }
+
+                                2 -> {
+                                    stringResource(R.string.sunnat_wedding)
+                                }
+
+                                else -> {
+                                    stringResource(R.string.birthday)
+                                }
+                            }
+                        } else {
+                            myEventsModel.eventType
+                        },
                     fontSize = 18.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -137,13 +151,21 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (myEventsModel.eventType.isDigitsOnly()){
-                        when(myEventsModel.eventType.toInt()){
-                            1->{ stringResource(R.string.wedding) }
-                            2->{ stringResource(R.string.sunnat_wedding) }
-                            else->{ stringResource(R.string.birthday) }
+                    text = if (!myEventsModel.isOtherEventSelected) {
+                        when (myEventsModel.eventType.toInt()) {
+                            1 -> {
+                                stringResource(R.string.wedding)
+                            }
+
+                            2 -> {
+                                stringResource(R.string.sunnat_wedding)
+                            }
+
+                            else -> {
+                                stringResource(R.string.birthday)
+                            }
                         }
-                    }else{
+                    } else {
                         myEventsModel.eventType
                     },
                     color = secondaryColor,
@@ -177,11 +199,11 @@ fun MyEventsItem(
             }
             HorizontalDivider()
             Spacer(Modifier.height(10.dp))
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 Text(
                     text = stringResource(R.string.requisites),
                     color = secondaryColor,
@@ -258,7 +280,7 @@ private fun PreviewMyEventsItem() {
             cardHolder = "BEKHZOD KHUDAYBERGENOV",
             cardNumber = "9860030160619356"
         ),
-        onEditClick = {  },
-        onDeleteClick = {  }
+        onEditClick = { },
+        onDeleteClick = { }
     ) { }
 }

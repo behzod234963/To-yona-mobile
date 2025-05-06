@@ -336,7 +336,7 @@ fun NumberCheckScreen(
                                         )
                                         sharedPreferences.addCardProcess(false)
                                         navController.navigate(ScreensRouter.WalletScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route + "/"){ inclusive = true }
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
                                         }
                                     }else{
                                         viewModel.insertCard(
@@ -349,7 +349,7 @@ fun NumberCheckScreen(
                                         )
                                         sharedPreferences.addCardProcess(false)
                                         navController.navigate(ScreensRouter.WalletScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route + "/"){ inclusive = true }
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route ){ inclusive = true }
                                         }
                                     }
                                 }

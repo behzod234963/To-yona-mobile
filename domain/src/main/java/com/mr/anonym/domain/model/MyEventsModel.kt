@@ -9,6 +9,7 @@ data class MyEventsModel(
     val id: Int? = null ,
     val eventStatus: Boolean = false,
     val eventType: String = "",
+    val isOtherEventSelected: Boolean = false,
     val eventDateTime: String = "",
     val cardHolder: String = "",
     val cardNumber: String = ""

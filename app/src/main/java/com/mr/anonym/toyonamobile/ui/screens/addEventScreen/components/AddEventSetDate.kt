@@ -20,9 +20,9 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun AddEventSetDate(
     showDialog: Boolean,
-    onDismissRequest:()-> Unit,
-    confirmButton:( startDate:Long?,endDate: Long? )-> Unit,
-    dismissButton:()-> Unit
+    onDismissRequest:(Boolean)-> Unit,
+    confirmButton:(startDate:Long?, endDate: Long?, Boolean )-> Unit,
+    dismissButton:(Boolean)-> Unit
 ) {
 
     val context = LocalContext.current
@@ -41,14 +41,14 @@ fun AddEventSetDate(
     
     if (showDialog){
         DatePickerDialog(
-            onDismissRequest = { onDismissRequest() },
+            onDismissRequest = { onDismissRequest(false) },
             confirmButton = {
                 TextButton(
                     onClick = {
                         val selectedStartDateMillis = dateRangePickerState.selectedStartDateMillis
                         val selectedEndDateMillis = dateRangePickerState.selectedEndDateMillis
 
-                        confirmButton(selectedStartDateMillis,selectedEndDateMillis?:0L)
+                        confirmButton(selectedStartDateMillis,selectedEndDateMillis?:0L,true)
                     }
                 ) {
                     Text( text = "Ok" )
@@ -56,7 +56,7 @@ fun AddEventSetDate(
             },
             dismissButton = {
                 TextButton(
-                    onClick = { dismissButton() }
+                    onClick = { dismissButton(false) }
                 ) {
                     Text( text = stringResource(R.string.cancel))
                 }

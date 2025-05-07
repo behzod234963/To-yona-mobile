@@ -29,7 +29,6 @@ fun MainScreenSearchField(
     onValueChange:(String)-> Unit,
     onSearch:()-> Unit
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
     val keyboardOptions = KeyboardOptions(
         imeAction = ImeAction.Search
@@ -48,7 +47,7 @@ fun MainScreenSearchField(
         },
         label = {
             Text(
-                text = stringResource(R.string.search),
+                text = stringResource(R.string.search_from_contacts),
                 color = tertiaryColor
             )
         },

@@ -1,7 +1,6 @@
 package com.mr.anonym.data.instance.local
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -9,7 +8,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.mr.anonym.data.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -133,30 +131,6 @@ class DataStoreInstance(private val context: Context) {
         val key = intPreferencesKey("cardIDs")
         return context.dataStore.data.map {
             it[key]?:-1
-        }
-    }
-    suspend fun isDarkTheme(state: Boolean){
-        val key = booleanPreferencesKey("isDarkTheme")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getDarkThemeState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("isDarkTheme")
-        return context.dataStore.data.map{
-            it[key]?:false
-        }
-    }
-    suspend fun isSystemTheme(state: Boolean){
-        val key = booleanPreferencesKey("isSystemThemeApplied")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun getSystemThemeState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("isSystemThemeApplied")
-        return context.dataStore.data.map{
-            it[key]?:true
         }
     }
     suspend fun addCardFromDetails(state: Boolean){

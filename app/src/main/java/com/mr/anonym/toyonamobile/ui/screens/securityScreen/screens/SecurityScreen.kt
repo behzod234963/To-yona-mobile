@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,67 +17,52 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityDialog
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityFields
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityTopBar
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SecurityScreen(
     navController: NavController
 ) {
-
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
 
-    val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        isSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
-    }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
-        else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        isSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
+        isSystemTheme -> systemSevenrdColor
+        isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
 
     val isChangePinProcess = remember { mutableStateOf(false) }
     val isChangePasswordProcess = remember { mutableStateOf(false) }
-    val isChangePhoneNumberProcess = remember { mutableStateOf(false) }
     val isExitProcess = remember { mutableStateOf(false) }
 
-    val biometricAuthState = sharedPreferences.getBiometricAuthState()
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val isFingerprintChecked = remember { mutableStateOf(isBiometricAuthOn) }
 

@@ -43,6 +43,10 @@ fun startScanning(context: Context,launcher: ManagedActivityResultLauncher<Inten
         putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE,false)
         putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY,false)
         putExtra(CardIOActivity.EXTRA_USE_CARDIO_LOGO,false)
+        putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME,true)
+        putExtra(CardIOActivity.EXTRA_LANGUAGE_OR_LOCALE,true)
+        putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY,true)
+        putExtra(CardIOActivity.EXTRA_USE_PAYPAL_ACTIONBAR_ICON,false)
     }
     launcher.launch(intent)
 }

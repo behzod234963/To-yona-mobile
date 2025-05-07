@@ -190,7 +190,7 @@ fun TransferDetailsBottomSheet(
             ) {
                 Text(
                     text = stringResource(R.string.transfer),
-                    color = secondaryColor,
+                    color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )

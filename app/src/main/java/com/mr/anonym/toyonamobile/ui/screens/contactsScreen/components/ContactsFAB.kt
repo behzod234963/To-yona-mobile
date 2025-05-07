@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ContactsFAB(
-    primaryColor: Color,
     quaternaryColor: Color,
     onClick:()-> Unit
 ) {
@@ -22,7 +21,7 @@ fun ContactsFAB(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            tint = primaryColor,
+            tint = Color.White,
             contentDescription = ""
         )
     }

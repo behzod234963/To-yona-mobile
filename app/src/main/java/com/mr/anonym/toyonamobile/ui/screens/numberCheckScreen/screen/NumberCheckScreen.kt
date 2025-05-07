@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -63,33 +65,33 @@ fun NumberCheckScreen(
     navController: NavController,
     viewModel: NumberCheckViewModel = hiltViewModel()
 ) {
-
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
 
     val containerPadding = remember { mutableIntStateOf(10) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val otpValue = remember { mutableStateOf("") }
     val correctValue = remember { mutableStateOf( "11111" ) }
@@ -118,7 +120,8 @@ fun NumberCheckScreen(
         containerColor = primaryColor,
         contentColor = primaryColor,
         modifier = Modifier
-            .imePadding()
+            .imePadding(),
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ){ paddingValues ->
         Column(
             modifier = Modifier
@@ -226,8 +229,11 @@ fun NumberCheckScreen(
                                     }
                                 }
                             }else{
-                                Toast.makeText(context,
-                                    context.getString(R.string.please_complete_the_process), Toast.LENGTH_SHORT).show()
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = context.getString(R.string.please_complete_the_process)
+                                    )
+                                }
                             }
                         }
                     ) {
@@ -374,14 +380,17 @@ fun NumberCheckScreen(
                                 }
                             }
                         }else{
-                            Toast.makeText(context,
-                                context.getString(R.string.please_complete_the_process), Toast.LENGTH_SHORT).show()
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.please_complete_the_process)
+                                )
+                            }
                         }
                     }
                 ) {
                     Text(
                         text = stringResource(R.string.Enter),
-                        color = secondaryColor,
+                        color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )

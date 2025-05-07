@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +19,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -65,42 +67,32 @@ fun ProfileScreen(
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme-> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme-> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
+        isSystemTheme-> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
 
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
-    val profileAvatar = viewModel.profileAvatar
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
@@ -113,10 +105,9 @@ fun ProfileScreen(
     val lastname = viewModel.lastname
     val lastnameValueError = rememberSaveable { mutableStateOf(false) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     coroutineScope.launch { bottomSheetState.hide() }
-
-
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -128,7 +119,8 @@ fun ProfileScreen(
                 secondaryColor = secondaryColor,
                 onNavigationClick = { navController.popBackStack() }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -275,17 +267,17 @@ fun ProfileScreen(
                                 }
                             }
                         } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.please_check_validate_places),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.please_check_validate_places)
+                                )
+                            }
                         }
                     }
                 ) {
                     Text(
                         text = stringResource(R.string.continue_),
-                        color = secondaryColor,
+                        color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )

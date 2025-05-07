@@ -1,15 +1,17 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
@@ -43,7 +45,6 @@ fun MainScreenModalDrawerSheet(
     profileTitle: String,
     profileAvatar:Int,
     phoneNumber: String,
-    onMainClick:()->Unit,
     onContactsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
     onMonitoringClick:()-> Unit,
@@ -51,7 +52,6 @@ fun MainScreenModalDrawerSheet(
     onSettingsClick:()-> Unit,
     onSupportClick:()-> Unit
 ) {
-
     val isMainSelected = remember { mutableStateOf( false ) }
     val isMyEvents = remember { mutableStateOf( false ) }
     val isContactsSelected = remember { mutableStateOf( false ) }
@@ -66,11 +66,12 @@ fun MainScreenModalDrawerSheet(
         drawerContentColor = primaryColor,
         drawerContainerColor = primaryColor,
     ) {
-        Column(
+        Row (
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(vertical = 10.dp, horizontal = 25.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(top = 10.dp, bottom = 10.dp , start = 10.dp ,end = 30.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Card(
                 colors = CardDefaults.cardColors(
@@ -81,21 +82,29 @@ fun MainScreenModalDrawerSheet(
             ) {
                 Image(
                     modifier = Modifier
-                        .size(60.dp),
+                        .size(45.dp),
                     painter = painterResource(profileAvatar),
                     contentDescription = ""
                 )
             }
-            Text(
-                text = profileTitle,
-                color = secondaryColor,
-                fontSize = 22.sp
-            )
-            Text(
-                text = phoneNumber,
-                color = secondaryColor,
-                fontSize = 16.sp
-            )
+            Spacer(Modifier.width(20.dp))
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = profileTitle,
+                    color = secondaryColor,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = phoneNumber,
+                    color = secondaryColor,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
         HorizontalDivider()
 //        Contacts

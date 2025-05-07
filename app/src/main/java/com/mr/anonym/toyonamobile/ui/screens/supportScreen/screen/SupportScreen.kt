@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.constants.SUPPORT_BOT
 import com.mr.anonym.toyonamobile.presentation.utils.openSupportBot
@@ -32,30 +31,29 @@ fun SupportScreen(
 
     val context = LocalContext.current
 
-    val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme-> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
+        isSystemTheme-> systemSevenrdColor
+        isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
 

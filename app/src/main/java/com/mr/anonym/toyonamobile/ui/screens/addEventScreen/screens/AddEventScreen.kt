@@ -32,7 +32,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -80,36 +80,37 @@ fun AddEventScreen(
 
     val calendarInstance = Calendar.getInstance()
     val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
 
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        iSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
+        isSystemTheme -> systemSevenrdColor
+        isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
 

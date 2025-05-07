@@ -27,11 +27,9 @@ import com.mr.anonym.domain.model.FriendsModel
 @Composable
 fun ContactsItem(
     secondaryColor: Color,
-    tertiaryColor:Color,
     sevenrdColor: Color,
     friendsModel: FriendsModel
 ) {
-
     Card (
         modifier = Modifier
             .fillMaxWidth()
@@ -66,7 +64,7 @@ fun ContactsItem(
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
-                    text = friendsModel.datetime,
+                    text = friendsModel.phone,
                     color = secondaryColor,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -50,40 +51,26 @@ fun ChangePasswordScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val dataStore = DataStoreInstance(context)
+    val sharedPreferences = SharedPreferencesInstance(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        isSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
-        else -> Color.LightGray
-    }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
-        else -> Color.White
-    }
 
     val oldPassword = dataStore.getPassword().collectAsState("")
     val oldPasswordValue = rememberSaveable { mutableStateOf("") }
@@ -202,7 +189,7 @@ fun ChangePasswordScreen(
                 ) {
                     Text(
                         text = stringResource(R.string.Confirm),
-                        color = primaryColor,
+                        color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )

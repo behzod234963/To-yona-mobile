@@ -7,7 +7,6 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +46,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformat
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.utils.restartApp
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsField
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar
@@ -71,37 +71,36 @@ fun SettingsScreen(
     val sharedPreferences = SharedPreferencesInstance(context)
     val localeManager = LocaleConfigurations(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        isSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
 
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        isSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        isSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
+        isSystemTheme -> systemSevenrdColor
+        isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
 
@@ -141,19 +140,19 @@ fun SettingsScreen(
 
     if (!isThemeSelected.value) {
         when {
-            isSystemTheme.value -> {
+            isSystemTheme -> {
                 isSystemSelected.value = true
                 isDaySelected.value = false
                 isNightSelected.value = false
             }
 
-            isDarkTheme.value -> {
+            isDarkTheme -> {
                 isNightSelected.value = true
                 isDaySelected.value = false
                 isSystemSelected.value = false
             }
 
-            !isDarkTheme.value -> {
+            !isDarkTheme -> {
                 isDaySelected.value = true
                 isNightSelected.value = false
                 isSystemSelected.value = false
@@ -349,42 +348,48 @@ fun SettingsScreen(
                     isDaySelected = isDaySelected.value,
                     onDayClick = {
                         coroutineScope.launch {
-                            dataStore.isDarkTheme(false)
-                            dataStore.isSystemTheme(false)
+                            sharedPreferences.isDarkTheme(false)
+                            sharedPreferences.isSystemTheme(false)
+                            sharedPreferences.isThemeChanged(true)
                             withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = true
                                 isNightSelected.value = false
                                 isSystemSelected.value = false
                                 showThemeContent.value = false
+                                restartApp(context)
                             }
                         }
                     },
                     isNightSelected = isNightSelected.value,
                     onNightClick = {
                         coroutineScope.launch {
-                            dataStore.isDarkTheme(true)
-                            dataStore.isSystemTheme(false)
+                            sharedPreferences.isDarkTheme(true)
+                            sharedPreferences.isSystemTheme(false)
+                            sharedPreferences.isThemeChanged(true)
                             withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = false
                                 isNightSelected.value = true
                                 isSystemSelected.value = false
                                 showThemeContent.value = false
+                                restartApp(context)
                             }
                         }
                     },
                     isSystemSelected = isSystemSelected.value,
                     onSystemClick = {
                         coroutineScope.launch {
-                            dataStore.isDarkTheme(false)
-                            dataStore.isSystemTheme(true)
+                            sharedPreferences.isDarkTheme(false)
+                            sharedPreferences.isSystemTheme(true)
+                            sharedPreferences.isThemeChanged(true)
                             withContext(Dispatchers.Main) {
                                 isThemeSelected.value = true
                                 isDaySelected.value = false
                                 isNightSelected.value = false
                                 isSystemSelected.value = true
                                 showThemeContent.value = false
+                                restartApp(context)
                             }
                         }
                     }

@@ -24,7 +24,7 @@ fun AddEventFAB(
     ) {
         Icon(
             imageVector = Icons.Default.Check,
-            tint = secondaryColor,
+            tint = Color.White,
             contentDescription = ""
         )
     }

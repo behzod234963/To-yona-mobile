@@ -11,18 +11,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,17 +32,13 @@ fun OnBoardingTopBar(
 
     val context = LocalContext.current
     val activityContext = LocalActivity.current
-    val coroutineScope = rememberCoroutineScope()
+
     val localeManager = LocaleConfigurations(context)
-    val sharedPreferences = SharedPreferencesInstance(context)
+
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale().replaceFirstChar { it.titlecase() } ) }
     val expanded = remember { mutableStateOf( false ) }
 
-    val localeOptions = mapOf(
-        stringResource(R.string.russian) to "ru",
-        stringResource(R.string.o_zbekcha) to "uz"
-    ).mapKeys { it.key }
+    val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale().replaceFirstChar { it.titlecase() } ) }
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(

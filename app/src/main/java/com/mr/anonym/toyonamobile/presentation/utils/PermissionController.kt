@@ -9,6 +9,20 @@ import androidx.core.app.ActivityCompat
 
 class PermissionController(private val context: Context) {
 
+    fun requestReadContactsPermission(activity: Activity) {
+        if (
+            ActivityCompat.checkSelfPermission(
+                activity, Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+            ) {
+            ActivityCompat.requestPermissions(
+                activity,
+                arrayOf(Manifest.permission.READ_CONTACTS),
+                3
+            )
+        }
+    }
+
     fun requestNotificationPermission(activity: Activity?) {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.POST_NOTIFICATIONS
@@ -27,7 +41,6 @@ class PermissionController(private val context: Context) {
     }
 
     fun requestExternalStoragePermission(activity: Activity) {
-
         if (ActivityCompat.checkSelfPermission(
                 activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -45,24 +58,6 @@ class PermissionController(private val context: Context) {
                 ),
                 1
             )
-
         }
-    }
-    fun requestCameraPermission(activity: Activity): Boolean{
-         if (ActivityCompat.checkSelfPermission(
-            activity,
-                Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED){
-            return true
-        }else{
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(
-                    Manifest.permission.CAMERA
-                ),
-                2
-            )
-        }
-        return false
     }
 }

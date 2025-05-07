@@ -148,4 +148,5 @@
     <string name="empty">Bo\'sh</string>
     <string name="filter">Filter</string>
     <string name="by_card">Kartalar bo\'yicha</string>
+    <string name="search_from_contacts">Kontaklar orasidan izlash</string>
 </resources>

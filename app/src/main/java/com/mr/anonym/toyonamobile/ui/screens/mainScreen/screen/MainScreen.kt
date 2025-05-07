@@ -47,7 +47,6 @@ import com.mr.anonym.toyonamobile.ui.screens.mainScreen.item.MainScreenItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -64,28 +63,27 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val isSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        isSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme -> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        isSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
+        isSystemTheme-> systemTertiaryColor
+        isDarkTheme-> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
@@ -93,14 +91,12 @@ fun MainScreen(
     val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
-        isSystemTheme.value -> systemSevenrdColor
-        isDarkTheme.value -> Color.Unspecified
+        isSystemTheme -> systemSevenrdColor
+        isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
 
     val smallFontSize = remember { mutableIntStateOf(14) }
-    val mediumFontSize = remember { mutableIntStateOf(18) }
-    val largeFontSize = remember { mutableIntStateOf(22) }
 
     val profileAvatar = sharedPreferences.getAvatar()
     val firstName = sharedPreferences.getFirstname()
@@ -110,7 +106,7 @@ fun MainScreen(
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
 
-    val partyList = listOf<PartyModel>(
+    val partyList = listOf(
         PartyModel(
             id = 1,
             userID = 1,
@@ -147,7 +143,7 @@ fun MainScreen(
             dateTime = "22-mart 2025,16:00"
         ),
     )
-    val contactsList = listOf<FriendsModel>(
+    val contactsList = listOf(
         FriendsModel(
             id = 1,
             userId = 1,
@@ -182,6 +178,8 @@ fun MainScreen(
 
     permissionController.requestNotificationPermission(activityContext)
     permissionController.requestExternalStoragePermission(activityContext!!)
+    permissionController.requestReadContactsPermission(activityContext)
+    sharedPreferences.isThemeChanged(false)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -194,17 +192,6 @@ fun MainScreen(
                 profileTitle = "$firstName $lastName",
                 profileAvatar = profileAvatar,
                 phoneNumber = phoneNumber.value.phoneNumberTransformation(),
-                onMainClick = {
-                    if (drawerState.isOpen) {
-                        coroutineScope.launch {
-                            drawerState.close()
-                            delay(250)
-                            withContext(Dispatchers.Main){
-                                navController.navigate(ScreensRouter.MainScreen.route)
-                            }
-                        }
-                    }
-                },
                 onContactsClick = {
                     if (drawerState.isOpen) {
                         coroutineScope.launch {
@@ -265,7 +252,7 @@ fun MainScreen(
                     coroutineScope.launch {
                         drawerState.close()
                         delay(250)
-                        withContext(Dispatchers.Main){
+                        withContext(Dispatchers.Main) {
                             navController.navigate(ScreensRouter.SupportScreen.route)
                         }
                     }

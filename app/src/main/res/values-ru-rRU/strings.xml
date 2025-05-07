@@ -148,4 +148,5 @@
     <string name="empty">Пусто</string>
     <string name="filter">Фильтр</string>
     <string name="by_card">По картам</string>
+    <string name="search_from_contacts">Искать среди контактов</string>
 </resources>

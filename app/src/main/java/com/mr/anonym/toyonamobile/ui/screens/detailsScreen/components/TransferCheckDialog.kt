@@ -265,7 +265,7 @@ fun TransferCheckDialog(
             ) {
                 Text(
                     text = stringResource(R.string.continue_),
-                    color = secondaryColor,
+                    color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )

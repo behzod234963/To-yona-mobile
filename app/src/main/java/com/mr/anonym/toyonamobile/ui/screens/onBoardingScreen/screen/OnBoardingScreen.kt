@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,12 +34,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingPager
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingTopBar
+import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -51,36 +51,51 @@ fun OnboardingScreen(
     val activityContext = LocalActivity.current
 
     val sharedPreferences = SharedPreferencesInstance(context)
-    val dataStore = DataStoreInstance(context)
+    val localeManager = LocaleConfigurations(context)
 
-    val isDarkTheme = dataStore.getDarkThemeState().collectAsState(false)
-    val iSystemTheme = dataStore.getSystemThemeState().collectAsState(true)
+    val isDarkTheme = sharedPreferences.getDarkThemeState()
+    val isSystemTheme = sharedPreferences.getSystemThemeState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        iSystemTheme.value -> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
-
-        isDarkTheme.value -> Color.Black
+        isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        iSystemTheme.value -> systemSecondaryColor
-        isDarkTheme.value -> Color.White
+        isSystemTheme-> systemSecondaryColor
+        isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        iSystemTheme.value -> systemTertiaryColor
-        isDarkTheme.value -> Color.DarkGray
+        isSystemTheme-> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
 
+    val primaryLocale = remember { mutableStateOf(Locale.getDefault().language ) }
+    val defaultLanguage = when(primaryLocale.value){
+        "uz","ru"->primaryLocale.value
+        else -> "uz"
+    }
+    val localeState = when(primaryLocale.value){
+        "uz","ru"-> false
+        else -> true
+    }
+    if (localeState){
+        activityContext?.let {
+            localeManager.setApplicationLocales(
+                it,
+                defaultLanguage
+            )
+        }
+    }
     val page = remember { mutableIntStateOf(0) }
-
     Scaffold(
         contentColor = primaryColor,
         containerColor = primaryColor,
@@ -173,7 +188,7 @@ fun OnboardingScreen(
                 ){
                     Text(
                         text = stringResource(R.string.next),
-                        color = secondaryColor,
+                        color = Color.White,
                         fontSize = 16.sp
                     )
                 }

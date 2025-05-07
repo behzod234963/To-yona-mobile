@@ -3,15 +3,9 @@ package com.mr.anonym.data.instance.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.mr.anonym.data.R
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
-class SharedPreferencesInstance(private val context: Context) {
+class SharedPreferencesInstance( context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref",
         Context.MODE_PRIVATE)
     fun saveLanguage(language: String){
@@ -94,5 +88,23 @@ class SharedPreferencesInstance(private val context: Context) {
     }
     fun getIsBiometricAuthOn(): Boolean{
         return sharedPreferences.getBoolean("BiometricAuthOff",false)
+    }
+    fun isDarkTheme(state: Boolean){
+        sharedPreferences.edit { putBoolean("isDarkTheme",state) }
+    }
+    fun getDarkThemeState(): Boolean {
+        return sharedPreferences.getBoolean("isDarkTheme",false)
+    }
+    fun isSystemTheme(state: Boolean){
+        sharedPreferences.edit { putBoolean("isSystemThemeApplied",state) }
+    }
+    fun getSystemThemeState(): Boolean{
+        return sharedPreferences.getBoolean("isSystemThemeApplied",true)
+    }
+    fun isThemeChanged(state: Boolean){
+        sharedPreferences.edit { putBoolean("isThemeChanged",state) }
+    }
+    fun isThemeChangedState(): Boolean{
+        return sharedPreferences.getBoolean("isThemeChanged",false)
     }
 }

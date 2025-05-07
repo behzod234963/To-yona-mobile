@@ -66,7 +66,7 @@ fun pdfGenerator(context: Context,activity: Activity, fileName: String, model: M
                 context, android.Manifest.permission.READ_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ){
-            saveFileToMemoryWithDefault(context,fileName, pdfBytes = pdfByteArray)
+            saveFileToMemoryWithDefault(fileName, pdfBytes = pdfByteArray)
         }else{
             permissionController.requestExternalStoragePermission(activity)
         }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
@@ -15,18 +16,22 @@ class LocaleConfigurations(private val context: Context) {
 
     fun Activity.setLocale(language: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val locale = Locale(language)
+            val locale = Locale.Builder()
+                .setLanguage(language)
+                .build()
             Locale.setDefault(locale)
             val config = Configuration(resources.configuration)
             config.setLocale(locale)
             applicationContext.createConfigurationContext(config)
             restartApp(context)
         }else{
-            val locale = Locale(language)
+            val locale = Locale.Builder()
+                .setLanguage(language)
+                .build()
             Locale.setDefault(locale)
             val config = Configuration(resources.configuration)
             config.setLocale(locale)
-            resources.updateConfiguration(config,resources.displayMetrics)
+            applicationContext.createConfigurationContext(config)
             restartApp(context)
         }
     }
@@ -35,15 +40,19 @@ class LocaleConfigurations(private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
             sharedPreferences.saveLanguage(language)
+            Log.d("UtilsLogging", "setApplicationLocales: ${getPrimaryLocale()}")
         } else {
             sharedPreferences.saveLanguage(language)
             activity.setLocale(language)
+            Log.d("UtilsLogging", "setApplicationLocales: ${getPrimaryLocale()}")
         }
     }
 
     fun Activity.applySavedLanguage() {
         val language = sharedPreferences.getLanguage() ?: "uz"
-        val locale = Locale(language)
+        val locale = Locale.Builder()
+            .setLanguage(language)
+            .build()
         Locale.setDefault(locale)
         val config = Configuration(resources.configuration)
         config.setLocale(locale)

@@ -120,7 +120,7 @@ fun AddCardScreen(
             AddCardTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.popBackStack() }
+                onNavigationClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->

@@ -148,4 +148,9 @@
     <string name="filter">Filter</string>
     <string name="by_card">By card</string>
     <string name="search_from_contacts">Search from contacts</string>
+    <string name="refresh">Refresh</string>
+    <string name="give_permission">Give permission</string>
+    <string name="to_give_permission_you_need_to_go_app_settings">To give permissions to read contacts, you need to go to the application settings.</string>
+    <string name="go_to_settings">Go to settings</string>
+    <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">To show contacts you need to give permission for read contacts</string>
 </resources>

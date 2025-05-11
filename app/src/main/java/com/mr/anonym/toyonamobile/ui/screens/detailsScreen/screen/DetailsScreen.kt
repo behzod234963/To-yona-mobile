@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -82,7 +83,6 @@ fun DetailsScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
-
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -109,7 +109,7 @@ fun DetailsScreen(
 
     val profileAvatar = sharedPreferences.getAvatar()
 
-    val selectedTab = rememberSaveable { mutableStateOf(1) }
+    val selectedTab = rememberSaveable { mutableIntStateOf(1) }
 
     val priceValue = remember { mutableStateOf("") }
 
@@ -205,7 +205,7 @@ fun DetailsScreen(
                         .padding(top = 10.dp)
                 ) {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Icon(
                             modifier = Modifier
@@ -257,8 +257,8 @@ fun DetailsScreen(
                     .padding(vertical = 10.dp),
                 secondaryColor = secondaryColor,
                 content = {
-                    selectedTab.value = it
-                    when (selectedTab.value) {
+                    selectedTab.intValue = it
+                    when (selectedTab.intValue) {
                         0 -> {
                             Box(
                                 modifier = Modifier

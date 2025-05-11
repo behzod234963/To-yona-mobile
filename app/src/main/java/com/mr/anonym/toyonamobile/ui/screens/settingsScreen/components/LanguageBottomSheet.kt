@@ -77,8 +77,8 @@ fun LanguageBottomSheet(
             Spacer(Modifier.height(7.dp))
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.Gray
+                    containerColor = primaryColor,
+                    contentColor = primaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -122,8 +122,8 @@ fun LanguageBottomSheet(
             Spacer(Modifier.height(10.dp))
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.Gray
+                    containerColor = primaryColor,
+                    contentColor = primaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),

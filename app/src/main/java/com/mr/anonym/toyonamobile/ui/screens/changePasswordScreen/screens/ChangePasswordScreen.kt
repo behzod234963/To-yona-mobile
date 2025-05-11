@@ -89,7 +89,7 @@ fun ChangePasswordScreen(
             ChangePasswordTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.popBackStack() }
+                onNavigationClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->

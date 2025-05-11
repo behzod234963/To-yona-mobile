@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.domain.model.NotificationsModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
-import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
+import com.mr.anonym.toyonamobile.presentation.state.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +16,7 @@ class NotificationsViewModel @Inject constructor(
     private val localUseCases: LocalUseCases
 ): ViewModel() {
 
-    private val _notifications = mutableStateOf(LocalDataState().notifications)
+    private val _notifications = mutableStateOf(ListState().notifications)
     val notifications: State<List<NotificationsModel>> = _notifications
 
     init {

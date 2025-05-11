@@ -106,6 +106,7 @@ fun MainScreen(
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
 
+
     val partyList = listOf(
         PartyModel(
             id = 1,
@@ -178,7 +179,6 @@ fun MainScreen(
 
     permissionController.requestNotificationPermission(activityContext)
     permissionController.requestExternalStoragePermission(activityContext!!)
-    permissionController.requestReadContactsPermission(activityContext)
     sharedPreferences.isThemeChanged(false)
 
     ModalNavigationDrawer(

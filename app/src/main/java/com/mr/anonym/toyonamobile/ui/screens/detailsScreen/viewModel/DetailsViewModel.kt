@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
+import com.mr.anonym.toyonamobile.presentation.state.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +19,7 @@ class DetailsViewModel @Inject constructor(
     private val localUseCases: LocalUseCases,
 ): ViewModel() {
 
-    private val _cards = mutableStateOf(LocalDataState().cards )
+    private val _cards = mutableStateOf(ListState().cards )
     val cards: State<List<CardModel>> = _cards
     private val _senderCard = mutableStateOf(context.getString(R.string.you_have_not_active_card))
     val senderCard: State<String> = _senderCard

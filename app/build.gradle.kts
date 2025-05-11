@@ -84,4 +84,10 @@ dependencies {
     kapt(libs.roomCompiler)
 
     implementation(libs.cardIOscanner)
+
+    implementation(libs.pullToRefresh)
+
+    implementation(libs.lottieanimations)
+
+    implementation(libs.systemUiController)
 }

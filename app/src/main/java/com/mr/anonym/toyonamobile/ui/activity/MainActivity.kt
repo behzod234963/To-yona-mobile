@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -23,11 +24,13 @@ import androidx.navigation.compose.rememberNavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.constants.CONTACTS_REQUEST_CODE
 import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricAuthManager
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricResult
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.theme.ToyonaMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var localeConfig: LocaleConfigurations
     @Inject lateinit var sharedPreferences: SharedPreferencesInstance
     @Inject lateinit var dataStore: DataStoreInstance
+    @Inject lateinit var permissionController: PermissionController
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.applySavedLanguage()
             }
         }
-
         enableEdgeToEdge()
         setContent {
             val isSystemTheme = sharedPreferences.getSystemThemeState()
@@ -117,15 +120,8 @@ class MainActivity : AppCompatActivity() {
                                 navController.navigate(ScreensRouter.SecurityScreen.route)
                             }
                         }
-
-                        is BiometricResult.AuthenticationError -> {
-
-                        }
-
-                        BiometricResult.AuthenticationFailed -> {
-
-                        }
-
+                        is BiometricResult.AuthenticationError -> {}
+                        BiometricResult.AuthenticationFailed -> {}
                         BiometricResult.AuthenticationNotSet -> {
                             if (Build.VERSION.SDK_INT >= 30) {
                                 val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
@@ -137,7 +133,6 @@ class MainActivity : AppCompatActivity() {
                                 enrollLauncher.launch(enrollIntent)
                             }
                         }
-
                         BiometricResult.FeatureUnavailable -> {}
                         BiometricResult.HardwareUnavailable -> {}
                         null -> {}
@@ -149,7 +144,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     override fun onStop() {
         super.onStop()
         CoroutineScope(Dispatchers.Default).launch {
@@ -157,6 +151,7 @@ class MainActivity : AppCompatActivity() {
             dataStore.openSecurityContent(false)
             dataStore.addCardFromDetails(false)
             dataStore.addCardFromAddEvent(false)
+            dataStore.isMainScreenLaunched(false)
         }
         sharedPreferences.saveBiometricAuthState(true)
         sharedPreferences.addCardProcess(false)
@@ -168,6 +163,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.saveBiometricAuthState(true)
         CoroutineScope(Dispatchers.Default).launch {
             dataStore.isPasswordForgotten(false)
+            dataStore.isMainScreenLaunched(false)
             dataStore.openSecurityContent(false)
             dataStore.addCardFromDetails(false)
             dataStore.addCardFromAddEvent(false)

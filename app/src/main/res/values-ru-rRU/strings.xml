@@ -149,4 +149,9 @@
     <string name="filter">Фильтр</string>
     <string name="by_card">По картам</string>
     <string name="search_from_contacts">Искать среди контактов</string>
+    <string name="refresh">Обновить</string>
+    <string name="give_permission">Предоставить доступ</string>
+    <string name="to_give_permission_you_need_to_go_app_settings">Чтобы отображать контактов вам необходимо дать разрешения через настройки приложения</string>
+    <string name="go_to_settings">Настройки</string>
+    <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">Чтобы отображать список контактов вам необходимо дать разрешение на чтению контактов</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,7 +43,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.Q)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
 @Composable
 fun MonitoringScreen(
     navController: NavController
@@ -89,7 +90,7 @@ fun MonitoringScreen(
         else -> Color.White
     }
 
-    val selectedTabIndex = rememberSaveable { mutableStateOf(monthIndex) }
+    val selectedTabIndex = rememberSaveable { mutableIntStateOf(monthIndex) }
 
     val showTransferDetails = rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true )
@@ -166,7 +167,7 @@ fun MonitoringScreen(
             MonitoringTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.popBackStack() },
+                onNavigationClick = { navController.navigateUp() },
                 onActionsClick = {
                     navController.navigate(ScreensRouter.MonitoringFilterScreen.route)
                 }

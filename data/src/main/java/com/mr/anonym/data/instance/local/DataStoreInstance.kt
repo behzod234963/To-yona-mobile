@@ -181,4 +181,28 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
+    suspend fun isContactsPermissionGranted(state: Boolean){
+        val key = booleanPreferencesKey("isContactsPermissionGranted")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun isContactsPermissionGrantedState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("isContactsPermissionGranted")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
+    suspend fun isMainScreenLaunched(state: Boolean){
+        val key = booleanPreferencesKey("isMainScreenLaunched")
+        context.dataStore.edit {
+            it[key] = state
+        }
+    }
+    fun isMainScreenLaunchedState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("isMainScreenLaunched")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
 }

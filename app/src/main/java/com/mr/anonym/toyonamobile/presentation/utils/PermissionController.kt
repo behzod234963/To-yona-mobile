@@ -5,21 +5,53 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
+import com.mr.anonym.toyonamobile.presentation.constants.IO_REQUEST_CODE
+import com.mr.anonym.toyonamobile.presentation.constants.NOTIFICATIONS_REQUEST_CODE
 
 class PermissionController(private val context: Context) {
 
-    fun requestReadContactsPermission(activity: Activity) {
-        if (
-            ActivityCompat.checkSelfPermission(
-                activity, Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
+    fun checkReadContactsPermission(activity: Activity): Boolean {
+        return ActivityCompat.shouldShowRequestPermissionRationale(
+            activity,
+            Manifest.permission.READ_CONTACTS
+        )
+    }
+
+    @Composable
+    fun ContactsPermissionController(
+        context: Context,
+        onGranted: () -> Unit
+    ) {
+        val permissionState = remember { mutableStateOf(false) }
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { permissions ->
+            permissionState.value = permissions
+            if (permissionState.value) {
+                onGranted()
+                permissionState.value = false
+            }
+        }
+        LaunchedEffect(permissionState.value) {
+            if (
+                ActivityCompat.checkSelfPermission(
+                    context, Manifest.permission.READ_CONTACTS
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                3
-            )
+                permissionLauncher.launch(
+                    Manifest.permission.READ_CONTACTS
+                )
+            } else {
+                onGranted()
+                permissionState.value = false
+            }
         }
     }
 
@@ -33,7 +65,7 @@ class PermissionController(private val context: Context) {
                     ActivityCompat.requestPermissions(
                         it,
                         arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                        0
+                        NOTIFICATIONS_REQUEST_CODE
                     )
                 }
             }
@@ -56,7 +88,7 @@ class PermissionController(private val context: Context) {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ),
-                1
+                IO_REQUEST_CODE
             )
         }
     }

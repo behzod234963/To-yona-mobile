@@ -121,7 +121,6 @@ fun SettingsScreen(
     sharedPreferences.editProfileProcess(false)
 
     val languageBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    coroutineScope.launch { languageBottomSheetState.hide() }
     val showLanguageContent = rememberSaveable { mutableStateOf(false) }
     val isUzbekSelected = rememberSaveable { mutableStateOf(false) }
     val isRussianSelected = rememberSaveable { mutableStateOf(false) }
@@ -129,7 +128,6 @@ fun SettingsScreen(
     val isPrimaryLocale = rememberSaveable { mutableStateOf(true) }
 
     val themeBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    coroutineScope.launch { themeBottomSheetState.hide() }
     val isDaySelected = rememberSaveable { mutableStateOf(false) }
     val isNightSelected = rememberSaveable { mutableStateOf(false) }
     val isSystemSelected = rememberSaveable { mutableStateOf(false) }
@@ -174,7 +172,6 @@ fun SettingsScreen(
             }
         }
     }
-
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -186,7 +183,7 @@ fun SettingsScreen(
                     sharedPreferences.editProfileProcess(true)
                     navController.navigate(ScreensRouter.ProfileScreen.route)
                 },
-                onNavigationClick = { navController.popBackStack() }
+                onNavigationClick = { navController.navigateUp() }
             )
         }
     ) { paddingValues ->

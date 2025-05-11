@@ -96,7 +96,7 @@ fun NumberCheckScreen(
     val otpValue = remember { mutableStateOf("") }
     val correctValue = remember { mutableStateOf( "11111" ) }
 
-    val timeLeft = remember { mutableStateOf(40) }
+    val timeLeft = remember { mutableIntStateOf(40) }
     val isRunning = remember { mutableStateOf(true) }
 
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState( false )
@@ -108,12 +108,12 @@ fun NumberCheckScreen(
     val cardHolder = dataStore.getCardHolder().collectAsState("")
     val expiryDate = dataStore.getExpiryDate().collectAsState("")
 
-    LaunchedEffect(isRunning.value,timeLeft.value) {
-        while ( isRunning.value && timeLeft.value > 0 ){
+    LaunchedEffect(isRunning.value,timeLeft.intValue) {
+        while ( isRunning.value && timeLeft.intValue > 0 ){
             delay(1000L)
-            timeLeft.value--
+            timeLeft.intValue--
         }
-        if (timeLeft.value <= 0) isRunning.value = false
+        if (timeLeft.intValue <= 0) isRunning.value = false
     }
 
     Scaffold (
@@ -249,7 +249,7 @@ fun NumberCheckScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     TextButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Text(
                             text = stringResource(R.string.change_number),
@@ -258,7 +258,7 @@ fun NumberCheckScreen(
                         )
                     }
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Icon(
                             modifier = Modifier
@@ -282,11 +282,11 @@ fun NumberCheckScreen(
                         fontSize = 16.sp
                     )
                     Spacer(Modifier.width(10.dp))
-                    if (!isRunning.value&& timeLeft.value == 0 ){
+                    if (!isRunning.value&& timeLeft.intValue == 0 ){
                         IconButton(
                             onClick = {
                                 isRunning.value = true
-                                timeLeft.value = 40
+                                timeLeft.intValue = 40
                                 otpValue.value = ""
                             }
                         ) {
@@ -301,7 +301,7 @@ fun NumberCheckScreen(
                         }
                     }else{
                         Text(
-                            text = timeLeft.value.toString(),
+                            text = timeLeft.intValue.toString(),
                             color = secondaryColor,
                             fontSize = 16.sp
                         )

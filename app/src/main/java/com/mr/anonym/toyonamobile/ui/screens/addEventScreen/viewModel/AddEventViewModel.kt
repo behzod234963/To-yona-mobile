@@ -11,7 +11,7 @@ import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
+import com.mr.anonym.toyonamobile.presentation.state.ListState
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class AddEventViewModel @Inject constructor(
     private val _eventModel = mutableStateOf(MyEventsModel())
     val eventModel: State<MyEventsModel> = _eventModel
 
-    private val _cards = mutableStateOf(LocalDataState().cards)
+    private val _cards = mutableStateOf(ListState().cards)
     val cards: State<List<CardModel>> = _cards
     private val _card = mutableStateOf(CardModel())
     val card: State<CardModel> = _card

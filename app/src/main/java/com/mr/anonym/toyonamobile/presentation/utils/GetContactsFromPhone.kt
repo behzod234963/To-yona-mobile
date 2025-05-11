@@ -1,33 +1,32 @@
 package com.mr.anonym.toyonamobile.presentation.utils
 
 import android.content.Context
-import android.os.Build
 import android.provider.ContactsContract
-import androidx.annotation.RequiresApi
 import com.mr.anonym.domain.model.FriendsModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun getContacts(context: Context): List<FriendsModel>{
+
     val contacts = mutableListOf<FriendsModel>()
     val contentResolver = context.contentResolver
+    val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
     val cursor = contentResolver.query(
-        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        uri,
         arrayOf(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.NUMBER
         ),
         null,
         null,
-        "${ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} ASC"
+        null,
+        null,
     )
     cursor?.use {
-        val nameIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+        val nameIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
         while (it.moveToNext()){
             val name = it.getString(nameIndex)
-            contacts.add(
-                FriendsModel(
-                    name = name,
-                )
-            )
+            val number = it.getString(numberIndex)
+            contacts.add(FriendsModel(name = name, phone = number))
         }
     }
     return contacts

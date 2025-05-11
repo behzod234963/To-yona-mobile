@@ -64,7 +64,7 @@ fun SupportScreen(
             SupportTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.popBackStack() },
+                onNavigationClick = { navController.navigateUp() },
                 onActionsClick = {
                     openSupportBot(context, SUPPORT_BOT)
                 }

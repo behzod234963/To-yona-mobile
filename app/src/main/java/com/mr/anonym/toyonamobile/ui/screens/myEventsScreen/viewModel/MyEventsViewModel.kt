@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.domain.model.MyEventsModel
 import com.mr.anonym.domain.useCases.local.LocalUseCases
-import com.mr.anonym.toyonamobile.presentation.state.LocalDataState
+import com.mr.anonym.toyonamobile.presentation.state.ListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +16,7 @@ class MyEventsViewModel @Inject constructor(
     private val localUseCases: LocalUseCases
 ) : ViewModel(){
 
-    private val _events = mutableStateOf(LocalDataState().events )
+    private val _events = mutableStateOf(ListState().events )
     val events: State<List<MyEventsModel>> = _events
 
     init {

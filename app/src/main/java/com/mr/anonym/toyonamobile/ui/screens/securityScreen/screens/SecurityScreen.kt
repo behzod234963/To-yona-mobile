@@ -70,7 +70,7 @@ fun SecurityScreen(
         enabled = true
     ) {
         sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
-        navController.popBackStack()
+        navController.navigateUp()
     }
 
     Scaffold(
@@ -82,7 +82,7 @@ fun SecurityScreen(
                 secondaryColor = secondaryColor,
                 navigationClick = {
                     sharedPreferences.saveIsBiometricAuthOn(isFingerprintChecked.value)
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         }

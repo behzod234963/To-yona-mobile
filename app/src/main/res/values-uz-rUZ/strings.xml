@@ -149,4 +149,9 @@
     <string name="filter">Filter</string>
     <string name="by_card">Kartalar bo\'yicha</string>
     <string name="search_from_contacts">Kontaklar orasidan izlash</string>
+    <string name="refresh">Yangilash</string>
+    <string name="give_permission">Ruxsat berish</string>
+    <string name="to_give_permission_you_need_to_go_app_settings">Kontaktlarni ko\'rsatish uchun ilova sozlamalari orqali ruxsat berishingiz lozim </string>
+    <string name="go_to_settings">Sozlamalar</string>
+    <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">Kontaktlar ro\'yxatini ko\'rsatish uchun siz kontaktlarni o\'qishga ruxsat berishingiz kerak</string>
 </resources>

@@ -177,7 +177,7 @@ fun RegistrationScreen(
                 )
                 if (!isPasswordForgotten.value) {
                     TextButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Text(
                             text = stringResource(R.string.i_have_an_account),

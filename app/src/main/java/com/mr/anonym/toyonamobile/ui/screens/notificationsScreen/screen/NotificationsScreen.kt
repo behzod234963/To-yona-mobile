@@ -73,7 +73,7 @@ fun NotificationsScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 onNavigationIconClick = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             )
         },

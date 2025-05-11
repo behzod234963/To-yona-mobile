@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -81,8 +80,8 @@ fun ThemeBottomSheet(
 //            Day theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.Gray
+                    containerColor = primaryColor,
+                    contentColor = primaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -128,8 +127,8 @@ fun ThemeBottomSheet(
 //            Night theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.Gray
+                    containerColor = primaryColor,
+                    contentColor = primaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -175,8 +174,8 @@ fun ThemeBottomSheet(
 //            System theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.Gray
+                    containerColor = primaryColor,
+                    contentColor = primaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),

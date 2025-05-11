@@ -116,7 +116,7 @@ fun OnboardingScreen(
         BackHandler (
             enabled = true
         ){
-            navController.popBackStack()
+            navController.navigateUp()
             sharedPreferences.saveFirstTimeState(false)
         }
         Column(

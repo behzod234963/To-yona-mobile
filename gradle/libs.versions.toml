@@ -1,25 +1,28 @@
 [versions]
-agp = "8.11.0-alpha09"
+agp = "8.11.0-alpha10"
 kotlin = "2.1.20"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
-composeBom = "2025.04.00"
+composeBom = "2025.05.00"
 appcompat = "1.7.0"
 material = "1.12.0"
 
-daggerHiltVersion = "2.56.1"
+daggerHiltVersion = "2.56.2"
 daggerHiltNavigationComposeVersion = "1.2.0"
-navigationVersion = "2.8.9"
+navigationVersion = "2.9.0"
 coroutinesVersion = "1.10.2"
-lifecycleVersion = "2.8.7"
-dataStoreVersion = "1.1.4"
+lifecycleVersion = "2.9.0"
+dataStoreVersion = "1.1.6"
 biometricAuthVersion = "1.1.0"
-roomVersion = "2.7.0"
+roomVersion = "2.7.1"
 cardIOscannerVersion = "5.5.1"
+pullToRefreshVersion = "0.36.0"
+lottieVersion = "6.6.6"
+systemUiControllerVersion = "0.30.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,7 +59,9 @@ roomCoroutinesSupport = { group = "androidx.room" , name = "room-ktx" , version.
 roomCompiler = { group = "androidx.room" , name = "room-compiler" , version.ref = "roomVersion" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomVersion" }
 cardIOscanner = { group = "io.card" , name = "android-sdk" , version.ref = "cardIOscannerVersion" }
-
+pullToRefresh = { group = "com.google.accompanist" , name = "accompanist-swiperefresh" , version.ref = "pullToRefreshVersion" }
+lottieanimations = {group = "com.airbnb.android",name = "lottie-compose",version.ref = "lottieVersion"}
+systemUiController = { group = "com.google.accompanist" , name = "accompanist-systemuicontroller" , version.ref = "systemUiControllerVersion" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -107,7 +106,6 @@ fun ProfileScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    coroutineScope.launch { bottomSheetState.hide() }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -117,7 +115,7 @@ fun ProfileScreen(
             ProfileTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.popBackStack() }
+                onNavigationClick = { navController.navigateUp() }
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -147,7 +145,6 @@ fun ProfileScreen(
                         contentDescription = "man"
                     )
                 }
-                Spacer(Modifier.height(10.dp))
                 Text(
                     text = when {
                         isOldUserState.value -> {
@@ -166,7 +163,6 @@ fun ProfileScreen(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Spacer(Modifier.height(10.dp))
                 Text(
                     text = phoneNumber.value.phoneNumberTransformation(),
                     color = secondaryColor,

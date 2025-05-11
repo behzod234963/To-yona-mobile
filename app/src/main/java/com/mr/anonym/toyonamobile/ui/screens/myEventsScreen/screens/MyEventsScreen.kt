@@ -65,7 +65,7 @@ fun MyEventsScreen(
             MyEventTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor
-            ) { navController.popBackStack() }
+            ) { navController.navigateUp() }
         }
     ) { paddingValues ->
         LazyColumn (

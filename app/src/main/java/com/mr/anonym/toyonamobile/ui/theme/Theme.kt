@@ -9,7 +9,10 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -40,6 +43,9 @@ fun ToyonaMobileTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !darkTheme
+    val backgroundColor = if (darkTheme) Color.Black else Color.White
     val colorScheme = when {
 //        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
 //            val context = LocalContext.current
@@ -49,7 +55,12 @@ fun ToyonaMobileTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            darkIcons = useDarkIcons,
+            color = backgroundColor
+        )
+    }
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

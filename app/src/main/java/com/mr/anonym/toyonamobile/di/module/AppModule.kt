@@ -2,6 +2,7 @@ package com.mr.anonym.toyonamobile.di.module
 
 import android.content.Context
 import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +22,9 @@ class AppModule {
     @Singleton
     fun provideLocaleConfigurations(@ApplicationContext context: Context): LocaleConfigurations =
         LocaleConfigurations(context)
+
+    @Provides
+    @Singleton
+    fun providePermissionController(@ApplicationContext context: Context): PermissionController =
+        PermissionController(context)
 }

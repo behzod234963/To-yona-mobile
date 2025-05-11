@@ -101,7 +101,7 @@ fun WalletScreen(
                 }
             }
             else -> {
-                navController.popBackStack()
+                navController.navigateUp()
             }
         }
     }
@@ -137,7 +137,7 @@ fun WalletScreen(
                             }
                         }
                         else -> {
-                            navController.popBackStack()
+                            navController.navigateUp()
                         }
                     }
                 },

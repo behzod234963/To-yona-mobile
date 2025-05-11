@@ -170,7 +170,7 @@ fun AddEventScreen(
     * */
 
     BackHandler {
-        navController.popBackStack()
+        navController.navigateUp()
     }
     Scaffold(
         containerColor = primaryColor,
@@ -180,7 +180,7 @@ fun AddEventScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationIconClick = {
-                    navController.popBackStack()
+                    navController.navigateUp()
                 }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },

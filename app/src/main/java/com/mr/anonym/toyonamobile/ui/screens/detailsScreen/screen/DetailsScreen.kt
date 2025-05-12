@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +17,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -35,10 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
@@ -51,12 +49,11 @@ import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsScreenTabRow
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferCheckDialog
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferDetailsBottomSheet
+import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.item.ActualEventsItem
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.item.DetailsHistoryItem
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.viewModel.DetailsViewModel
 import kotlinx.coroutines.launch
@@ -113,22 +110,26 @@ fun DetailsScreen(
 
     val priceValue = remember { mutableStateOf("") }
 
-    val friendsModel = FriendsModel(
-        id = 1,
-        name = "Ойбек",
-        surname = "Худайкулов",
-        phone = "+998973570498",
-        cardNumber = "9860030160619356",
-        userId = 1,
-        datetime = "01.01.1900",
-    )
-    val partyModel = PartyModel(
-        id = 1,
-        userID = 1,
-        type = "Келин туй",
-        cardNumber = "9860030160619356",
-        dateTime = "21-22-mart 2025,17:00"
-    )
+    val friendsModel = remember { mutableStateOf(
+        FriendsModel(
+            id = 1,
+            name = "Ойбек",
+            surname = "Худайкулов",
+            phone = "+998973570498",
+            cardNumber = "9860030160619356",
+            userId = 1,
+            datetime = "01.01.1900",
+        )
+    ) }
+    val partyModel = remember { mutableStateOf(
+        PartyModel(
+            id = 1,
+            userID = 1,
+            type = "Келин туй",
+            cardNumber = "9860030160619356",
+            dateTime = "21-22-mart 2025,17:00"
+        )
+    ) }
     val partyList = listOf(
         PartyModel(
             id = 1,
@@ -157,16 +158,13 @@ fun DetailsScreen(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isExpanded = remember { mutableStateOf(false) }
     val isPriceFieldEnabled = remember { mutableStateOf(false) }
-    val receiverCardNumber = "000111122223333"
     val senderCardNumber = viewModel.senderCard
+    val senderName = viewModel.senderName
     val cards = viewModel.cards
     val priceFieldError = rememberSaveable { mutableStateOf(false) }
     val showCheckDetails = rememberSaveable { mutableStateOf(false) }
 
-    val priceHistoryValue = rememberSaveable { mutableStateOf("") }
     val priceHistoryValueError = rememberSaveable { mutableStateOf(false) }
-    val showHistoryTransferDetails = rememberSaveable { mutableStateOf(false) }
-    val showHistoryTransferCheck = rememberSaveable { mutableStateOf(false) }
 
     val userModel = UserModel(
         id = 1,
@@ -181,14 +179,17 @@ fun DetailsScreen(
         id = 1,
         userId = userModel.id,
         sender = userModel.cardNumber,
-        receiver = friendsModel.cardNumber,
-        price = if (priceValue.value.isEmpty()) 0.0 else priceValue.value.toDouble(),
+        receiver = friendsModel.value.cardNumber,
+        price = priceValue.value.ifEmpty { "0.0" },
         dateTime = "30.04.2025"
     )
 
+    val snackbarState = remember { SnackbarHostState() }
+
     Scaffold(
         containerColor = primaryColor,
-        contentColor = primaryColor
+        contentColor = primaryColor,
+        snackbarHost = { SnackbarHost(snackbarState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -260,175 +261,80 @@ fun DetailsScreen(
                     selectedTab.intValue = it
                     when (selectedTab.intValue) {
                         0 -> {
-                            Box(
+                            LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(10.dp),
-                                contentAlignment = Alignment.BottomCenter
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(horizontal = 10.dp)
-                                ) {
-//                                    Event content
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            text = stringResource(R.string.event),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                        Text(
-                                            text = partyModel.type,
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                    }
-                                    Spacer(Modifier.height(5.dp))
-                                    HorizontalDivider()
-                                    Spacer(Modifier.height(10.dp))
-//                                    Event date and time content
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.5f),
-                                            text = stringResource(R.string.event_date_and_time),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                        Text(
-                                            text = partyModel.dateTime,
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            textAlign = TextAlign.End
-                                        )
-                                    }
-                                    Spacer(Modifier.height(5.dp))
-                                    HorizontalDivider()
-                                    Spacer(Modifier.height(10.dp))
-//                                    Requisites content
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Text(
-                                            text = stringResource(R.string.requisites),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                    }
-//                                    Cardholder content
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.5f),
-                                            text = stringResource(R.string.card_holder_name),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                        Text(
-                                            text = "BEKHZOD KHUDAYBERGENOV",
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            textAlign = TextAlign.End
-                                        )
-                                    }
-                                    Spacer(Modifier.height(5.dp))
-                                    HorizontalDivider()
-                                    Spacer(Modifier.height(10.dp))
-//                                    Card number content
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        Text(
-                                            modifier = Modifier
-                                                .fillMaxWidth(0.5f),
-                                            text = stringResource(R.string.card_number),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                        Text(
-                                            text = receiverCardNumber.cardNumberFormatter(),
-                                            color = secondaryColor,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.SemiBold,
-                                            textAlign = TextAlign.End
-                                        )
-                                    }
-                                    Spacer(Modifier.height(10.dp))
-                                    HorizontalDivider()
-                                    Spacer(Modifier.height(10.dp))
-                                }
-                                DetailsPriceFields(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(100.dp),
-                                    secondaryColor = secondaryColor,
-                                    fiverdColor = fiverdColor,
-                                    value = priceValue.value,
-                                    priceFieldError = priceFieldError.value,
-                                    onValueChange = { newValue ->
-                                        priceValue.value = newValue
-                                    }
-                                ) {
-                                    if (
-                                        priceValue.value.isDigitsOnly() &&
-                                        priceValue.value.isNotEmpty() &&
-                                        priceValue.value.isNotBlank() &&
-                                        priceValue.value.toInt() >= 1000
-                                    ) {
-                                        showTransferDetails.value = true
-                                    } else {
-                                        priceFieldError.value = true
+                                items(partyList) { model ->
+                                    partyModel.value = model
+                                    ActualEventsItem(
+                                        secondaryColor = secondaryColor,
+                                        fiverdColor = fiverdColor,
+                                        sevenrdColor = sevenrdColor,
+                                        partyModel = model,
+                                        friendsModel = friendsModel.value,
+                                        priceFieldError = priceFieldError.value,
+                                    ) { price ->
+                                        partyModel.value = model
+                                        priceValue.value = price.filter { digit -> digit.isDigit() }
+                                        try {
+                                            if (
+                                                priceValue.value.isDigitsOnly() &&
+                                                priceValue.value.isNotEmpty() &&
+                                                priceValue.value.isNotBlank() &&
+                                                priceValue.value.toInt() >= 1000
+                                            ) {
+                                                showTransferDetails.value = true
+                                            } else {
+                                                priceHistoryValueError.value = true
+                                            }
+                                        } catch (_: Exception) {
+                                            coroutineScope.launch {
+                                                snackbarState.showSnackbar(
+                                                    message = context.getString(R.string.the_field_must_not_be_empty_or_can_contain_only_digits)
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-
                         1 -> {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
                                 items(partyList) { model ->
+                                    partyModel.value = model
                                     DetailsHistoryItem(
                                         secondaryColor = secondaryColor,
-                                        tertiaryColor = tertiaryColor,
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
+                                        friendsModel = friendsModel.value,
                                         partyModel = model,
                                         priceFieldError = priceHistoryValueError.value,
-                                        onTransferClick = { price ->
-                                            priceHistoryValue.value = price
-                                            showHistoryTransferDetails.value = true
+                                    ) { price ->
+                                        partyModel.value = model
+                                        priceValue.value = price.filter { digit -> digit.isDigit() }
+                                        try {
+                                            if (
+                                                priceValue.value.isDigitsOnly() &&
+                                                priceValue.value.isNotEmpty() &&
+                                                priceValue.value.isNotBlank() &&
+                                                priceValue.value.toInt() >= 1000
+                                            ) {
+                                                showTransferDetails.value = true
+                                            } else {
+                                                priceHistoryValueError.value = true
+                                            }
+                                        } catch (_: Exception) {
+                                            coroutineScope.launch {
+                                                snackbarState.showSnackbar(
+                                                    message = context.getString(R.string.the_field_must_not_be_empty_or_can_contain_only_digits)
+                                                )
+                                            }
                                         }
-                                    )
+                                    }
                                 }
                             }
                         }
@@ -443,16 +349,25 @@ fun DetailsScreen(
                     quaternaryColor = quaternaryColor,
                     state = bottomSheetState,
                     onConfirmButtonClick = {
-                        showCheckDetails.value = true
+                        if (
+                            priceValue.value.isDigitsOnly() &&
+                            priceValue.value.isNotEmpty() &&
+                            priceValue.value.isNotBlank() &&
+                            priceValue.value.toInt() >= 1000
+                        ) {
+                            showCheckDetails.value = true
+                        } else {
+                            priceFieldError.value = true
+                        }
                     },
                     onDismissRequest = {
                         showTransferDetails.value = false
                         if (bottomSheetState.isVisible) {
                             coroutineScope.launch { bottomSheetState.hide() }
                         }
+                        priceFieldError.value = false
                         isPriceFieldEnabled.value = false
                     },
-                    receiverCardNumber = receiverCardNumber,
                     senderCardNumber = senderCardNumber.value,
                     onSelectCardClick = {
                         isExpanded.value = true
@@ -471,8 +386,9 @@ fun DetailsScreen(
                     onDropDownDismissRequest = {
                         isExpanded.value = false
                     },
-                    onItemClick = {
-                        viewModel.changeSenderCard(it)
+                    onItemClick = { cardNumber,cardHolder->
+                        viewModel.changeSenderCard(cardNumber)
+                        viewModel.changeSenderName(cardHolder)
                         isExpanded.value = false
                     },
                     onAddCardClick = {
@@ -482,7 +398,10 @@ fun DetailsScreen(
                         }
                         navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                     },
-                    isExpanded = isExpanded.value
+                    isExpanded = isExpanded.value,
+                    senderName = senderName.value,
+                    friendsModel = friendsModel.value,
+                    partyModel = partyModel.value,
                 )
             }
             if (showCheckDetails.value) {
@@ -490,91 +409,21 @@ fun DetailsScreen(
                     secondaryColor = secondaryColor,
                     quaternaryColor = quaternaryColor,
                     userModel = userModel,
-                    friendsModel = friendsModel,
+                    friendsModel = friendsModel.value,
                     transactionsModel = transactionsModel,
                     onDismissClick = { showCheckDetails.value = false },
                     onConfirmClick = {
                         showCheckDetails.value = false
-                        navController.navigate(ScreensRouter.MainScreen.route){
-                            popUpTo(ScreensRouter.MainScreen.route){
+                        navController.navigate(ScreensRouter.MainScreen.route) {
+                            popUpTo(ScreensRouter.MainScreen.route) {
                                 inclusive = true
                             }
                             launchSingleTop = true
                         }
-                    }
-                )
-            }
-            if (showHistoryTransferDetails.value){
-                TransferDetailsBottomSheet(
-                    primaryColor = primaryColor,
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    quaternaryColor = quaternaryColor,
-                    state = bottomSheetState,
-                    isFieldEnabled = isPriceFieldEnabled.value,
-                    priceValue = priceHistoryValue.value,
-                    onValueChange = {
-                        priceHistoryValue.value = it
                     },
-                    onTrailingIconClick = {
-                        isPriceFieldEnabled.value = true
-                    },
-                    receiverCardNumber = receiverCardNumber,
-                    senderCardNumber = senderCardNumber.value,
-                    onConfirmButtonClick = {
-                        showHistoryTransferCheck.value = true
-                    },
-                    onDismissRequest = {
-                        showHistoryTransferDetails.value = false
-                        if (bottomSheetState.isVisible) {
-                            coroutineScope.launch { bottomSheetState.hide() }
-                        }
-                        isPriceFieldEnabled.value = false
-                    },
-                    onSelectCardClick = {
-                        isExpanded.value = true
-                    },
-                    userCards = cards.value,
-                    onDropDownDismissRequest = {
-                        isExpanded.value = false
-                    },
-                    onItemClick = {
-                        viewModel.changeSenderCard(it)
-                        isExpanded.value = false
-                    },
-                    onAddCardClick = {
-                        isExpanded.value = false
-                        coroutineScope.launch {
-                            dataStore.addCardFromDetails(true)
-                        }
-                        navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
-                    },
-                    isExpanded = isExpanded.value
-                )
-            }
-            if (showHistoryTransferCheck.value){
-                TransferCheckDialog(
-                    secondaryColor = secondaryColor,
-                    quaternaryColor = quaternaryColor,
-                    userModel = userModel,
-                    friendsModel = friendsModel,
-                    transactionsModel = transactionsModel,
-                    onDismissClick = {
-                        showHistoryTransferCheck.value = false
-                    },
-                    onConfirmClick = {
-                        showHistoryTransferCheck.value = false
-                    }
+                    commission = "500",
                 )
             }
         }
     }
 }
-
-    @Preview
-    @Composable
-    private fun PreviewDetailsScreen() {
-        DetailsScreen(
-            NavController(LocalContext.current)
-        )
-    }

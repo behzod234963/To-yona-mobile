@@ -5,6 +5,6 @@ data class TransactionsModel(
     val userId: Int,
     val sender: String,
     val receiver: String,
-    val price: Double,
+    val price: String,
     val dateTime: String
 )

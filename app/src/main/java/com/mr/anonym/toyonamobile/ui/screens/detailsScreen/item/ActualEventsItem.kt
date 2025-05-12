@@ -36,18 +36,18 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
 
 @Composable
-fun DetailsHistoryItem(
+fun ActualEventsItem(
     secondaryColor: Color,
     fiverdColor: Color,
     sevenrdColor: Color,
-    friendsModel: FriendsModel,
     partyModel: PartyModel,
+    friendsModel: FriendsModel,
     priceFieldError: Boolean,
     onTransferClick:(String)-> Unit
 ) {
 
-    val isExpanded = rememberSaveable { mutableStateOf( false ) }
-    val priceHistoryValue = remember { mutableStateOf("" ) }
+    val isExpanded = rememberSaveable { mutableStateOf( true ) }
+    val priceValue = remember { mutableStateOf("" ) }
 
     Card(
         modifier = Modifier
@@ -180,7 +180,7 @@ fun DetailsHistoryItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "${ friendsModel.name} ${friendsModel.surname}",
+                            text = "${friendsModel.name} ${friendsModel.surname}",
                             color = secondaryColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -190,6 +190,7 @@ fun DetailsHistoryItem(
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(10.dp))
+//                    Receiver card number
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -221,12 +222,12 @@ fun DetailsHistoryItem(
                             .height(100.dp),
                         secondaryColor = secondaryColor,
                         fiverdColor = fiverdColor,
-                        value = priceHistoryValue.value,
+                        value = priceValue.value,
                         priceFieldError = priceFieldError,
                         onValueChange = { newValue ->
-                            priceHistoryValue.value = newValue
+                            priceValue.value = newValue
                         }
-                    ) { onTransferClick(priceHistoryValue.value) }
+                    ) { onTransferClick(priceValue.value) }
                 }
             }
         }

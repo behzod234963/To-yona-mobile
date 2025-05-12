@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -92,6 +93,7 @@ fun ProfileScreen(
     val quaternaryColor = Color.Red
 
     val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val password = dataStore.getPassword().collectAsState("")
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
@@ -240,7 +242,6 @@ fun ProfileScreen(
                                         }
                                     }
                                 }
-
                                 editProfileProcess -> {
                                     sharedPreferences.saveAvatar(avatar.value)
                                     sharedPreferences.saveFirstname(firstname.value)
@@ -248,7 +249,6 @@ fun ProfileScreen(
                                     sharedPreferences.editProfileProcess(false)
                                     navController.navigate(ScreensRouter.SettingsScreen.route)
                                 }
-
                                 else -> {
                                     sharedPreferences.saveAvatar(avatar.value)
                                     sharedPreferences.saveFirstname(firstname.value)
@@ -260,6 +260,7 @@ fun ProfileScreen(
                                             inclusive = true
                                         }
                                     }
+                                    Log.d("UtilsLogging", "ProfileScreen: ${phoneNumber.value} \n ${password.value}")
                                 }
                             }
                         } else {

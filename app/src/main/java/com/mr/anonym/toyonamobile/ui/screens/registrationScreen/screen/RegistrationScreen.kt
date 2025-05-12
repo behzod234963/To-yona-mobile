@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -215,7 +216,9 @@ fun RegistrationScreen(
                                     val result = "+998" + phoneFieldValue.value
                                     coroutineScope.launch {
                                         dataStore.savePassword(confirmValue.value)
+                                        dataStore.savePhoneNumber(result)
                                     }
+                                    Log.d("UtilsLogging", "RegistrationScreen: $result")
                                     navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                         popUpTo(ScreensRouter.RegistrationScreen.route) {
                                             inclusive = true

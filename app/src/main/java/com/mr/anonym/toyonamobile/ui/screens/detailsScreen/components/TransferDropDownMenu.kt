@@ -20,7 +20,7 @@ fun TransferDropDownMenu(
     secondaryColor: Color,
     isExpanded: Boolean,
     onDismissRequest: () -> Unit,
-    onItemClick: (String) -> Unit,
+    onItemClick: (String, String) -> Unit,
     onAddCardClick: () -> Unit,
     userCards: List<CardModel>
 ) {
@@ -62,7 +62,7 @@ fun TransferDropDownMenu(
                         )
                     },
                     onClick = {
-                        onItemClick(card.cardNumber)
+                        onItemClick(card.cardNumber,card.cardHolder)
                     },
                 )
             }

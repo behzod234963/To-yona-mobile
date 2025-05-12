@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,22 +32,20 @@ import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
-import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.extensions.moneySeparator
-import com.mr.anonym.toyonamobile.presentation.extensions.moneyType
 import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForDetails
 
 @Composable
 fun TransferCheckDialog(
     secondaryColor: Color,
     quaternaryColor: Color,
+    commission: String,
     userModel: UserModel,
     friendsModel: FriendsModel,
     transactionsModel: TransactionsModel,
     onDismissClick: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
-    val commission = 500.0
     val scrollState = rememberScrollState()
     AlertDialog(
         icon = {
@@ -117,7 +114,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${transactionsModel.price.moneyType()} ${stringResource(R.string.uzs)}",
+                        text = "${transactionsModel.price.moneySeparator()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
@@ -142,7 +139,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${commission.moneyType()} ${stringResource(R.string.uzs)}",
+                        text = "${commission.moneySeparator()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold

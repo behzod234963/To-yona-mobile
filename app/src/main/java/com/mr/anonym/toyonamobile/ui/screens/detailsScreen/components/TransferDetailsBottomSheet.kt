@@ -32,6 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
+import com.mr.anonym.domain.model.FriendsModel
+import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -43,13 +45,15 @@ fun TransferDetailsBottomSheet(
     tertiaryColor:Color,
     quaternaryColor: Color,
     state: SheetState,
+    senderName:String,
+    friendsModel: FriendsModel,
+    partyModel: PartyModel,
 
 //    Price field
     isFieldEnabled: Boolean,
     priceValue: String,
     onValueChange:(String)-> Unit,
     onTrailingIconClick:()-> Unit,
-    receiverCardNumber: String,
     senderCardNumber: String,
     onConfirmButtonClick:()-> Unit,
     onDismissRequest:()-> Unit,
@@ -58,7 +62,7 @@ fun TransferDetailsBottomSheet(
 //    DropDown field
     userCards: List<CardModel>,
     onDropDownDismissRequest:()-> Unit,
-    onItemClick:(String)-> Unit,
+    onItemClick:(String, String)-> Unit,
     onAddCardClick:()-> Unit,
     isExpanded: Boolean,
 ) {
@@ -106,14 +110,14 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Palankas Tygankas",
+                        text = "${friendsModel.name} ${friendsModel.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
                 Text(
-                    text = receiverCardNumber.cardNumberFormatter(),
+                    text = partyModel.cardNumber.cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
@@ -139,7 +143,7 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "Palankas Tygankas",
+                        text = senderName,
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
@@ -169,7 +173,8 @@ fun TransferDetailsBottomSheet(
                             secondaryColor = secondaryColor,
                             isExpanded = isExpanded,
                             onDismissRequest = { onDropDownDismissRequest() },
-                            onItemClick = { onItemClick(it) },
+                            onItemClick = { cardNumber,cardHolder->
+                                onItemClick(cardNumber,cardHolder) },
                             userCards = userCards,
                             onAddCardClick = { onAddCardClick() }
                         )

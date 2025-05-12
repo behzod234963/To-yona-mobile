@@ -23,6 +23,8 @@ class DetailsViewModel @Inject constructor(
     val cards: State<List<CardModel>> = _cards
     private val _senderCard = mutableStateOf(context.getString(R.string.you_have_not_active_card))
     val senderCard: State<String> = _senderCard
+    private val _senderName = mutableStateOf(context.getString(R.string.you_have_not_active_card))
+    val senderName: State<String> = senderCard
 
     init {
         getCards()
@@ -31,10 +33,16 @@ class DetailsViewModel @Inject constructor(
     fun getCards() = viewModelScope.launch {
         localUseCases.getCardsUseCase().collect {
             _cards.value = it
-            if (it.isNotEmpty()) _senderCard.value = it[0].cardNumber
+            if (it.isNotEmpty()){
+                _senderCard.value = it[0].cardNumber
+                _senderName.value = it[0].cardHolder
+            }
         }
     }
     fun changeSenderCard(card: String){
         _senderCard.value = card
+    }
+    fun changeSenderName(name: String){
+        _senderName.value = name
     }
 }

@@ -49,7 +49,7 @@ package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.item
 //                    fontWeight = FontWeight.SemiBold
 //                )
 //                Text(
-//                    text = partyModel.dateTime,
+//                    text = partyModel.createdAt,
 //                    color = secondaryColor,
 //                    fontSize = 16.sp,
 //                    fontWeight = FontWeight.SemiBold,

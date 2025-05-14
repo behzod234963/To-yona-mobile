@@ -1,6 +1,8 @@
 package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.provider.ContactsContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -47,9 +49,10 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.TransactionsModel
-import com.mr.anonym.domain.model.UserModel
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.utils.OpenNewContactMethod
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsScreenTabRow
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferCheckDialog
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferDetailsBottomSheet
@@ -80,19 +83,20 @@ fun DetailsScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme-> systemSecondaryColor
+        isSystemTheme -> systemSecondaryColor
         isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
         isSystemTheme -> systemTertiaryColor
-        isDarkTheme-> Color.DarkGray
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
@@ -110,26 +114,30 @@ fun DetailsScreen(
 
     val priceValue = remember { mutableStateOf("") }
 
-    val friendsModel = remember { mutableStateOf(
-        FriendsModel(
-            id = 1,
-            name = "Ойбек",
-            surname = "Худайкулов",
-            phone = "+998973570498",
-            cardNumber = "9860030160619356",
-            userId = 1,
-            datetime = "01.01.1900",
+    val friendsModel = remember {
+        mutableStateOf(
+            FriendsModel(
+                id = 1,
+                name = "Ойбек",
+                surname = "Худайкулов",
+                phone = "+998973570498",
+                cardNumber = "9860030160619356",
+                userId = 1,
+                datetime = "01.01.1900",
+            )
         )
-    ) }
-    val partyModel = remember { mutableStateOf(
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Келин туй",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
+    }
+    val partyModel = remember {
+        mutableStateOf(
+            PartyModel(
+                id = 1,
+                userID = 1,
+                type = "Келин туй",
+                cardNumber = "9860030160619356",
+                dateTime = "21-22-mart 2025,17:00"
+            )
         )
-    ) }
+    }
     val partyList = listOf(
         PartyModel(
             id = 1,
@@ -166,25 +174,27 @@ fun DetailsScreen(
 
     val priceHistoryValueError = rememberSaveable { mutableStateOf(false) }
 
-    val userModel = UserModel(
+    val userModel = UserModelItem(
         id = 1,
-        name = "BEKHZOD",
-        surName = "KHUDAYBERGENOV",
-        phone = "+998973570498",
-        cardNumber = senderCardNumber.value,
+        username = "BEKHZOD",
+        surname = "KHUDAYBERGENOV",
+        phonenumber = "+998973570498",
         password = "0000",
-        dateTime = "04.06.1998"
+        createdAt = "04.06.1998",
+        cardlist = null
     )
     val transactionsModel = TransactionsModel(
         id = 1,
-        userId = userModel.id,
-        sender = userModel.cardNumber,
+        userId = userModel.id?:-1,
+        sender = "userModel.cardlist",
         receiver = friendsModel.value.cardNumber,
         price = priceValue.value.ifEmpty { "0.0" },
         dateTime = "30.04.2025"
     )
 
     val snackbarState = remember { SnackbarHostState() }
+
+    val contactsLauncher = OpenNewContactMethod(context)
 
     Scaffold(
         containerColor = primaryColor,
@@ -198,58 +208,70 @@ fun DetailsScreen(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.1f)
-                        .padding(top = 10.dp)
+                IconButton(
+                    onClick = { navController.navigateUp() }
                 ) {
-                    IconButton(
-                        onClick = { navController.navigateUp() }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(30.dp),
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = secondaryColor,
-                            contentDescription = ""
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 30.dp, top = 10.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Column(
+                    Icon(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .size(70.dp),
-                            painter = painterResource(profileAvatar),
-                            contentDescription = ""
-                        )
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "Бехзод Худайбергенов",
-                            color = secondaryColor,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(Modifier.height(5.dp))
-                        Text(
-                            text = "+998973570498",
-                            color = secondaryColor,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                            .size(30.dp),
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        tint = secondaryColor,
+                        contentDescription = ""
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(top = 5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(70.dp),
+                        painter = painterResource(profileAvatar),
+                        contentDescription = ""
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = "Бехзод Худайбергенов",
+                        color = secondaryColor,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    Text(
+                        text = "+998973570498",
+                        color = secondaryColor,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        val intent = Intent(ContactsContract.Intents.Insert.ACTION).apply {
+                            type = ContactsContract.RawContacts.CONTENT_TYPE
+                            putExtra(
+                                ContactsContract.Intents.Insert.NAME,
+                                "${friendsModel.value.name} ${friendsModel.value.surname}"
+                            )
+                            putExtra(
+                                ContactsContract.Intents.Insert.PHONE,
+                                friendsModel.value.phone
+                            )
+                        }
+                        contactsLauncher.launch(intent)
                     }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(30.dp),
+                        painter = painterResource(R.drawable.ic_contact),
+                        tint = secondaryColor,
+                        contentDescription = ""
+                    )
                 }
             }
             Spacer(Modifier.height(5.dp))
@@ -299,6 +321,7 @@ fun DetailsScreen(
                                 }
                             }
                         }
+
                         1 -> {
                             LazyColumn(
                                 modifier = Modifier
@@ -386,7 +409,7 @@ fun DetailsScreen(
                     onDropDownDismissRequest = {
                         isExpanded.value = false
                     },
-                    onItemClick = { cardNumber,cardHolder->
+                    onItemClick = { cardNumber, cardHolder ->
                         viewModel.changeSenderCard(cardNumber)
                         viewModel.changeSenderName(cardHolder)
                         isExpanded.value = false

@@ -5,20 +5,28 @@ import androidx.room.Room
 import com.mr.anonym.data.implementations.local.CardRepositoryImpl
 import com.mr.anonym.data.implementations.local.MyEventsRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
+import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.data.instance.local.room.CardDAO
 import com.mr.anonym.data.instance.local.room.MyEventsDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
+import com.mr.anonym.data.instance.remote.ApiService
 import com.mr.anonym.domain.repository.local.CardRepository
 import com.mr.anonym.domain.repository.local.MyEventsRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
+import com.mr.anonym.domain.repository.remote.UserRepository
+import com.mr.anonym.toyonamobile.presentation.constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -72,4 +80,32 @@ class DataModule {
     @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferencesInstance =
         SharedPreferencesInstance(context)
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit2(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(provideOkHTTP())
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideOkHTTP(): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    fun provieApi(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(api: ApiService): UserRepository = UserRepositoryImpl(api)
 }

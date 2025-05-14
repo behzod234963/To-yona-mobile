@@ -3,6 +3,7 @@ package com.mr.anonym.toyonamobile.di.module
 import com.mr.anonym.domain.repository.local.CardRepository
 import com.mr.anonym.domain.repository.local.MyEventsRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
+import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.domain.useCases.local.notificationUseCase.ClearNotificationsUseCase
 import com.mr.anonym.domain.useCases.local.cardUseCases.DeleteCardUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.DeleteNotificationUseCase
@@ -19,6 +20,9 @@ import com.mr.anonym.domain.useCases.local.myEventUseCase.GetEventByIdUseCase
 import com.mr.anonym.domain.useCases.local.myEventUseCase.GetEventsUseCase
 import com.mr.anonym.domain.useCases.local.myEventUseCase.InsertEventUseCase
 import com.mr.anonym.domain.useCases.local.myEventUseCase.UpdateEventStatusUseCase
+import com.mr.anonym.domain.useCases.remote.LoginUserUseCase
+import com.mr.anonym.domain.useCases.remote.RegisterUserUseCase
+import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,5 +56,13 @@ class DomainModule {
             getEventsUseCase = GetEventsUseCase(myEventsRepository),
             getEventByIdUseCase = GetEventByIdUseCase(myEventsRepository),
             getActiveEventsUseCase = GetActiveEventsUseCase(myEventsRepository),
+        )
+
+    @Provides
+    @Singleton
+    fun provideRemoteUseCases(userRepository: UserRepository): RemoteUseCases =
+        RemoteUseCases(
+            loginUserUseCase = LoginUserUseCase(userRepository),
+            registerUserUseCase = RegisterUserUseCase(userRepository)
         )
 }

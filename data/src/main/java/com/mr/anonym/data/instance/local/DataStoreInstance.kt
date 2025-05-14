@@ -26,13 +26,13 @@ class DataStoreInstance(private val context: Context) {
         }
     }
     suspend fun savePhoneNumber(phoneNumber: String){
-        val key = stringPreferencesKey("phoneNumber")
+        val key = stringPreferencesKey("phonenumber")
         context.dataStore.edit {
             it[key] = phoneNumber
         }
     }
     fun getPhoneNumber(): Flow<String>{
-        val key = stringPreferencesKey("phoneNumber")
+        val key = stringPreferencesKey("phonenumber")
         return context.dataStore.data.map {
             it[key]?:""
         }
@@ -203,6 +203,18 @@ class DataStoreInstance(private val context: Context) {
         val key = booleanPreferencesKey("isMainScreenLaunched")
         return context.dataStore.data.map {
             it[key]?:false
+        }
+    }
+    suspend fun saveId(id: Int){
+        val key = intPreferencesKey("saveId")
+        context.dataStore.edit {
+            it[key] = id
+        }
+    }
+    fun getID(): Flow<Int>{
+        val key = intPreferencesKey("saveId")
+        return context.dataStore.data.map {
+            it[key]?:-1
         }
     }
 }

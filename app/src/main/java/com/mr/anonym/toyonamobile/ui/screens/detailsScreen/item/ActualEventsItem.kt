@@ -164,7 +164,7 @@ fun ActualEventsItem(
                         )
                     }
                     Spacer(Modifier.height(10.dp))
-//                    Receiver name
+//                    Receiver username
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),

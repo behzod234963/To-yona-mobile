@@ -46,4 +46,6 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.roomCoroutinesSupport)
     kapt(libs.roomCompiler)
+    implementation(libs.gsonConverter)
+    implementation(libs.retrofit2)
 }

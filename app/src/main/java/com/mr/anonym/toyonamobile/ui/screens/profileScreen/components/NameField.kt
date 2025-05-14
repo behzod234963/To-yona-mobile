@@ -32,7 +32,7 @@ fun NameField(
     onSurnameEnabledTrailingIconClick: () -> Unit,
 ) {
 
-    //    name field content
+    //    username field content
     OutlinedTextField(
         value = nameValue,
         onValueChange = { onNameValueChange(it) },

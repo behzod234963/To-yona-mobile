@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.FriendsModel
-import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -47,7 +47,7 @@ fun TransferDetailsBottomSheet(
     state: SheetState,
     senderName:String,
     friendsModel: FriendsModel,
-    partyModel: PartyModel,
+    partyModel: PartysItem,
 
 //    Price field
     isFieldEnabled: Boolean,
@@ -116,12 +116,14 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                Text(
-                    text = partyModel.cardNumber.cardNumberFormatter(),
-                    color = secondaryColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                partyModel.cardNumber?.cardNumberFormatter()?.let {
+                    Text(
+                        text = it,
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
             Spacer(Modifier.height(5.dp))
             HorizontalDivider(color = secondaryColor)

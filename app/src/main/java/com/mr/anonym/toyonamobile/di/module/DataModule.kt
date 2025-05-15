@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.mr.anonym.data.implementations.local.CardRepositoryImpl
 import com.mr.anonym.data.implementations.local.MyEventsRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
+import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
@@ -12,10 +13,12 @@ import com.mr.anonym.data.instance.local.room.CardDAO
 import com.mr.anonym.data.instance.local.room.MyEventsDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
-import com.mr.anonym.data.instance.remote.ApiService
+import com.mr.anonym.data.instance.remote.PartyApiService
+import com.mr.anonym.data.instance.remote.UserApiService
 import com.mr.anonym.domain.repository.local.CardRepository
 import com.mr.anonym.domain.repository.local.MyEventsRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
+import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.toyonamobile.presentation.constants.BASE_URL
 import dagger.Module
@@ -103,9 +106,17 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provieApi(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+    fun provieUserApi(retrofit: Retrofit): UserApiService = retrofit.create(UserApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideUserRepository(api: ApiService): UserRepository = UserRepositoryImpl(api)
+    fun proviePartyApi(retrofit: Retrofit): PartyApiService = retrofit.create(PartyApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(api: UserApiService): UserRepository = UserRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun providePartyRepository(api: PartyApiService): PartyRepository = PartyRepositoryImpl(api)
 }

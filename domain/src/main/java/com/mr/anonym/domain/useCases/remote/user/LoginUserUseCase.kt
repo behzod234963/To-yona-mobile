@@ -1,7 +1,6 @@
-package com.mr.anonym.domain.useCases.remote
+package com.mr.anonym.domain.useCases.remote.user
 
 import android.util.Log
-import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.domain.response.LoginRequest
 import com.mr.anonym.domain.response.LoginResponse

@@ -108,6 +108,8 @@ fun NumberCheckScreen(
     val cardHolder = dataStore.getCardHolder().collectAsState("")
     val expiryDate = dataStore.getExpiryDate().collectAsState("")
 
+    val id = sharedPreferences.getID()
+
     LaunchedEffect(isRunning.value,timeLeft.intValue) {
         while ( isRunning.value && timeLeft.intValue > 0 ){
             delay(1000L)
@@ -218,11 +220,9 @@ fun NumberCheckScreen(
                                         }
                                     }
                                     else->{
-                                        CoroutineScope(Dispatchers.Default).launch {
-                                            dataStore.savePhoneNumber(arguments.number)
-                                        }
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)
+                                        viewModel.getUserByID(id)
                                         navController.navigate(ScreensRouter.ProfileScreen.route){
                                             popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
                                         }
@@ -369,11 +369,9 @@ fun NumberCheckScreen(
                                     }
                                 }
                                 else->{
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        dataStore.savePhoneNumber(arguments.number)
-                                    }
                                     sharedPreferences.saveIsLoggedIn(true)
                                     sharedPreferences.saveIsProfileSettingsState(true)
+                                    viewModel.getUserByID(id)
                                     navController.navigate(ScreensRouter.ProfileScreen.route){
                                         popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
                                     }

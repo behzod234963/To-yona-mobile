@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.FriendsModel
-import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
@@ -40,7 +40,7 @@ fun ActualEventsItem(
     secondaryColor: Color,
     fiverdColor: Color,
     sevenrdColor: Color,
-    partyModel: PartyModel,
+    partyModel: PartysItem,
     friendsModel: FriendsModel,
     priceFieldError: Boolean,
     onTransferClick:(String)-> Unit
@@ -74,12 +74,14 @@ fun ActualEventsItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = partyModel.type,
-                    color = secondaryColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                partyModel.type?.let {
+                    Text(
+                        text = it,
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -115,12 +117,14 @@ fun ActualEventsItem(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                        Text(
-                            text = partyModel.type,
-                            color = secondaryColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        partyModel.type?.let {
+                            Text(
+                                text = it,
+                                color = secondaryColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
@@ -140,13 +144,26 @@ fun ActualEventsItem(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                        Text(
-                            text = partyModel.dateTime,
-                            color = secondaryColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.End
-                        )
+                        Column {
+                            partyModel.startTime?.let {
+                                Text(
+                                    text = it,
+                                    color = secondaryColor,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                            partyModel.endTime?.let {
+                                Text(
+                                    text = it,
+                                    color = secondaryColor,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
                     }
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
@@ -205,13 +222,15 @@ fun ActualEventsItem(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                        Text(
-                            text = partyModel.cardNumber.cardNumberFormatter(),
-                            color = secondaryColor,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.End
-                        )
+                        partyModel.cardNumber?.cardNumberFormatter()?.let {
+                            Text(
+                                text = it,
+                                color = secondaryColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.End
+                            )
+                        }
                     }
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()

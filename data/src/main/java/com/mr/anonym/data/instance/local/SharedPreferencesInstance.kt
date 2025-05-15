@@ -3,7 +3,11 @@ package com.mr.anonym.data.instance.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import com.mr.anonym.data.R
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SharedPreferencesInstance( context: Context) {
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref",
@@ -106,5 +110,11 @@ class SharedPreferencesInstance( context: Context) {
     }
     fun isThemeChangedState(): Boolean{
         return sharedPreferences.getBoolean("isThemeChanged",false)
+    }
+    fun saveId(id: Int){
+        sharedPreferences.edit{ putInt("saveId",id) }
+    }
+    fun getID(): Int{
+        return sharedPreferences.getInt("saveId",-1)
     }
 }

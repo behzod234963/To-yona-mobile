@@ -1,29 +1,29 @@
-package com.mr.anonym.toyonamobile.ui.screens.logInScreen.viewModel
+package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.domain.response.LoginRequest
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class RegistrationViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases
-): ViewModel(){
+): ViewModel() {
 
-    private val _message = mutableStateOf("")
-    val message: State<String> = _message
+    private val _user = mutableStateOf(UserModelItem() )
+    val user: State<UserModelItem> = _user
 
-    fun loginUser(user: LoginRequest) = viewModelScope.launch {
-        remoteUseCases.loginUserUseCase.execute(user).collect {
-            sharedPreferences.saveId(it.id)
-            _message.value = it.message
+    fun signUpUser(user: UserModelItem) = viewModelScope.launch {
+        remoteUseCases.registerUserUseCase.execute(user).collect {
+            _user.value = it
+            sharedPreferences.saveId(it.id?:-1)
         }
     }
 }

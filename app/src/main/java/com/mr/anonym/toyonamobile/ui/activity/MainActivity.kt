@@ -1,7 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.activity
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -24,7 +23,6 @@ import androidx.navigation.compose.rememberNavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.constants.CONTACTS_REQUEST_CODE
 import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.BiometricAuthManager

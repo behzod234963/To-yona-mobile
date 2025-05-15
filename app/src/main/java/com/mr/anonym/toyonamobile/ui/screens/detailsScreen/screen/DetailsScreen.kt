@@ -47,7 +47,7 @@ import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.FriendsModel
-import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
@@ -129,38 +129,15 @@ fun DetailsScreen(
     }
     val partyModel = remember {
         mutableStateOf(
-            PartyModel(
+            PartysItem(
                 id = 1,
-                userID = 1,
+                userId = 1,
                 type = "Келин туй",
                 cardNumber = "9860030160619356",
-                dateTime = "21-22-mart 2025,17:00"
             )
         )
     }
-    val partyList = listOf(
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Келин туй",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Келин туй",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Келин туй",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-    )
+    val partyList = emptyList<PartysItem>()
 
     val showTransferDetails = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)

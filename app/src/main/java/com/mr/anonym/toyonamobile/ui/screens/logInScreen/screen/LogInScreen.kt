@@ -274,7 +274,7 @@ fun LogInScreen(
             ) {
                 LottieAnimation(
                     modifier = Modifier
-                        .size(100.dp),
+                        .size(150.dp),
                     composition = loadingAnimation.value,
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever

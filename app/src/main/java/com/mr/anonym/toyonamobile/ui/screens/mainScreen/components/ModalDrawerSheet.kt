@@ -34,7 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 
 @Composable
 fun MainScreenModalDrawerSheet(
@@ -42,9 +44,8 @@ fun MainScreenModalDrawerSheet(
     primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
-    profileTitle: String,
     profileAvatar:Int,
-    phoneNumber: String,
+    model: UserModelItem,
     onContactsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
     onMonitoringClick:()-> Unit,
@@ -93,13 +94,13 @@ fun MainScreenModalDrawerSheet(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = profileTitle,
+                    text = "${model.username} ${model.surname}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = phoneNumber,
+                    text = "+998${model.phonenumber}".phoneNumberTransformation(),
                     color = secondaryColor,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold

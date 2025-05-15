@@ -205,16 +205,4 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
-    suspend fun saveId(id: Int){
-        val key = intPreferencesKey("saveId")
-        context.dataStore.edit {
-            it[key] = id
-        }
-    }
-    fun getID(): Flow<Int>{
-        val key = intPreferencesKey("saveId")
-        return context.dataStore.data.map {
-            it[key]?:-1
-        }
-    }
 }

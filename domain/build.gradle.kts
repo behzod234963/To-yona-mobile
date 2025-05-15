@@ -48,4 +48,6 @@ dependencies {
     kapt(libs.roomCompiler)
     implementation(libs.gsonConverter)
     implementation(libs.retrofit2)
+    implementation(libs.paging3)
+    implementation(libs.paging3JetpackCompose)
 }

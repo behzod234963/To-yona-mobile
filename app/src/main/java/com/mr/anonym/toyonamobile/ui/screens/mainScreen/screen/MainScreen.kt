@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,10 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -30,13 +35,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.FriendsModel
-import com.mr.anonym.domain.model.PartyModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenFAB
@@ -44,14 +51,18 @@ import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenMod
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenSearchField
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTopBar
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.item.MainScreenItem
+import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@SuppressLint("CoroutineCreationDuringComposition")
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -65,12 +76,14 @@ fun MainScreen(
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
+    val id = sharedPreferences.getID()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -82,8 +95,8 @@ fun MainScreen(
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        isSystemTheme-> systemTertiaryColor
-        isDarkTheme-> Color.DarkGray
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
@@ -106,44 +119,6 @@ fun MainScreen(
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
 
-
-    val partyList = listOf(
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "123456789012345678901234567890",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Худайкулов Ойбек Kelin to'y",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Абдумадиярхуджаев Каландарбекжон Абдумаликсамандарович (Шагалкалла) Kelin to'y",
-            cardNumber = "9860030160619356",
-            dateTime = "21-22-mart 2025,17:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Худайберганов Бехзод Sunnat to'y",
-            cardNumber = "9860030160619356",
-            dateTime = "21-mart 2025,12:00"
-        ),
-        PartyModel(
-            id = 1,
-            userID = 1,
-            type = "To'liboyev Javohir Beshik to'y",
-            cardNumber = "9860030160619356",
-            dateTime = "22-mart 2025,16:00"
-        ),
-    )
     val contactsList = listOf(
         FriendsModel(
             id = 1,
@@ -174,30 +149,39 @@ fun MainScreen(
         )
     )
 
-    val friendsModel = remember { mutableStateOf( FriendsModel() ) }
-    val partyModel = remember { mutableStateOf( PartyModel() ) }
+    val friendsModel = remember { mutableStateOf(FriendsModel()) }
+    val partyModel = remember { mutableStateOf(PartysItem()) }
+
+    val partyList = viewModel.getAllParty().collectAsLazyPagingItems()
 
     permissionController.requestNotificationPermission(activityContext)
     permissionController.requestExternalStoragePermission(activityContext!!)
     sharedPreferences.isThemeChanged(false)
 
+    val isRefresh = viewModel.isRefresh.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserByID(id,{})
+    }
+
+    val user = viewModel.user
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             MainScreenModalDrawerSheet(
-                smallFontSize = smallFontSize.value,
+                smallFontSize = smallFontSize.intValue,
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
-                profileTitle = "$firstName $lastName",
                 profileAvatar = profileAvatar,
-                phoneNumber = phoneNumber.value.phoneNumberTransformation(),
                 onContactsClick = {
                     if (drawerState.isOpen) {
                         coroutineScope.launch {
                             drawerState.close()
                             delay(250)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.ContactsScreen.route)
                             }
                         }
@@ -208,7 +192,7 @@ fun MainScreen(
                         coroutineScope.launch {
                             drawerState.close()
                             delay(250)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MyEventsScreen.route)
                             }
                         }
@@ -219,7 +203,7 @@ fun MainScreen(
                         coroutineScope.launch {
                             drawerState.close()
                             delay(250)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MonitoringScreen.route)
                             }
                         }
@@ -230,7 +214,7 @@ fun MainScreen(
                         coroutineScope.launch {
                             drawerState.close()
                             delay(250)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.WalletScreen.route)
                             }
                         }
@@ -241,12 +225,13 @@ fun MainScreen(
                         coroutineScope.launch {
                             drawerState.close()
                             delay(250)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.SettingsScreen.route)
                             }
                         }
                     }
-                }
+                },
+                model = user.value
             ) {
                 if (drawerState.isOpen) {
                     coroutineScope.launch {
@@ -260,92 +245,105 @@ fun MainScreen(
             }
         }
     ) {
-        Scaffold(
-            containerColor = primaryColor,
-            contentColor = primaryColor,
-            floatingActionButton = {
-                MainScreenFAB(
-                    secondaryColor = secondaryColor,
-                    quaternaryColor = quaternaryColor,
-                    onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
-                )
-            },
-            topBar = {
-                MainScreenTopBar(
-                    primaryColor = primaryColor,
-                    secondaryColor = secondaryColor,
-                    title = stringResource(R.string.app_name),
-                    navigationIcon = profileAvatar,
-                    onActionsClick = {
-                        navController.navigate(ScreensRouter.NotificationsScreen.route)
-                    }
-                ) {
-                    coroutineScope.launch {
-                        if (drawerState.isOpen) drawerState.close() else drawerState.open()
+        PullToRefreshBox(
+            isRefreshing = isRefresh.value,
+            state = pullToRefreshState,
+            onRefresh = { viewModel.isLoading() },
+        ) {
+            Scaffold(
+                containerColor = primaryColor,
+                contentColor = primaryColor,
+                floatingActionButton = {
+                    MainScreenFAB(
+                        secondaryColor = secondaryColor,
+                        quaternaryColor = quaternaryColor,
+                        onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
+                    )
+                },
+                topBar = {
+                    MainScreenTopBar(
+                        primaryColor = primaryColor,
+                        secondaryColor = secondaryColor,
+                        title = stringResource(R.string.app_name),
+                        navigationIcon = profileAvatar,
+                        onActionsClick = {
+                            navController.navigate(ScreensRouter.NotificationsScreen.route)
+                        }
+                    ) {
+                        coroutineScope.launch {
+                            if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                        }
                     }
                 }
-            }
-        ) { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MainScreenSearchField(
+            ) { paddingValues ->
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
-                        .clickable { showContacts.value = true },
-                    primaryColor = primaryColor,
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    value = searchValue.value,
-                    onValueChange = {
-                        showContacts.value = true
-                        if (it.isEmpty() || it.isBlank()) showContacts.value = false
-                        searchValue.value = it
-                    },
-                    onSearch = {
-                        TODO()
-                    }
-                )
-                Spacer(Modifier.height(5.dp))
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (showContacts.value){
-                        items(contactsList){ contactsModel->
-                            friendsModel.value = contactsModel
-                            MainScreenItem(
-                                primaryColor = primaryColor,
-                                secondaryColor = secondaryColor,
-                                tertiaryColor = tertiaryColor,
-                                sevenrdColor = sevenrdColor,
-                                smallFontSize = smallFontSize.value,
-                                partyModel = partyModel.value,
-                                friendsModel = contactsModel,
-                                showContacts = showContacts.value,
-                                onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
-                            )
+                    MainScreenSearchField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 5.dp)
+                            .clickable { showContacts.value = true },
+                        primaryColor = primaryColor,
+                        secondaryColor = secondaryColor,
+                        tertiaryColor = tertiaryColor,
+                        value = searchValue.value,
+                        onValueChange = {
+                            showContacts.value = true
+                            if (it.isEmpty() || it.isBlank()) showContacts.value = false
+                            searchValue.value = it
+                        },
+                        onSearch = {
+                            TODO()
                         }
-                    }else{
-                        items(partyList){ model->
-                            partyModel.value = model
-                            MainScreenItem(
-                                primaryColor = primaryColor,
-                                secondaryColor = secondaryColor,
-                                tertiaryColor = tertiaryColor,
-                                sevenrdColor = sevenrdColor,
-                                smallFontSize = smallFontSize.value,
-                                partyModel = model,
-                                friendsModel = friendsModel.value,
-                                showContacts = showContacts.value,
-                                onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
-                            )
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (showContacts.value) {
+                            items(contactsList) { contactsModel ->
+                                friendsModel.value = contactsModel
+                                MainScreenItem(
+                                    secondaryColor = secondaryColor,
+                                    tertiaryColor = tertiaryColor,
+                                    sevenrdColor = sevenrdColor,
+                                    smallFontSize = smallFontSize.intValue,
+                                    partyModel = partyModel.value,
+                                    userModel = user.value,
+                                    userId = -1,
+                                    showContacts = showContacts.value,
+                                    onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                )
+                            }
+                        } else {
+                            items(
+                                count = partyList.itemCount,
+                                key = partyList.itemKey { it.toString() }
+                            ) { index ->
+                                val model = partyList[index]
+                                viewModel.changeOtherUserState(true)
+                                if (model != null) {
+                                    partyModel.value = model
+                                    MainScreenItem(
+                                        secondaryColor = secondaryColor,
+                                        tertiaryColor = tertiaryColor,
+                                        sevenrdColor = sevenrdColor,
+                                        smallFontSize = smallFontSize.intValue,
+                                        partyModel = model,
+                                        userId = partyModel.value.userId?:-1,
+                                        userModel = user.value,
+                                        showContacts = showContacts.value,
+                                        onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -357,5 +355,5 @@ fun MainScreen(
 @Preview
 @Composable
 private fun PreviewMainScreen() {
-    MainScreen(NavController(LocalContext.current))
+    MainScreen(NavController(LocalContext.current),)
 }

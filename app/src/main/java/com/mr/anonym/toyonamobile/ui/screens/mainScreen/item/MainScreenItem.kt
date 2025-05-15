@@ -2,7 +2,6 @@ package com.mr.anonym.toyonamobile.ui.screens.mainScreen.item
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,31 +20,39 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.FriendsModel
-import com.mr.anonym.domain.model.PartyModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.mr.anonym.domain.model.PartysItem
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
+import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
 
 @Composable
 fun MainScreenItem(
-    primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
     sevenrdColor: Color,
     smallFontSize: Int,
-    partyModel: PartyModel,
-    friendsModel: FriendsModel,
+    partyModel: PartysItem,
+    userModel: UserModelItem,
+    userId:Int,
     showContacts: Boolean,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
+    val partyOwner = remember { mutableStateOf( "" ) }
+        viewModel.getUserByID(userId,{
+        partyOwner.value = it
+    })
     Column {
         HorizontalDivider(
             modifier = Modifier
@@ -70,6 +77,7 @@ fun MainScreenItem(
                         .height(60.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+//                    Avatar
                     Card(
                         modifier = Modifier
                             .size(50.dp)
@@ -85,25 +93,28 @@ fun MainScreenItem(
                         )
                     }
                     Spacer(Modifier.width(2.dp))
+
                     Column(
                         modifier = Modifier,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = if (showContacts)
-                                "${friendsModel.name} ${friendsModel.surname}".stringEqualizerForMainScreen()
-                            else partyModel.type.stringEqualizerForMainScreen(),
-                            color = secondaryColor,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            text = if (showContacts) friendsModel.phone.phoneNumberTransformation()
-                            else partyModel.type.stringEqualizerForMainScreen(),
-                            color = tertiaryColor,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                            Text(
+                                text = if (showContacts)
+                                    "${userModel.username} ${userModel.surname}".stringEqualizerForMainScreen()
+                                else partyOwner.value.stringEqualizerForMainScreen(),
+                                color = secondaryColor,
+                                fontSize = 17.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        if (showContacts) userModel.phonenumber?.phoneNumberTransformation()
+                        else partyModel.type?.stringEqualizerForMainScreen()?.let {
+                            Text(
+                                text = it,
+                                color = tertiaryColor,
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
             }
@@ -113,7 +124,7 @@ fun MainScreenItem(
                 Text(
                     modifier = Modifier
                         .padding(end = 5.dp),
-                    text = if (showContacts) "" else partyModel.dateTime,
+                    text = if (showContacts) "" else "${partyModel.startTime} ${partyModel.endTime}",
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
                     textAlign = TextAlign.Center
@@ -121,33 +132,4 @@ fun MainScreenItem(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewMainScreen() {
-    MainScreenItem(
-        primaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
-        secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-        tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
-        sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
-        smallFontSize = 16,
-        friendsModel = FriendsModel(
-            id = 1,
-            userId = 1,
-            name = "Bekhzod",
-            surname = "Khudaybergenov",
-            phone = "+998973570498",
-            cardNumber = "9860030160619356",
-            datetime = "04.06.1998"
-        ),
-        showContacts = true,
-        partyModel = PartyModel(
-            id = 1,
-            userID = 1,
-            type = "Wedding",
-            cardNumber = "0000 0000 0000 0000",
-            dateTime = "12.04.2025"
-        )
-    ) { }
 }

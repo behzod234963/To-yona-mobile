@@ -155,4 +155,5 @@
     <string name="go_to_settings">Sozlamalar</string>
     <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">Kontaktlar ro\'yxatini ko\'rsatish uchun siz kontaktlarni o\'qishga ruxsat berishingiz kerak</string>
     <string name="login_success">Muvaffaqiyatli</string>
+    <string name="user_is_already_exists">Foydalanuvchi mavjud</string>
 </resources>

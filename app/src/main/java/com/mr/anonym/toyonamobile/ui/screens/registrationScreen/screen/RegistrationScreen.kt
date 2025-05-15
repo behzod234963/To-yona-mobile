@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,20 +42,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.registrationScreen.components.RegistrationTextFields
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun RegistrationScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: RegistrationViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -70,6 +82,7 @@ fun RegistrationScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -81,13 +94,17 @@ fun RegistrationScreen(
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        isSystemTheme-> systemTertiaryColor
+        isSystemTheme -> systemTertiaryColor
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
 
     val containerPadding = remember { mutableIntStateOf(10) }
+    val isSendResponse = remember { mutableStateOf(false) }
+    val loadingAnimation = rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+    )
 
     val phoneFieldError = remember { mutableStateOf(false) }
     val phoneFieldValue = rememberSaveable { mutableStateOf("") }
@@ -103,6 +120,9 @@ fun RegistrationScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
+
+    val user = viewModel.user
+
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -113,157 +133,193 @@ fun RegistrationScreen(
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
+        if (!isSendResponse.value) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.20f)
-                    .padding(containerPadding.intValue.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(paddingValues),
             ) {
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.sign_up),
-                    color = secondaryColor,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = stringResource(R.string.registration_instruction),
-                    color = secondaryColor,
-                    fontSize = 16.sp,
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.80f)
-                    .padding(containerPadding.intValue.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                RegistrationTextFields(
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    phoneFieldModifier = Modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    phoneFieldError = phoneFieldError.value,
-                    isPhoneFieldEnabled = !isPasswordForgotten.value,
-                    phoneFieldValue = if (isPasswordForgotten.value) phoneNumber.value else phoneFieldValue.value,
-                    phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
-                    onPhoneValueChange = {
-                        phoneFieldValue.value = it.take(9)
+                        .fillMaxHeight(0.20f)
+                        .padding(containerPadding.intValue.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = stringResource(R.string.sign_up),
+                        color = secondaryColor,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = stringResource(R.string.registration_instruction),
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.80f)
+                        .padding(containerPadding.intValue.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    RegistrationTextFields(
+                        secondaryColor = secondaryColor,
+                        tertiaryColor = tertiaryColor,
+                        phoneFieldModifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        phoneFieldError = phoneFieldError.value,
+                        isPhoneFieldEnabled = !isPasswordForgotten.value,
+                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber.value else phoneFieldValue.value,
+                        phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
+                        onPhoneValueChange = {
+                            phoneFieldValue.value = it.take(9)
 //                        if (it.isEmpty()) phoneFieldValue.value = "+998"
-                        if(it.length < 10 ) phoneFieldError.value = !it.phoneChecker()
-                    },
-                    passwordValue = passwordValue.value,
-                    onPasswordValueChange = {
-                        passwordValue.value = it
-                        passwordValueError.value = !it.passwordChecker()
-                    },
-                    passwordValueError = passwordValueError.value,
-                    confirmPasswordValue = confirmValue.value,
-                    onConfirmPasswordValueChange = {
-                        confirmValue.value = it
-                    },
-                    confirmPasswordValueError = confirmValueError.value
-                )
-                if (!isPasswordForgotten.value) {
-                    TextButton(
-                        onClick = { navController.navigateUp() }
+                            if (it.length < 10) phoneFieldError.value = !it.phoneChecker()
+                        },
+                        passwordValue = passwordValue.value,
+                        onPasswordValueChange = {
+                            passwordValue.value = it
+                            passwordValueError.value = !it.passwordChecker()
+                        },
+                        passwordValueError = passwordValueError.value,
+                        confirmPasswordValue = confirmValue.value,
+                        onConfirmPasswordValueChange = {
+                            confirmValue.value = it
+                        },
+                        confirmPasswordValueError = confirmValueError.value
+                    )
+                    if (!isPasswordForgotten.value) {
+                        TextButton(
+                            onClick = { navController.navigateUp() }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.i_have_an_account),
+                                color = Color.Blue,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.60f)
+                        .padding(horizontal = 15.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+//                API needs for post mobile number
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = quaternaryColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        onClick = {
+                            when {
+                                phoneFieldValue.value.isNotEmpty() &&
+                                        phoneFieldValue.value.isNotBlank() &&
+                                        !phoneFieldError.value &&
+                                        !passwordValueError.value &&
+                                        !isPasswordForgotten.value -> {
+                                    if (confirmValue.value == passwordValue.value) {
+                                        isSendResponse.value = true
+                                    } else {
+                                        confirmValueError.value = true
+                                    }
+                                }
+                                isPasswordForgotten.value &&
+                                        !passwordValueError.value -> {
+                                    if (confirmValue.value == passwordValue.value) {
+                                        coroutineScope.launch {
+                                            dataStore.isPasswordForgotten(false)
+                                            dataStore.isOldUser(true)
+                                            dataStore.savePhoneNumber("+998${phoneNumber.value}")
+                                        }
+                                        sharedPreferences.saveIsLoggedIn(true)
+                                        sharedPreferences.saveIsProfileSettingsState(true)
+                                        navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                            popUpTo(ScreensRouter.RegistrationScreen.route) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    } else {
+                                        confirmValueError.value = true
+                                    }
+                                }
+
+                                else -> {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.please_check_validate_places)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                     ) {
                         Text(
-                            text = stringResource(R.string.i_have_an_account),
-                            color = Color.Blue,
-                            fontSize = 16.sp
+                            text = stringResource(R.string.continue_),
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
             }
-            Column(
+        } else {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.60f)
-                    .padding(horizontal = 15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
             ) {
-//                API needs for post mobile number
-                Button(
+                LottieAnimation(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = quaternaryColor
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    onClick = {
-                        when {
-                            phoneFieldValue.value.isNotEmpty() &&
-                                    phoneFieldValue.value.isNotBlank() &&
-                                    !phoneFieldError.value &&
-                                    !passwordValueError.value &&
-                                    !isPasswordForgotten.value -> {
-                                if (confirmValue.value == passwordValue.value) {
-                                    val result = "+998" + phoneFieldValue.value
-                                    coroutineScope.launch {
-                                        dataStore.savePassword(confirmValue.value)
-                                        dataStore.savePhoneNumber(result)
-                                    }
-                                    Log.d("UtilsLogging", "RegistrationScreen: $result")
-                                    navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
-                                        popUpTo(ScreensRouter.RegistrationScreen.route) {
-                                            inclusive = true
-                                        }
-                                    }
-                                } else {
-                                    confirmValueError.value = true
-                                }
-                            }
-
-                            isPasswordForgotten.value &&
-                                    !passwordValueError.value -> {
-                                if (confirmValue.value == passwordValue.value) {
-                                    coroutineScope.launch {
-                                        dataStore.isPasswordForgotten(false)
-                                        dataStore.isOldUser(true)
-                                        dataStore.savePhoneNumber("+998${phoneNumber.value}")
-                                    }
-                                    sharedPreferences.saveIsLoggedIn(true)
-                                    sharedPreferences.saveIsProfileSettingsState(true)
-                                    navController.navigate(ScreensRouter.ProfileScreen.route) {
-                                        popUpTo(ScreensRouter.RegistrationScreen.route) {
-                                            inclusive = true
-                                        }
-                                    }
-                                }else{
-                                    confirmValueError.value = true
-                                }
-                            }
-                            else->{
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = context.getString(R.string.please_check_validate_places)
-                                    )
+                        .size(150.dp),
+                    composition = loadingAnimation.value,
+                    restartOnPlay = true,
+                    iterations = LottieConstants.IterateForever
+                )
+                viewModel.signUpUser(
+                    user = UserModelItem(
+                        username = "",
+                        surname = "",
+                        phonenumber = phoneFieldValue.value,
+                        password = passwordValue.value
+                    )
+                )
+                coroutineScope.launch {
+                    delay(2000)
+                    if (user.value.id != -1) {
+                        val result = "+998" + phoneFieldValue.value
+                        Log.d("UtilsLogging", "RegistrationScreen: $result")
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
+                                popUpTo(ScreensRouter.RegistrationScreen.route) {
+                                    inclusive = true
                                 }
                             }
                         }
+                        isSendResponse.value = false
+                    } else {
+                        isSendResponse.value = false
+                        delay(500)
+                        snackbarHostState.showSnackbar(
+                            message = context.getString(R.string.user_is_already_exists)
+                        )
                     }
-                ) {
-                    Text(
-                        text = stringResource(R.string.continue_),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
                 }
             }
         }

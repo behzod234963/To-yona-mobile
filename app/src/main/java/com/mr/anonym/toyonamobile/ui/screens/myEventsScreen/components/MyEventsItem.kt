@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.MyEventsModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -37,7 +37,7 @@ fun MyEventsItem(
     quaternaryColor: Color,
     fiverdColor: Color,
     sevenrdColor: Color,
-    myEventsModel: MyEventsModel,
+    partyModel: PartysItem,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCheckedChange: (Boolean) -> Unit
@@ -63,24 +63,7 @@ fun MyEventsItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text =
-                        if (!myEventsModel.isOtherEventSelected) {
-                            when (myEventsModel.eventType.toInt()) {
-                                1 -> {
-                                    stringResource(R.string.wedding)
-                                }
-
-                                2 -> {
-                                    stringResource(R.string.sunnat_wedding)
-                                }
-
-                                else -> {
-                                    stringResource(R.string.birthday)
-                                }
-                            }
-                        } else {
-                            myEventsModel.eventType
-                        },
+                    text = partyModel.type?:"",
                     fontSize = 18.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -108,7 +91,7 @@ fun MyEventsItem(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
                         fiverdColor = fiverdColor,
-                        isChecked = myEventsModel.eventStatus,
+                        isChecked = partyModel.status?:true,
                         onCheckedChange = {
                             onCheckedChange(it)
                         }
@@ -128,7 +111,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (myEventsModel.eventStatus)
+                    text = if (partyModel.status?:true)
                         stringResource(R.string.is_on)
                     else
                         stringResource(R.string.is_off),
@@ -151,23 +134,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (!myEventsModel.isOtherEventSelected) {
-                        when (myEventsModel.eventType.toInt()) {
-                            1 -> {
-                                stringResource(R.string.wedding)
-                            }
-
-                            2 -> {
-                                stringResource(R.string.sunnat_wedding)
-                            }
-
-                            else -> {
-                                stringResource(R.string.birthday)
-                            }
-                        }
-                    } else {
-                        myEventsModel.eventType
-                    },
+                    text = partyModel.type?:"",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -190,7 +157,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = myEventsModel.eventDateTime,
+                    text = "${partyModel.startTime} ${partyModel.endTime}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -227,7 +194,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = myEventsModel.cardHolder,
+                    text = partyModel.cardNumber?:"",
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
@@ -253,7 +220,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = myEventsModel.cardNumber.cardNumberFormatter(),
+                    text = partyModel.cardNumber?:"".cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
@@ -273,14 +240,8 @@ private fun PreviewMyEventsItem() {
         quaternaryColor = Color.Red,
         fiverdColor = Color.Green,
         sevenrdColor = Color.White,
-        myEventsModel = MyEventsModel(
-            eventStatus = false,
-            eventType = "Wedding",
-            eventDateTime = "05.04.2025 , 06.04.2025  12:00",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            cardNumber = "9860030160619356"
-        ),
         onEditClick = { },
-        onDeleteClick = { }
+        onDeleteClick = { },
+        partyModel = PartysItem()
     ) { }
 }

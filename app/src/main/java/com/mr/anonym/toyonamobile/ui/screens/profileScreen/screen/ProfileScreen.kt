@@ -324,7 +324,7 @@ fun ProfileScreen(
                             sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
                             viewModel.updateUser(
-                                id = user.value.id?:-1,
+                                id = user.value.id ?:-1,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,

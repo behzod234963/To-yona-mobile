@@ -29,4 +29,10 @@ interface UserApiService {
     suspend fun getUserByID(
         @Path("id") id: Int
     ): Response<UserModelItem>
+
+    @GET("/getallusersearch/")
+    suspend fun searchUser(
+
+        @Query("search") searchText: String
+    ): Response<List<UserModelItem>>
 }

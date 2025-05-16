@@ -157,12 +157,11 @@ fun DetailsScreen(
         surname = "KHUDAYBERGENOV",
         phonenumber = "+998973570498",
         password = "0000",
-        createdAt = "04.06.1998",
-        cardlist = null
+        createdAt = "04.06.1998"
     )
     val transactionsModel = TransactionsModel(
         id = 1,
-        userId = userModel.id?:-1,
+        userId = userModel.id ?:-1,
         sender = "userModel.cardlist",
         receiver = friendsModel.value.cardNumber,
         price = priceValue.value.ifEmpty { "0.0" },

@@ -21,7 +21,7 @@ class ContactsViewModel @Inject constructor(): ViewModel() {
     private val _isRefresh = MutableStateFlow(false)
     val isRefresh = _isRefresh.asStateFlow()
 
-    private val _contacts = mutableStateOf(ListState().contacts )
+    private val _contacts = mutableStateOf(ListState().contacts)
     val contacts: State<List<FriendsModel>> = _contacts
 
     fun getPhoneNumbers(context: Context,isPermissionGranted: Boolean) = viewModelScope.launch {

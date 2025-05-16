@@ -59,5 +59,6 @@ fun MainScreenSearchField(
             )
         },
         shape = RoundedCornerShape(30.dp),
+        keyboardOptions = keyboardOptions,
     )
 }

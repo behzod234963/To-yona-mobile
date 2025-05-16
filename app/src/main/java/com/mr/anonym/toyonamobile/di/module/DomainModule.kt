@@ -1,7 +1,6 @@
 package com.mr.anonym.toyonamobile.di.module
 
 import com.mr.anonym.domain.repository.local.CardRepository
-import com.mr.anonym.domain.repository.local.MyEventsRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
@@ -15,17 +14,15 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsU
 import com.mr.anonym.domain.useCases.local.cardUseCases.InsertCardUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
-import com.mr.anonym.domain.useCases.local.myEventUseCase.DeleteEventUseCase
-import com.mr.anonym.domain.useCases.local.myEventUseCase.GetActiveEventsUseCase
-import com.mr.anonym.domain.useCases.local.myEventUseCase.GetEventByIdUseCase
-import com.mr.anonym.domain.useCases.local.myEventUseCase.GetEventsUseCase
-import com.mr.anonym.domain.useCases.local.myEventUseCase.InsertEventUseCase
-import com.mr.anonym.domain.useCases.local.myEventUseCase.UpdateEventStatusUseCase
 import com.mr.anonym.domain.useCases.remote.user.GetUserByIdUseCase
 import com.mr.anonym.domain.useCases.remote.user.LoginUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.RegisterUserUseCase
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
+import com.mr.anonym.domain.useCases.remote.party.AddEventUseCase
+import com.mr.anonym.domain.useCases.remote.party.DeleteEventRemoteUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
+import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
+import com.mr.anonym.domain.useCases.remote.user.SearchUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.UpdateUserUseCase
 import dagger.Module
 import dagger.Provides
@@ -42,7 +39,6 @@ class DomainModule {
     fun provideUseCases(
         notificationsRepository: NotificationsRepository,
         cardRepository: CardRepository,
-        myEventsRepository: MyEventsRepository
     ): LocalUseCases =
         LocalUseCases(
             insertNotificationUseCase = InsertNotificationUseCase(notificationsRepository),
@@ -54,12 +50,6 @@ class DomainModule {
             getCardsUseCase = GetCardsUseCase(cardRepository),
             getCardByIdUseCase = GetCardByIdUseCase(cardRepository),
             deleteCardUseCase = DeleteCardUseCase(cardRepository),
-            insertEventUseCase = InsertEventUseCase(myEventsRepository),
-            updateEventStatusUseCase = UpdateEventStatusUseCase(myEventsRepository),
-            deleteEventUseCase = DeleteEventUseCase(myEventsRepository),
-            getEventsUseCase = GetEventsUseCase(myEventsRepository),
-            getEventByIdUseCase = GetEventByIdUseCase(myEventsRepository),
-            getActiveEventsUseCase = GetActiveEventsUseCase(myEventsRepository),
         )
 
     @Provides
@@ -70,6 +60,10 @@ class DomainModule {
             registerUserUseCase = RegisterUserUseCase(userRepository),
             getUserByIdUseCase = GetUserByIdUseCase(userRepository),
             updateUserUseCase = UpdateUserUseCase(userRepository),
-            getAllPartyUseCase = GetAllPartyUseCase(partyRepository)
+            getAllPartyUseCase = GetAllPartyUseCase(partyRepository),
+            searchUserUseCase = SearchUserUseCase(userRepository),
+            addEventUseCase = AddEventUseCase(partyRepository),
+            deleteEventUseCase = DeleteEventRemoteUseCase(partyRepository),
+            getPartyByIdUseCase = GetPartyByIdUseCase(partyRepository)
         )
 }

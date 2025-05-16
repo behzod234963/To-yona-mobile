@@ -20,8 +20,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,12 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
-import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
 
 @Composable
 fun MainScreenItem(
@@ -44,15 +40,9 @@ fun MainScreenItem(
     smallFontSize: Int,
     partyModel: PartysItem,
     userModel: UserModelItem,
-    userId:Int,
     showContacts: Boolean,
     onItemClick: () -> Unit,
-    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
-    val partyOwner = remember { mutableStateOf( "" ) }
-        viewModel.getUserByID(userId,{
-        partyOwner.value = it
-    })
     Column {
         HorizontalDivider(
             modifier = Modifier
@@ -98,23 +88,26 @@ fun MainScreenItem(
                         modifier = Modifier,
                         verticalArrangement = Arrangement.Center
                     ) {
-                            Text(
-                                text = if (showContacts)
-                                    "${userModel.username} ${userModel.surname}".stringEqualizerForMainScreen()
-                                else partyOwner.value.stringEqualizerForMainScreen(),
-                                color = secondaryColor,
-                                fontSize = 17.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        if (showContacts) userModel.phonenumber?.phoneNumberTransformation()
-                        else partyModel.type?.stringEqualizerForMainScreen()?.let {
-                            Text(
-                                text = it,
-                                color = tertiaryColor,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Text(
+                            text = if (showContacts) {
+                                "${userModel.username} ${userModel.surname}".stringEqualizerForMainScreen()
+                            } else {
+                                partyModel.type ?: ""
+                            },
+                            color = secondaryColor,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = if (showContacts) {
+                                "+998${userModel.phonenumber}".phoneNumberTransformation()
+                            } else {
+                                partyModel.name?:""
+                            },
+                            color = tertiaryColor,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }

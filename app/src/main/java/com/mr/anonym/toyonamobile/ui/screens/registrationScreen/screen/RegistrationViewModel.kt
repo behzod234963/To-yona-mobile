@@ -17,13 +17,13 @@ class RegistrationViewModel @Inject constructor(
     private val remoteUseCases: RemoteUseCases
 ): ViewModel() {
 
-    private val _user = mutableStateOf(UserModelItem() )
+    private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
 
     fun signUpUser(user: UserModelItem) = viewModelScope.launch {
         remoteUseCases.registerUserUseCase.execute(user).collect {
             _user.value = it
-            sharedPreferences.saveId(it.id?:-1)
+            sharedPreferences.saveId(it.id ?:-1)
         }
     }
 }

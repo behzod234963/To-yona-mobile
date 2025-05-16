@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventsItem
@@ -56,7 +57,6 @@ fun MyEventsScreen(
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
-    val events = viewModel.events
 
     Scaffold(
         containerColor = primaryColor,
@@ -74,24 +74,23 @@ fun MyEventsScreen(
                 .padding(paddingValues)
                 .padding(10.dp)
         ){
-            itemsIndexed(events.value){ index,model->
-                MyEventsItem(
-                    secondaryColor = secondaryColor,
-                    quaternaryColor = quaternaryColor,
-                    fiverdColor = fiverdColor,
-                    sevenrdColor = sevenrdColor,
-                    myEventsModel = model,
-                    onEditClick = {
-                        navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
-                    },
-                    onDeleteClick = {
-                        viewModel.deleteEvent(model)
-                    },
-                    onCheckedChange = {
-                        viewModel.updateEventStatus(model.id?:-1,it)
-                    },
-                ) 
-            }
+//            itemsIndexed(events.value){ index,model->
+//                MyEventsItem(
+//                    secondaryColor = secondaryColor,
+//                    quaternaryColor = quaternaryColor,
+//                    fiverdColor = fiverdColor,
+//                    sevenrdColor = sevenrdColor,
+//                    onEditClick = {
+//                        navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
+//                    },
+//                    onDeleteClick = {
+//                        TODO()
+//                    },
+//                    partyModel = PartysItem()
+//                ) {
+//                    TODO()
+//                }
+//            }
         }
     }
 }

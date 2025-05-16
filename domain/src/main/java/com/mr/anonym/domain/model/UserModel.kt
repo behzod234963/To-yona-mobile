@@ -5,12 +5,12 @@ data class UserModel(
 )
 
 data class UserModelItem(
-	val createdAt: String? = null,
-	val password: String? = null,
-	val cardlist: List<Any?>? = null,
+	val id: Int? = null,
+	val username: String? = null,
 	val surname: String? = null,
 	val phonenumber: String? = null,
-	val id: Int? = null,
-	val username: String? = null
+	val password: String? = null,
+	val cardlist: List<Any?>? = null,
+	val createdAt: String? = null
 )
 

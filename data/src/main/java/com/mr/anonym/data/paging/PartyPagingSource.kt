@@ -17,7 +17,7 @@ class PartyPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PartysItem> {
         return try {
 
-            val limit = 20
+            val limit = 10
             val page = params.key?:1
             val response = api.getAllParty(page = page, limit = limit)
 

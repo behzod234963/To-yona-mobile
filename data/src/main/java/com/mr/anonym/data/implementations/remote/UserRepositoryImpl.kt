@@ -11,8 +11,6 @@ class UserRepositoryImpl( private val userApiService: UserApiService): UserRepos
     override suspend fun loginUser(user: LoginRequest): Response<LoginResponse> = userApiService.loginUser(user)
     override suspend fun registerUser(user: UserModelItem): Response<UserModelItem> = userApiService.registerUser(user)
     override suspend fun getUserByID(id: Int): Response<UserModelItem> = userApiService.getUserByID(id)
-    override suspend fun updateUser(
-        id: Int,
-        user: UserModelItem
-    ): Response<UserModelItem> = userApiService.updateUser(id,user)
+    override suspend fun updateUser(id: Int, user: UserModelItem): Response<UserModelItem> = userApiService.updateUser(id,user)
+    override suspend fun searchUser(searchText: String): Response<List<UserModelItem>> = userApiService.searchUser(searchText)
 }

@@ -22,7 +22,7 @@ class NumberCheckViewModel @Inject constructor(
     }
     fun getUserByID(id: Int) = viewModelScope.launch {
         remoteUseCases.getUserByIdUseCase.execute(id).collect {
-            dataStore.savePhoneNumber(it.phonenumber?:"")
+            dataStore.savePhoneNumber(it.phonenumber ?:"")
         }
     }
 }

@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.TransactionsModel
-import com.mr.anonym.domain.model.UserModel
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter

@@ -18,6 +18,7 @@ data class PartysItem(
 	val startTime: String? = null,
 	val endTime: String? = null,
 	val status: Boolean? = null,
-	val createdAt: String? = null
+	val createdAt: String? = null,
+	val user: UserModelItem? = null
 )
 

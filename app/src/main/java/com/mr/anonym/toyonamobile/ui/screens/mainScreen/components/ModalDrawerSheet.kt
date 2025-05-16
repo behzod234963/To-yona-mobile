@@ -34,9 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
+import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
 
 @Composable
 fun MainScreenModalDrawerSheet(
@@ -45,7 +45,8 @@ fun MainScreenModalDrawerSheet(
     secondaryColor: Color,
     tertiaryColor: Color,
     profileAvatar:Int,
-    model: UserModelItem,
+    userId:Int,
+    viewModel: MainScreenViewModel,
     onContactsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
     onMonitoringClick:()-> Unit,
@@ -60,6 +61,9 @@ fun MainScreenModalDrawerSheet(
     val isWalletSelected = remember { mutableStateOf( false ) }
     val isSettingsSelected = remember { mutableStateOf( false ) }
     val isSupportSelected = remember { mutableStateOf( false) }
+
+    viewModel.getUserByID(userId)
+    val user = viewModel.user
 
     ModalDrawerSheet(
         modifier = Modifier
@@ -93,14 +97,15 @@ fun MainScreenModalDrawerSheet(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                viewModel.getUserByID(userId)
                 Text(
-                    text = "${model.username} ${model.surname}",
+                    text = "${user.value.username} ${user.value.surname}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "+998${model.phonenumber}".phoneNumberTransformation(),
+                    text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
                     color = secondaryColor,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold

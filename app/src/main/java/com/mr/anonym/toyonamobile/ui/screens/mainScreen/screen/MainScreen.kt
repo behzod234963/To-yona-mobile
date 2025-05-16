@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerValue
@@ -21,7 +22,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,11 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.mr.anonym.data.instance.local.DataStoreInstance
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -68,7 +71,6 @@ fun MainScreen(
     val context = LocalContext.current
     val activityContext = LocalActivity.current
 
-    val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
     val permissionController = PermissionController(context)
     val coroutineScope = rememberCoroutineScope()
@@ -112,47 +114,14 @@ fun MainScreen(
     val smallFontSize = remember { mutableIntStateOf(14) }
 
     val profileAvatar = sharedPreferences.getAvatar()
-    val firstName = sharedPreferences.getFirstname()
-    val lastName = sharedPreferences.getLastname()
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
 
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
 
-    val contactsList = listOf(
-        FriendsModel(
-            id = 1,
-            userId = 1,
-            name = "Bekhzod",
-            surname = "Khudaybergenov",
-            phone = "+998973570498",
-            cardNumber = "9860030160619356",
-            datetime = "04.06.1998"
-        ),
-        FriendsModel(
-            id = 1,
-            userId = 1,
-            name = "Bekhzod",
-            surname = "Khudaybergenov",
-            phone = "+998973570498",
-            cardNumber = "9860030160619356",
-            datetime = "04.06.1998"
-        ),
-        FriendsModel(
-            id = 1,
-            userId = 1,
-            name = "Bekhzod",
-            surname = "Khudaybergenov",
-            phone = "+998973570498",
-            cardNumber = "9860030160619356",
-            datetime = "04.06.1998"
-        )
-    )
-
-    val friendsModel = remember { mutableStateOf(FriendsModel()) }
     val partyModel = remember { mutableStateOf(PartysItem()) }
 
-    val partyList = viewModel.getAllParty().collectAsLazyPagingItems()
+    var partyList = viewModel.getAllParty().collectAsLazyPagingItems()
+    val userList = viewModel.users
 
     permissionController.requestNotificationPermission(activityContext)
     permissionController.requestExternalStoragePermission(activityContext!!)
@@ -160,10 +129,9 @@ fun MainScreen(
 
     val isRefresh = viewModel.isRefresh.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
-
-    LaunchedEffect(Unit) {
-        viewModel.getUserByID(id,{})
-    }
+    val loadingAnimation = rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+    )
 
     val user = viewModel.user
 
@@ -231,25 +199,34 @@ fun MainScreen(
                         }
                     }
                 },
-                model = user.value
-            ) {
-                if (drawerState.isOpen) {
-                    coroutineScope.launch {
-                        drawerState.close()
-                        delay(250)
-                        withContext(Dispatchers.Main) {
-                            navController.navigate(ScreensRouter.SupportScreen.route)
+                userId = id,
+                onSupportClick = {
+                    if (drawerState.isOpen) {
+                        coroutineScope.launch {
+                            drawerState.close()
+                            delay(250)
+                            withContext(Dispatchers.Main) {
+                                navController.navigate(ScreensRouter.SupportScreen.route)
+                            }
                         }
                     }
-                }
-            }
+                },
+                viewModel = viewModel
+            )
         }
     ) {
         PullToRefreshBox(
             isRefreshing = isRefresh.value,
             state = pullToRefreshState,
-            onRefresh = { viewModel.isLoading() },
+            onRefresh = { viewModel.changeIsRefreshState(true) },
         ) {
+            if( isRefresh.value ) {
+                partyList = viewModel.getAllParty().collectAsLazyPagingItems()
+                coroutineScope.launch {
+                    delay(2000)
+                    viewModel.changeIsRefreshState(false)
+                }
+            }
             Scaffold(
                 containerColor = primaryColor,
                 contentColor = primaryColor,
@@ -298,7 +275,7 @@ fun MainScreen(
                             searchValue.value = it
                         },
                         onSearch = {
-                            TODO()
+                            viewModel.searchUser(searchValue.value)
                         }
                     )
                     Spacer(Modifier.height(5.dp))
@@ -308,19 +285,16 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         if (showContacts.value) {
-                            items(contactsList) { contactsModel ->
-                                friendsModel.value = contactsModel
+                            items(userList.value) { userModel ->
                                 MainScreenItem(
                                     secondaryColor = secondaryColor,
                                     tertiaryColor = tertiaryColor,
                                     sevenrdColor = sevenrdColor,
                                     smallFontSize = smallFontSize.intValue,
                                     partyModel = partyModel.value,
-                                    userModel = user.value,
-                                    userId = -1,
-                                    showContacts = showContacts.value,
-                                    onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
-                                )
+                                    userModel = userModel,
+                                    showContacts = showContacts.value
+                                ) { navController.navigate(ScreensRouter.DetailsScreen.route) }
                             }
                         } else {
                             items(
@@ -328,7 +302,6 @@ fun MainScreen(
                                 key = partyList.itemKey { it.toString() }
                             ) { index ->
                                 val model = partyList[index]
-                                viewModel.changeOtherUserState(true)
                                 if (model != null) {
                                     partyModel.value = model
                                     MainScreenItem(
@@ -337,10 +310,19 @@ fun MainScreen(
                                         sevenrdColor = sevenrdColor,
                                         smallFontSize = smallFontSize.intValue,
                                         partyModel = model,
-                                        userId = partyModel.value.userId?:-1,
                                         userModel = user.value,
-                                        showContacts = showContacts.value,
-                                        onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                        showContacts = showContacts.value
+                                    ) { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                }
+                            }
+                            item {
+                                if (partyList.loadState.append is LoadState.Loading){
+                                    LottieAnimation(
+                                        modifier = Modifier
+                                            .size(150.dp),
+                                        composition = loadingAnimation.value,
+                                        restartOnPlay = true,
+                                        iterations = LottieConstants.IterateForever
                                     )
                                 }
                             }
@@ -355,5 +337,5 @@ fun MainScreen(
 @Preview
 @Composable
 private fun PreviewMainScreen() {
-    MainScreen(NavController(LocalContext.current),)
+    MainScreen(NavController(LocalContext.current))
 }

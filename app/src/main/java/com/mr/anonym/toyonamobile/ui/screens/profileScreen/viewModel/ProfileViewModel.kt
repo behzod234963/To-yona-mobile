@@ -19,6 +19,7 @@ class ProfileViewModel @Inject constructor(
     private val remoteUseCases: RemoteUseCases
 ) : ViewModel() {
 
+    private val _id = mutableIntStateOf( sharedPreferences.getID() )
     private val _firstname = mutableStateOf("")
     val firstname: State<String> = _firstname
     private val _lastname = mutableStateOf("")
@@ -28,11 +29,15 @@ class ProfileViewModel @Inject constructor(
     private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
 
-    fun getUserById(id: Int) = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(id).collect {
+    init {
+        getUserById()
+    }
+
+    fun getUserById() = viewModelScope.launch {
+        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
             _user.value = it
-            _firstname.value = it.username ?:""
-            _lastname.value = it.surname ?:""
+            _firstname.value = it.username?:""
+            _lastname.value = it.surname?:""
         }
     }
     fun updateUser(id: Int,user: UserModelItem) = viewModelScope.launch {

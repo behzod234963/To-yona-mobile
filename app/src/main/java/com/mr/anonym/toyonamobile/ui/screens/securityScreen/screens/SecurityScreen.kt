@@ -168,7 +168,6 @@ fun SecurityScreen(
                         onDismissRequest = { isChangePinProcess.value = false }
                     )
                 }
-
                 isChangePasswordProcess.value -> {
                     SecurityDialog(
                         secondaryColor = secondaryColor,
@@ -184,7 +183,6 @@ fun SecurityScreen(
                         onDismissRequest = { isChangePasswordProcess.value = false }
                     )
                 }
-
                 isExitProcess.value -> {
                     SecurityDialog(
                         secondaryColor = secondaryColor,

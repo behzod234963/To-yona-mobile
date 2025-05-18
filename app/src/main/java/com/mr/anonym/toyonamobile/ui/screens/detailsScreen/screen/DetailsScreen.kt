@@ -46,12 +46,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.TransactionsModel
-import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.presentation.utils.OpenNewContactMethod
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsScreenTabRow
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.TransferCheckDialog
@@ -66,6 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DetailsScreen(
     navController: NavController,
+    arguments: Arguments,
     viewModel: DetailsViewModel = hiltViewModel()
 ) {
 
@@ -114,30 +115,17 @@ fun DetailsScreen(
 
     val priceValue = remember { mutableStateOf("") }
 
-    val friendsModel = remember {
-        mutableStateOf(
-            FriendsModel(
-                id = 1,
-                name = "Ойбек",
-                surname = "Худайкулов",
-                phone = "+998973570498",
-                cardNumber = "9860030160619356",
-                userId = 1,
-                datetime = "01.01.1900",
-            )
-        )
-    }
-    val partyModel = remember {
-        mutableStateOf(
-            PartysItem(
-                id = 1,
-                userId = 1,
-                type = "Келин туй",
-                cardNumber = "9860030160619356",
-            )
-        )
-    }
+    val user = viewModel.user
     val partyList = emptyList<PartysItem>()
+    val partyModel = remember { mutableStateOf( PartysItem() ) }
+    val transactionsModel = TransactionsModel(
+        id = 1,
+        userId = user.value.id ?:-1,
+        sender = "userModel.cardlist",
+        receiver = partyModel.value.cardNumber?:"",
+        price = priceValue.value.ifEmpty { "0.0" },
+        dateTime = "30.04.2025"
+    )
 
     val showTransferDetails = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -150,23 +138,6 @@ fun DetailsScreen(
     val showCheckDetails = rememberSaveable { mutableStateOf(false) }
 
     val priceHistoryValueError = rememberSaveable { mutableStateOf(false) }
-
-    val userModel = UserModelItem(
-        id = 1,
-        username = "BEKHZOD",
-        surname = "KHUDAYBERGENOV",
-        phonenumber = "+998973570498",
-        password = "0000",
-        createdAt = "04.06.1998"
-    )
-    val transactionsModel = TransactionsModel(
-        id = 1,
-        userId = userModel.id ?:-1,
-        sender = "userModel.cardlist",
-        receiver = friendsModel.value.cardNumber,
-        price = priceValue.value.ifEmpty { "0.0" },
-        dateTime = "30.04.2025"
-    )
 
     val snackbarState = remember { SnackbarHostState() }
 
@@ -211,7 +182,7 @@ fun DetailsScreen(
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = "Бехзод Худайбергенов",
+                        text = "${user.value.username} ${user.value.surname}",
                         color = secondaryColor,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -219,7 +190,7 @@ fun DetailsScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(
-                        text = "+998973570498",
+                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
                         color = secondaryColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
@@ -231,11 +202,11 @@ fun DetailsScreen(
                             type = ContactsContract.RawContacts.CONTENT_TYPE
                             putExtra(
                                 ContactsContract.Intents.Insert.NAME,
-                                "${friendsModel.value.name} ${friendsModel.value.surname}"
+                                "${user.value.username} ${user.value.surname}"
                             )
                             putExtra(
                                 ContactsContract.Intents.Insert.PHONE,
-                                friendsModel.value.phone
+                                user.value.phonenumber
                             )
                         }
                         contactsLauncher.launch(intent)
@@ -270,7 +241,7 @@ fun DetailsScreen(
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
                                         partyModel = model,
-                                        friendsModel = friendsModel.value,
+                                        userModel = user.value,
                                         priceFieldError = priceFieldError.value,
                                     ) { price ->
                                         partyModel.value = model
@@ -309,7 +280,7 @@ fun DetailsScreen(
                                         secondaryColor = secondaryColor,
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
-                                        friendsModel = friendsModel.value,
+                                        userModel = user.value,
                                         partyModel = model,
                                         priceFieldError = priceHistoryValueError.value,
                                     ) { price ->
@@ -399,7 +370,7 @@ fun DetailsScreen(
                     },
                     isExpanded = isExpanded.value,
                     senderName = senderName.value,
-                    friendsModel = friendsModel.value,
+                    userModel = user.value,
                     partyModel = partyModel.value,
                 )
             }
@@ -407,21 +378,20 @@ fun DetailsScreen(
                 TransferCheckDialog(
                     secondaryColor = secondaryColor,
                     quaternaryColor = quaternaryColor,
-                    userModel = userModel,
-                    friendsModel = friendsModel.value,
+                    commission = "500",
+                    userModel = user.value,
+                    senderName = senderName.value,
                     transactionsModel = transactionsModel,
                     onDismissClick = { showCheckDetails.value = false },
-                    onConfirmClick = {
-                        showCheckDetails.value = false
-                        navController.navigate(ScreensRouter.MainScreen.route) {
-                            popUpTo(ScreensRouter.MainScreen.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
+                ) {
+                    showCheckDetails.value = false
+                    navController.navigate(ScreensRouter.MainScreen.route) {
+                        popUpTo(ScreensRouter.MainScreen.route) {
+                            inclusive = true
                         }
-                    },
-                    commission = "500",
-                )
+                        launchSingleTop = true
+                    }
+                }
             }
         }
     }

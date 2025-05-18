@@ -149,7 +149,11 @@ fun RegistrationScreen(
                 ) {
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = stringResource(R.string.sign_up),
+                        text = if ( isPasswordForgotten.value ){
+                            stringResource(R.string.password_recovery)
+                        }else{
+                            stringResource(R.string.sign_up)
+                        },
                         color = secondaryColor,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold
@@ -157,7 +161,11 @@ fun RegistrationScreen(
                     Spacer(Modifier.height(10.dp))
                     Text(
                         textAlign = TextAlign.Center,
-                        text = stringResource(R.string.registration_instruction),
+                        text = if (isPasswordForgotten.value){
+                            stringResource(R.string.password_recovery_instruction)
+                        }else{
+                            stringResource(R.string.registration_instruction)
+                        },
                         color = secondaryColor,
                         fontSize = 16.sp,
                     )
@@ -258,7 +266,6 @@ fun RegistrationScreen(
                                         confirmValueError.value = true
                                     }
                                 }
-
                                 else -> {
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
@@ -301,7 +308,7 @@ fun RegistrationScreen(
                     )
                 )
                 coroutineScope.launch {
-                    delay(2000)
+                    delay(1500)
                     if (user.value.id != -1) {
                         val result = "+998" + phoneFieldValue.value
                         Log.d("UtilsLogging", "RegistrationScreen: $result")

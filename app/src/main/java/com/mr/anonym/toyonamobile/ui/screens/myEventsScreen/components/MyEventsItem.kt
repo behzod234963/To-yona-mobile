@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.PartysItem
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -242,6 +243,18 @@ private fun PreviewMyEventsItem() {
         sevenrdColor = Color.White,
         onEditClick = { },
         onDeleteClick = { },
-        partyModel = PartysItem()
+        partyModel = PartysItem(
+            id = 1,
+            userId = 1,
+            name = "",
+            type = "TODO()",
+            address = "TODO()",
+            cardNumber = "TODO()",
+            startTime = "TODO()",
+            endTime = "TODO()",
+            status = true,
+            createdAt = "TODO()",
+            user = UserModelItem()
+        )
     ) { }
 }

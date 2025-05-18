@@ -92,7 +92,7 @@ fun MainScreenModalDrawerSheet(
                     contentDescription = ""
                 )
             }
-            Spacer(Modifier.width(20.dp))
+            Spacer(Modifier.width(10.dp))
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally

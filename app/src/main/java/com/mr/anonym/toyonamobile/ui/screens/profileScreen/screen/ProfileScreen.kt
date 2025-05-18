@@ -26,7 +26,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,21 +82,22 @@ fun ProfileScreen(
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
-        isSystemTheme-> {
+        isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
     val secondaryColor = when {
-        isSystemTheme-> systemSecondaryColor
+        isSystemTheme -> systemSecondaryColor
         isDarkTheme -> Color.White
         else -> Color.Black
     }
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
-        isSystemTheme-> systemTertiaryColor
+        isSystemTheme -> systemTertiaryColor
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
@@ -112,6 +112,8 @@ fun ProfileScreen(
     val showAvatarContent = rememberSaveable { mutableStateOf(false) }
     val avatar = viewModel.profileAvatar
 
+    val user = viewModel.user
+
     val firstname = viewModel.firstname
     val nameValueError = rememberSaveable { mutableStateOf(false) }
 
@@ -125,13 +127,6 @@ fun ProfileScreen(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
     val isSendResponse = remember { mutableStateOf(false) }
-
-    LaunchedEffect(isOldUserState.value) {
-        if (isOldUserState.value && id != -1){
-            viewModel.getUserById(id)
-        }
-    }
-    val user = viewModel.user
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -146,7 +141,7 @@ fun ProfileScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        if (!isSendResponse.value){
+        if (!isSendResponse.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -173,23 +168,13 @@ fun ProfileScreen(
                         )
                     }
                     Text(
-                        text = when {
-                            isOldUserState.value -> {
-                                "${firstname.value} ${lastname.value}"
-                            }
-                            editProfileProcess -> {
-                                "${firstname.value} ${lastname.value}"
-                            }
-                            else -> {
-                                "${firstname.value} ${lastname.value}"
-                            }
-                        },
+                        text = "${firstname.value} ${lastname.value}",
                         color = secondaryColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "+998${phoneNumber.value}".phoneNumberTransformation(),
+                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp
@@ -250,9 +235,6 @@ fun ProfileScreen(
                                 !nameValueError.value &&
                                 !lastnameValueError.value
                             ) {
-                                if (!isOldUserState.value){
-                                    viewModel.getUserById(id)
-                                }
                                 isSendResponse.value = true
                             } else {
                                 coroutineScope.launch {
@@ -299,7 +281,7 @@ fun ProfileScreen(
                     }
                 }
             }
-        }else{
+        } else {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -316,7 +298,7 @@ fun ProfileScreen(
                 when {
                     isOldUserState.value -> {
                         coroutineScope.launch {
-                            delay(2000)
+                            delay(1500)
                             sharedPreferences.saveAvatar(avatar.value)
                             coroutineScope.launch {
                                 dataStore.isOldUser(false)
@@ -324,7 +306,7 @@ fun ProfileScreen(
                             sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
                             viewModel.updateUser(
-                                id = user.value.id ?:-1,
+                                id = id,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
@@ -332,7 +314,7 @@ fun ProfileScreen(
                                     password = user.value.password
                                 )
                             )
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.NewPinScreen.route) {
                                     popUpTo(ScreensRouter.ProfileScreen.route) {
                                         inclusive = true
@@ -342,9 +324,27 @@ fun ProfileScreen(
                         }
                     }
                     editProfileProcess -> {
-                        sharedPreferences.saveAvatar(avatar.value)
-                        sharedPreferences.editProfileProcess(false)
-                        navController.navigate(ScreensRouter.SettingsScreen.route)
+                        coroutineScope.launch {
+                            delay(1500)
+                            sharedPreferences.saveAvatar(avatar.value)
+                            sharedPreferences.editProfileProcess(false)
+                            viewModel.updateUser(
+                                id = user.value.id?:-1,
+                                user = UserModelItem(
+                                    username = firstname.value,
+                                    surname = lastname.value,
+                                    phonenumber = user.value.phonenumber,
+                                    password = user.value.password
+                                )
+                            )
+                            withContext(Dispatchers.Main){
+                                navController.navigate(ScreensRouter.SettingsScreen.route){
+                                    popUpTo(ScreensRouter.ProfileScreen.route) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
                     }
                     else -> {
                         coroutineScope.launch {
@@ -357,11 +357,11 @@ fun ProfileScreen(
                                     password = user.value.password
                                 )
                             )
-                            delay(2000)
+                            delay(1500)
                             sharedPreferences.saveAvatar(avatar.value)
                             sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
-                            withContext(Dispatchers.Main){
+                            withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.NewPinScreen.route) {
                                     popUpTo(ScreensRouter.ProfileScreen.route) {
                                         inclusive = true
@@ -369,7 +369,10 @@ fun ProfileScreen(
                                 }
                             }
                         }
-                        Log.d("UtilsLogging", "ProfileScreen: ${phoneNumber.value} \n ${password.value}")
+                        Log.d(
+                            "UtilsLogging",
+                            "ProfileScreen: ${phoneNumber.value} \n ${password.value}"
+                        )
                     }
                 }
             }

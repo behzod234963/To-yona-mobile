@@ -90,6 +90,7 @@
     <string name="share">Ulashish</string>
     <string name="saved_successfully">Muvaffaqiyatli saqlandi!</string>
     <string name="registration_instruction">Ro\'yhatdan o\'tish uchun telefon raqam va parolni kiriting</string>
+    <string name="password_recovery_instruction">Parolni tiklash uchun yangi parolni kiriting va uni tasdiqlang</string>
     <string name="password">Parol</string>
     <string name="i_have_no_account">Menda akkaunt mavjud emas</string>
     <string name="sign_up">Ro\'yhatdan o\'tish</string>
@@ -156,4 +157,5 @@
     <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">Kontaktlar ro\'yxatini ko\'rsatish uchun siz kontaktlarni o\'qishga ruxsat berishingiz kerak</string>
     <string name="login_success">Muvaffaqiyatli</string>
     <string name="user_is_already_exists">Foydalanuvchi mavjud</string>
+    <string name="password_recovery">Parolni tiklash</string>
 </resources>

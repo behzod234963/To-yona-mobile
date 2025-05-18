@@ -104,8 +104,22 @@ fun NavGraph(
         composable(ScreensRouter.SupportScreen.route) {
             SupportScreen(navController)
         }
-        composable(ScreensRouter.DetailsScreen.route) {
-            DetailsScreen(navController)
+        composable(
+            route = ScreensRouter.DetailsScreen.route + "/{userID}",
+            arguments = listOf(
+                navArgument("userID") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { entry->
+            val userID = entry.arguments?.getInt("userID")?:-1
+            DetailsScreen(
+                navController = navController,
+                arguments = Arguments(
+                    userId = userID
+                )
+            )
         }
         composable(ScreensRouter.MyEventsScreen.route) {
             MyEventsScreen(navController)

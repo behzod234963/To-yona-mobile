@@ -83,7 +83,6 @@ fun LogInScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
-
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -293,7 +292,7 @@ fun LogInScreen(
                         else -> {
                             coroutineScope.launch {
                                 dataStore.isOldUser(true)
-                                delay(2000)
+                                delay(1500)
                                 isSendResponse.value = false
                                 withContext(Dispatchers.Main){
                                     navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
@@ -307,7 +306,7 @@ fun LogInScreen(
                     }
                 } else {
                     coroutineScope.launch {
-                        delay(2000)
+                        delay(1500)
                         isSendResponse.value = false
                         delay(500)
                         snackbarHostState.showSnackbar(

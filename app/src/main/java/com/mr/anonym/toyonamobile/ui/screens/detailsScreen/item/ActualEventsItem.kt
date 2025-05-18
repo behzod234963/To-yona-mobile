@@ -29,8 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartysItem
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPriceFields
@@ -41,7 +41,7 @@ fun ActualEventsItem(
     fiverdColor: Color,
     sevenrdColor: Color,
     partyModel: PartysItem,
-    friendsModel: FriendsModel,
+    userModel: UserModelItem,
     priceFieldError: Boolean,
     onTransferClick:(String)-> Unit
 ) {
@@ -197,7 +197,7 @@ fun ActualEventsItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "${friendsModel.name} ${friendsModel.surname}",
+                            text = "${userModel.username} ${userModel.surname}",
                             color = secondaryColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,

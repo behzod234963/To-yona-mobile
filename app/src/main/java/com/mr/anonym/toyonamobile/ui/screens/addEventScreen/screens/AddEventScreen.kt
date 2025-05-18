@@ -741,7 +741,7 @@ fun AddEventScreen(
                     Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isAddEventState.value}")
                     coroutineScope.launch {
                         if (viewModel.isAddEventState.value) {
-                            delay(2000)
+                            delay(1500)
                             isLoading.value = false
                             withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MainScreen.route) {
@@ -755,7 +755,7 @@ fun AddEventScreen(
                     Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isAddEventState.value}")
                     coroutineScope.launch {
                         if (viewModel.isAddEventState.value) {
-                            delay(2000)
+                            delay(1500)
                             isLoading.value = false
                             withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MyEventsScreen.route) {

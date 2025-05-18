@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
-import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.PartysItem
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -46,7 +46,7 @@ fun TransferDetailsBottomSheet(
     quaternaryColor: Color,
     state: SheetState,
     senderName:String,
-    friendsModel: FriendsModel,
+    userModel: UserModelItem,
     partyModel: PartysItem,
 
 //    Price field
@@ -110,7 +110,7 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${friendsModel.name} ${friendsModel.surname}",
+                        text = "${userModel.username} ${userModel.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold

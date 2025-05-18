@@ -1,7 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -53,7 +52,6 @@ fun ChangePasswordFields(
     val isOldPasswordShow = rememberSaveable { mutableStateOf(false) }
     val isShowNewPassword = rememberSaveable { mutableStateOf( false ) }
     val isShowConfirmPassword = rememberSaveable { mutableStateOf(false) }
-    val visualTransformation = VisualTransformation.None
 
 //    Old password field
     OutlinedTextField(
@@ -66,6 +64,7 @@ fun ChangePasswordFields(
             color = secondaryColor,
             fontSize = 16.sp
         ),
+        keyboardActions = keyBoardActions,
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(
@@ -111,6 +110,7 @@ fun ChangePasswordFields(
             color = secondaryColor,
             fontSize = 16.sp
         ),
+        keyboardActions = keyBoardActions,
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(
@@ -156,6 +156,7 @@ fun ChangePasswordFields(
             color = secondaryColor,
             fontSize = 16.sp
         ),
+        keyboardActions = keyBoardActions,
         keyboardOptions = passwordKeyboardOptions,
         label = {
             Text(

@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
@@ -51,6 +51,7 @@ import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageB
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsField
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.ThemeBottomSheet
+import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.viewModel.SettingsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -60,7 +61,8 @@ import kotlinx.coroutines.withContext
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SettingsScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -115,9 +117,6 @@ fun SettingsScreen(
     val isNotificationContentClicked = rememberSaveable { mutableStateOf(false) }
 
     val profileAvatar = sharedPreferences.getAvatar()
-    val firstName = sharedPreferences.getFirstname()
-    val lastName = sharedPreferences.getLastname()
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
     sharedPreferences.editProfileProcess(false)
 
     val languageBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -135,6 +134,9 @@ fun SettingsScreen(
     val showThemeContent = rememberSaveable { mutableStateOf(false) }
 
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
+
+    viewModel.getUserByID()
+    val user = viewModel.user
 
     if (!isThemeSelected.value) {
         when {
@@ -183,7 +185,11 @@ fun SettingsScreen(
                     sharedPreferences.editProfileProcess(true)
                     navController.navigate(ScreensRouter.ProfileScreen.route)
                 },
-                onNavigationClick = { navController.navigateUp() }
+                onNavigationClick = {
+                    navController.navigate(ScreensRouter.MainScreen.route) {
+                        popUpTo(ScreensRouter.SettingsScreen.route){ inclusive = true }
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -207,13 +213,13 @@ fun SettingsScreen(
                 )
                 Spacer(Modifier.height(7.dp))
                 Text(
-                    text = "$firstName $lastName",
+                    text = "${user.value.username} ${user.value.surname}",
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = phoneNumber.value.phoneNumberTransformation(),
+                    text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -284,12 +290,12 @@ fun SettingsScreen(
                 contentTitle = stringResource(R.string.security),
                 isHaveSwitcher = false,
                 isChecked = false,
-                onCheckedChange = {  },
+                onCheckedChange = { },
                 onContentClick = {
                     coroutineScope.launch {
-                        if (isBiometricAuthOn){
+                        if (isBiometricAuthOn) {
                             dataStore.showBiometricAuthManually(true)
-                        }else{
+                        } else {
                             dataStore.showBiometricAuthManually(false)
                         }
                         dataStore.openSecurityContent(true)

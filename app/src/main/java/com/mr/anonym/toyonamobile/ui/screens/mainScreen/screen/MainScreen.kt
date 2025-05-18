@@ -293,8 +293,9 @@ fun MainScreen(
                                     smallFontSize = smallFontSize.intValue,
                                     partyModel = partyModel.value,
                                     userModel = userModel,
-                                    showContacts = showContacts.value
-                                ) { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                    showContacts = showContacts.value,
+                                    onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${userModel.id}") }
+                                )
                             }
                         } else {
                             items(
@@ -311,8 +312,9 @@ fun MainScreen(
                                         smallFontSize = smallFontSize.intValue,
                                         partyModel = model,
                                         userModel = user.value,
-                                        showContacts = showContacts.value
-                                    ) { navController.navigate(ScreensRouter.DetailsScreen.route) }
+                                        showContacts = showContacts.value,
+                                        onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.userId}") }
+                                    )
                                 }
                             }
                             item {

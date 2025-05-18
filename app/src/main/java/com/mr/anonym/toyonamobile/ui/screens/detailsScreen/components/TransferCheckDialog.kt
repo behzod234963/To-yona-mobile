@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
@@ -40,8 +39,8 @@ fun TransferCheckDialog(
     secondaryColor: Color,
     quaternaryColor: Color,
     commission: String,
+    senderName: String,
     userModel: UserModelItem,
-    friendsModel: FriendsModel,
     transactionsModel: TransactionsModel,
     onDismissClick: () -> Unit,
     onConfirmClick: () -> Unit
@@ -163,13 +162,15 @@ fun TransferCheckDialog(
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Text(
-                        text = "${friendsModel.name} ${if (friendsModel.surname.length > 10) friendsModel.surname.stringEqualizerForDetails() else friendsModel.surname }",
-                        fontSize = 16.sp,
-                        color = secondaryColor,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.End
-                    )
+                    userModel.surname?.length?.let {
+                        Text(
+                            text = "${userModel.username} ${if (it > 10) userModel.surname?.stringEqualizerForDetails() else userModel.surname }",
+                            fontSize = 16.sp,
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.End
+                        )
+                    }
                 }
                 HorizontalDivider()
                 Spacer(Modifier.height(5.dp))
@@ -214,15 +215,13 @@ fun TransferCheckDialog(
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
-                    userModel.surname?.length?.let {
                         Text(
-                            text = "${userModel.username} ${if (it > 10) userModel.surname!!.stringEqualizerForDetails() else userModel.surname}",
+                            text = senderName,
                             fontSize = 16.sp,
                             color = secondaryColor,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
-                    }
                 }
                 HorizontalDivider()
                 Spacer(Modifier.height(5.dp))

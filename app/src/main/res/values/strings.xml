@@ -89,6 +89,7 @@
     <string name="share">Share</string>
     <string name="saved_successfully">Saved successfully</string>
     <string name="registration_instruction">To register, you need to enter your phone number and password.</string>
+    <string name="password_recovery_instruction">To recovery password,you need to enter new password and confirm password.</string>
     <string name="password">Password</string>
     <string name="i_have_no_account">I have no account</string>
     <string name="sign_up">Sign up</string>
@@ -155,4 +156,5 @@
     <string name="to_show_contacts_you_need_to_give_permission_for_read_contacts">To show contacts you need to give permission for read contacts</string>
     <string name="login_success">Login success</string>
     <string name="user_is_already_exists">User is already exists</string>
+    <string name="password_recovery">Password recovery</string>
 </resources>

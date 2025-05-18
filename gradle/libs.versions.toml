@@ -23,9 +23,10 @@ cardIOscannerVersion = "5.5.1"
 pullToRefreshVersion = "0.36.0"
 lottieVersion = "6.6.6"
 systemUiControllerVersion = "0.36.0"
-retrofit2Version = "2.11.0"
+retrofit2Version = "3.0.0"
 okHttpVersion = "4.12.0"
 paging3Version = "3.3.6"
+tinkVersion = "1.17.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,6 +73,7 @@ okHttpBom = { group = "com.squareup.okhttp3" , name = "okhttp-bom" , version.ref
 okHttpLoggingInterceptor = { group = "com.squareup.okhttp3" , name = "logging-interceptor" , version.ref = "okHttpVersion"}
 paging3 = { group = "androidx.paging" , name = "paging-runtime" , version.ref = "paging3Version" }
 paging3JetpackCompose = { group = "androidx.paging" , name = "paging-compose" , version.ref = "paging3Version" }
+tink = { group = "com.google.crypto.tink" , name  = "tink-android" , version.ref = "tinkVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -115,7 +115,7 @@ fun RegistrationScreen(
     val confirmValue = rememberSaveable { mutableStateOf("") }
     val confirmValueError = remember { mutableStateOf(false) }
 
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val phoneNumber = sharedPreferences.getPhoneNumber()
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -186,7 +186,7 @@ fun RegistrationScreen(
                             .focusRequester(focusRequester),
                         phoneFieldError = phoneFieldError.value,
                         isPhoneFieldEnabled = !isPasswordForgotten.value,
-                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber.value else phoneFieldValue.value,
+                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber?:"" else phoneFieldValue.value,
                         phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                         onPhoneValueChange = {
                             phoneFieldValue.value = it.take(9)
@@ -253,7 +253,7 @@ fun RegistrationScreen(
                                         coroutineScope.launch {
                                             dataStore.isPasswordForgotten(false)
                                             dataStore.isOldUser(true)
-                                            dataStore.savePhoneNumber("+998${phoneNumber.value}")
+                                            sharedPreferences.savePhoneNumber("+998${phoneNumber}")
                                         }
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)

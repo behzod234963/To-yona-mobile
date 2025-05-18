@@ -54,8 +54,6 @@ import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.viewModel.NumberCheckViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -79,6 +77,7 @@ fun NumberCheckScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -94,37 +93,37 @@ fun NumberCheckScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val otpValue = remember { mutableStateOf("") }
-    val correctValue = remember { mutableStateOf( "11111" ) }
+    val correctValue = remember { mutableStateOf("11111") }
 
     val timeLeft = remember { mutableIntStateOf(40) }
     val isRunning = remember { mutableStateOf(true) }
 
-    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState( false )
+    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
 
     val addCardProcess = sharedPreferences.addCardProcessState()
     val cardID = dataStore.getCardID().collectAsState(-1)
-    val cardNumber = dataStore.getCardNumber().collectAsState("")
+    val cardNumber = sharedPreferences.getCardNumber()
     val cardHolder = dataStore.getCardHolder().collectAsState("")
     val expiryDate = dataStore.getExpiryDate().collectAsState("")
 
     val id = sharedPreferences.getID()
 
-    LaunchedEffect(isRunning.value,timeLeft.intValue) {
-        while ( isRunning.value && timeLeft.intValue > 0 ){
+    LaunchedEffect(isRunning.value, timeLeft.intValue) {
+        while (isRunning.value && timeLeft.intValue > 0) {
             delay(1000L)
             timeLeft.intValue--
         }
         if (timeLeft.intValue <= 0) isRunning.value = false
     }
 
-    Scaffold (
+    Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
         modifier = Modifier
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ){ paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -147,7 +146,10 @@ fun NumberCheckScreen(
                 Spacer(Modifier.height(10.dp))
                 Text(
                     textAlign = TextAlign.Center,
-                    text = stringResource(R.string.enter_code_below, arguments.number.phoneNumberTransformation()),
+                    text = stringResource(
+                        R.string.enter_code_below,
+                        arguments.number.phoneNumberTransformation()
+                    ),
                     color = secondaryColor,
                     fontSize = 16.sp,
                 )
@@ -171,64 +173,74 @@ fun NumberCheckScreen(
                                 otpValue.value.isNotEmpty() &&
                                 otpValue.value.isNotBlank() &&
                                 otpValue.value == correctValue.value
-                            ){
-                                when{
-                                    addCardProcess->{
-                                        if(cardID.value == -1){
+                            ) {
+                                when {
+                                    addCardProcess -> {
+                                        if (cardID.value == -1) {
                                             viewModel.insertCard(
                                                 CardModel(
-                                                    cardNumber = cardNumber.value,
+                                                    cardNumber = cardNumber ?: "",
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
-                                            navController.navigate(ScreensRouter.WalletScreen.route){
-                                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                            navController.navigate(ScreensRouter.WalletScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
-                                        }else{
+                                        } else {
                                             viewModel.insertCard(
                                                 CardModel(
                                                     id = cardID.value,
-                                                    cardNumber = cardNumber.value,
+                                                    cardNumber = cardNumber ?: "",
                                                     cardHolder = cardHolder.value,
                                                     expiryDate = expiryDate.value,
                                                 )
                                             )
                                             sharedPreferences.addCardProcess(false)
-                                            navController.navigate(ScreensRouter.WalletScreen.route){
-                                                popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                            navController.navigate(ScreensRouter.WalletScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
                                         }
                                     }
-                                    isPasswordForgotten.value->{
-                                        val result = arguments.number.substring(4..arguments.number.length-1)
-                                        CoroutineScope(Dispatchers.Default).launch {
-                                            dataStore.savePhoneNumber(result)
-                                        }
-                                        navController.navigate(ScreensRouter.RegistrationScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+
+                                    isPasswordForgotten.value -> {
+                                        val result =
+                                            arguments.number.substring(4..arguments.number.length - 1)
+                                        sharedPreferences.savePhoneNumber(result)
+                                        navController.navigate(ScreensRouter.RegistrationScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
                                         }
                                     }
-                                    isPinForgotten.value->{
-                                        CoroutineScope(Dispatchers.Default).launch {
-                                            dataStore.savePhoneNumber(arguments.number)
-                                        }
+
+                                    isPinForgotten.value -> {
+                                        sharedPreferences.savePhoneNumber(arguments.number)
                                         sharedPreferences.saveNewPinState(true)
-                                        navController.navigate(ScreensRouter.NewPinScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        navController.navigate(ScreensRouter.NewPinScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
                                         }
                                     }
-                                    else->{
+
+                                    else -> {
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)
                                         viewModel.getUserByID(id)
-                                        navController.navigate(ScreensRouter.ProfileScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
                                         }
                                     }
                                 }
-                            }else{
+                            } else {
                                 coroutineScope.launch {
                                     snackbarHostState.showSnackbar(
                                         message = context.getString(R.string.please_complete_the_process)
@@ -282,7 +294,7 @@ fun NumberCheckScreen(
                         fontSize = 16.sp
                     )
                     Spacer(Modifier.width(10.dp))
-                    if (!isRunning.value&& timeLeft.intValue == 0 ){
+                    if (!isRunning.value && timeLeft.intValue == 0) {
                         IconButton(
                             onClick = {
                                 isRunning.value = true
@@ -299,7 +311,7 @@ fun NumberCheckScreen(
                                 contentDescription = "null"
                             )
                         }
-                    }else{
+                    } else {
                         Text(
                             text = timeLeft.intValue.toString(),
                             color = secondaryColor,
@@ -329,55 +341,63 @@ fun NumberCheckScreen(
                             otpValue.value.isNotEmpty() &&
                             otpValue.value.isNotBlank() &&
                             otpValue.value == correctValue.value
-                            ){
-                            when{
-                                addCardProcess->{
-                                    if(cardID.value == -1){
+                        ) {
+                            when {
+                                addCardProcess -> {
+                                    if (cardID.value == -1) {
                                         viewModel.insertCard(
                                             CardModel(
-                                                cardNumber = cardNumber.value,
+                                                cardNumber = cardNumber ?: "",
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
-                                        navController.navigate(ScreensRouter.WalletScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                        navController.navigate(ScreensRouter.WalletScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
                                         }
-                                    }else{
+                                    } else {
                                         viewModel.insertCard(
                                             CardModel(
                                                 id = cardID.value,
-                                                cardNumber = cardNumber.value,
+                                                cardNumber = cardNumber ?: "",
                                                 cardHolder = cardHolder.value,
                                                 expiryDate = expiryDate.value,
                                             )
                                         )
                                         sharedPreferences.addCardProcess(false)
-                                        navController.navigate(ScreensRouter.WalletScreen.route){
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route ){ inclusive = true }
+                                        navController.navigate(ScreensRouter.WalletScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
                                         }
                                     }
                                 }
-                                isPasswordForgotten.value->{
-                                    val result = arguments.number.substring(4..arguments.number.length-1)
-                                    CoroutineScope(Dispatchers.Default).launch {
-                                        dataStore.savePhoneNumber(result)
-                                    }
-                                    navController.navigate(ScreensRouter.RegistrationScreen.route){
-                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+
+                                isPasswordForgotten.value -> {
+                                    val result = arguments.number.substring(4..arguments.number.length - 1)
+                                    sharedPreferences.savePhoneNumber(result)
+                                    navController.navigate(ScreensRouter.RegistrationScreen.route) {
+                                        popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                            inclusive = true
+                                        }
                                     }
                                 }
-                                else->{
+
+                                else -> {
                                     sharedPreferences.saveIsLoggedIn(true)
                                     sharedPreferences.saveIsProfileSettingsState(true)
                                     viewModel.getUserByID(id)
-                                    navController.navigate(ScreensRouter.ProfileScreen.route){
-                                        popUpTo(ScreensRouter.NumberCheckScreen.route){ inclusive = true }
+                                    navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                        popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                            inclusive = true
+                                        }
                                     }
                                 }
                             }
-                        }else{
+                        } else {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(
                                     message = context.getString(R.string.please_complete_the_process)

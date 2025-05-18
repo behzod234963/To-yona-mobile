@@ -149,7 +149,6 @@ class MainActivity : AppCompatActivity() {
             dataStore.openSecurityContent(false)
             dataStore.addCardFromDetails(false)
             dataStore.addCardFromAddEvent(false)
-            dataStore.isMainScreenLaunched(false)
         }
         sharedPreferences.saveBiometricAuthState(true)
         sharedPreferences.addCardProcess(false)
@@ -161,7 +160,6 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.saveBiometricAuthState(true)
         CoroutineScope(Dispatchers.Default).launch {
             dataStore.isPasswordForgotten(false)
-            dataStore.isMainScreenLaunched(false)
             dataStore.openSecurityContent(false)
             dataStore.addCardFromDetails(false)
             dataStore.addCardFromAddEvent(false)

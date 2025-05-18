@@ -92,7 +92,7 @@ fun EnterScreen(
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val showBiometricSettings = remember { mutableStateOf(false) }
 
-    val pinCode = dataStore.getPinCode().collectAsState("")
+    val pinCode = sharedPreferences.getPinCode()
     val pinValue = remember { mutableStateOf("") }
     val iconSize = remember { mutableIntStateOf(30) }
 
@@ -101,7 +101,7 @@ fun EnterScreen(
     LaunchedEffect(pinValue.value) {
         if (
             pinValue.value.length > 3 &&
-            pinValue.value == pinCode.value
+            pinValue.value == pinCode
         ) {
             if (openSecurityContentState.value) {
                 navController.navigate(ScreensRouter.SecurityScreen.route) {
@@ -152,11 +152,11 @@ fun EnterScreen(
                 ) {
                     Icon(
                         modifier = Modifier
-                            .size(iconSize.value.dp)
+                            .size(iconSize.intValue.dp)
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                            pinValue.value.length == 4 && pinValue.value != pinCode -> {
                                 quaternaryColor
                             }
 
@@ -176,7 +176,7 @@ fun EnterScreen(
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                            pinValue.value.length == 4 && pinValue.value != pinCode -> {
                                 quaternaryColor
                             }
 
@@ -196,7 +196,7 @@ fun EnterScreen(
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                            pinValue.value.length == 4 && pinValue.value != pinCode -> {
                                 quaternaryColor
                             }
 
@@ -216,7 +216,7 @@ fun EnterScreen(
                             .padding(vertical = 7.dp),
                         painter = painterResource(R.drawable.ic_round),
                         tint = when {
-                            pinValue.value.length == 4 && pinValue.value != pinCode.value -> {
+                            pinValue.value.length == 4 && pinValue.value != pinCode -> {
                                 quaternaryColor
                             }
 

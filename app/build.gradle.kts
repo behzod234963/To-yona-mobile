@@ -100,4 +100,6 @@ dependencies {
 
     implementation(libs.paging3)
     implementation(libs.paging3JetpackCompose)
+
+    implementation(libs.tink)
 }

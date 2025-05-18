@@ -104,8 +104,7 @@ fun ProfileScreen(
     val quaternaryColor = Color.Red
 
     val id = sharedPreferences.getID()
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
-    val password = dataStore.getPassword().collectAsState("")
+    val phoneNumber = sharedPreferences.getPhoneNumber()
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
@@ -371,7 +370,7 @@ fun ProfileScreen(
                         }
                         Log.d(
                             "UtilsLogging",
-                            "ProfileScreen: ${phoneNumber.value} \n ${password.value}"
+                            "ProfileScreen: $phoneNumber"
                         )
                     }
                 }

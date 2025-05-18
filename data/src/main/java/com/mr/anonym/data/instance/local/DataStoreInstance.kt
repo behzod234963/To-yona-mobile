@@ -13,42 +13,7 @@ import kotlinx.coroutines.flow.map
 
 private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("dataStore")
 class DataStoreInstance(private val context: Context) {
-    suspend fun savePinCode(pinCode: String){
-        val key = stringPreferencesKey("pinCode")
-        context.dataStore.edit {
-            it[key] = pinCode
-        }
-    }
-    fun getPinCode(): Flow<String>{
-        val key = stringPreferencesKey("pinCode")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
-    suspend fun savePhoneNumber(phoneNumber: String){
-        val key = stringPreferencesKey("phonenumber")
-        context.dataStore.edit {
-            it[key] = phoneNumber
-        }
-    }
-    fun getPhoneNumber(): Flow<String>{
-        val key = stringPreferencesKey("phonenumber")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
-    suspend fun savePassword(password: String){
-        val key = stringPreferencesKey("savePassword")
-        context.dataStore.edit {
-            it[key] = password
-        }
-    }
-    fun getPassword(): Flow<String>{
-        val key = stringPreferencesKey("savePassword")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
+
     suspend fun isPasswordForgotten(status: Boolean){
         val key = booleanPreferencesKey("ForgotPassword")
         context.dataStore.edit {
@@ -85,18 +50,7 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
-    suspend fun saveCardNumber(cardNumber: String){
-        val key = stringPreferencesKey("cardNumber")
-        context.dataStore.edit {
-            it[key] = cardNumber
-        }
-    }
-    fun getCardNumber(): Flow<String>{
-        val key = stringPreferencesKey("cardNumber")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
+
     suspend fun saveCardHolder(cardHolder: String){
         val key = stringPreferencesKey("cardHolder")
         context.dataStore.edit {
@@ -177,30 +131,6 @@ class DataStoreInstance(private val context: Context) {
     }
     fun addCardFromAddEventState(): Flow<Boolean>{
         val key = booleanPreferencesKey("addCardFromAddEvent")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
-    suspend fun isContactsPermissionGranted(state: Boolean){
-        val key = booleanPreferencesKey("isContactsPermissionGranted")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun isContactsPermissionGrantedState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("isContactsPermissionGranted")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
-    suspend fun isMainScreenLaunched(state: Boolean){
-        val key = booleanPreferencesKey("isMainScreenLaunched")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun isMainScreenLaunchedState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("isMainScreenLaunched")
         return context.dataStore.data.map {
             it[key]?:false
         }

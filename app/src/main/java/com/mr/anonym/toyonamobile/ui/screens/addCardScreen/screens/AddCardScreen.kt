@@ -23,7 +23,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -103,7 +102,7 @@ fun AddCardScreen(
     val cardHolderValue = viewModel.cardHolder
     val cardHolderValueError = rememberSaveable { mutableStateOf( false ) }
 
-    val phoneNumber = dataStore.getPhoneNumber().collectAsState("")
+    val phoneNumber = sharedPreferences.getPhoneNumber()
 
     val launcher = CardScannerIO(context) { card ->
         viewModel.cardEvents(CardEvents.ChangeCardNumber(card.cardNumber))
@@ -196,24 +195,24 @@ fun AddCardScreen(
                             val formatted = cardNumberValue.value.cardNumberSeparator()
                             if (arguments.cardId == -1){
                                 sharedPreferences.addCardProcess(true)
+                                sharedPreferences.saveCardNumber(formatted)
                                 coroutineScope.launch {
                                     dataStore.saveCardID(-1)
-                                    dataStore.saveCardNumber(formatted)
                                     dataStore.saveCardHolder(cardHolderValue.value)
                                     dataStore.saveExpiryDate("$first/$last")
                                 }
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}"){
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber}"){
                                     popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
                                 }
                             }else{
                                 sharedPreferences.addCardProcess(true)
+                                sharedPreferences.saveCardNumber(formatted)
                                 coroutineScope.launch {
                                     dataStore.saveCardID(arguments.cardId)
-                                    dataStore.saveCardNumber(formatted)
                                     dataStore.saveCardHolder(cardHolderValue.value)
                                     dataStore.saveExpiryDate("$first/$last")
                                 }
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber.value}"){
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber}"){
                                     popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
                                 }
                             }

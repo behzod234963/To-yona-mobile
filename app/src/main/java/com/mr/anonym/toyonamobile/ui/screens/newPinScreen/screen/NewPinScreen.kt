@@ -37,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -54,7 +53,6 @@ fun NewPinScreen(
     val context = LocalContext.current
 
     val sharedPreferences = SharedPreferencesInstance(context)
-    val dataStore = DataStoreInstance(context)
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
@@ -100,14 +98,14 @@ fun NewPinScreen(
         ) {
             when{
                 changePinProcessState->{
-                    dataStore.savePinCode(pinValue.value)
+                    sharedPreferences.savePinCode(pinValue.value)
                     navController.navigate(ScreensRouter.SecurityScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route){ inclusive = true }
                     }
                 }
                 else->{
                     sharedPreferences.saveNewPinState(false)
-                    dataStore.savePinCode(pinValue.value)
+                    sharedPreferences.savePinCode(pinValue.value)
                     isPinCodeSetCompleted.value = true
                 }
             }
@@ -192,7 +190,7 @@ fun NewPinScreen(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .size(iconSize.value.dp)
+                                .size(iconSize.intValue.dp)
                                 .padding(vertical = 7.dp),
                             painter = painterResource(R.drawable.ic_round),
                             tint = when {
@@ -283,7 +281,7 @@ fun NewPinScreen(
                     ) {
                         Icon(
                             modifier = Modifier
-                                .size(iconSize.value.dp)
+                                .size(iconSize.intValue.dp)
                                 .padding(vertical = 7.dp),
                             painter = painterResource(R.drawable.ic_round),
                             tint = when {

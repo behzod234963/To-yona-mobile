@@ -134,6 +134,8 @@ fun MainScreen(
     )
 
     val user = viewModel.user
+    sharedPreferences.saveToken("${user.value.username}")
+    sharedPreferences.getToken()
 
     ModalNavigationDrawer(
         drawerState = drawerState,

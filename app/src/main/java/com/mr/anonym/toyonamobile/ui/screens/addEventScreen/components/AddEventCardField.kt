@@ -99,7 +99,7 @@ fun AddEventCardField(
                                 horizontalArrangement = Arrangement.Center
                             ){
                                 Text(
-                                    text = card.cardNumber.cardNumberFormatter(),
+                                    text = card.number.cardNumberFormatter(),
                                     fontSize = 14.sp,
                                     color = secondaryColor,
                                     fontWeight = FontWeight.SemiBold

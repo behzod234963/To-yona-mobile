@@ -50,7 +50,7 @@
     <string name="enter_the_price">O\'tkazma miqdori</string>
     <string name="transfer">O\'tkazish</string>
     <string name="event">Tadbir</string>
-    <string name="event_date_and_time">Tadbir kuni va vaqti</string>
+    <string name="event_date_and_time">Tadbir kuni</string>
     <string name="requisites">Rekvizitlar</string>
     <string name="card_holder_name">Karta egasi</string>
     <string name="card_number">Karta raqami</string>
@@ -62,7 +62,7 @@
     <string name="birthday">Tug\'ilgan kun</string>
     <string name="other">Boshqa</string>
     <string name="enter_the_event">Tadbirni kiriting</string>
-    <string name="data_and_time">O\'tkazilish vaqti va sanasi</string>
+    <string name="data_and_time">O\'tkazilish sanasi</string>
     <string name="cancel">Bekor qilish</string>
     <string name="not_selected">Tanlanmadi</string>
     <string name="status">Status</string>
@@ -158,4 +158,6 @@
     <string name="login_success">Muvaffaqiyatli</string>
     <string name="user_is_already_exists">Foydalanuvchi mavjud</string>
     <string name="password_recovery">Parolni tiklash</string>
+    <string name="title">Sarlavha</string>
+    <string name="unknown_error">No\'malum xatolik!</string>
 </resources>

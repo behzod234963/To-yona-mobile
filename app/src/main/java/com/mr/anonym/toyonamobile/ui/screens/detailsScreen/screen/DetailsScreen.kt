@@ -117,12 +117,12 @@ fun DetailsScreen(
 
     val user = viewModel.user
     val partyList = emptyList<PartysItem>()
-    val partyModel = remember { mutableStateOf( PartysItem() ) }
+    val partyModel = remember { mutableStateOf( PartysItem()) }
     val transactionsModel = TransactionsModel(
         id = 1,
         userId = user.value.id ?:-1,
         sender = "userModel.cardlist",
-        receiver = partyModel.value.cardNumber?:"",
+        receiver = partyModel.value.cardNumber ?:"",
         price = priceValue.value.ifEmpty { "0.0" },
         dateTime = "30.04.2025"
     )
@@ -356,9 +356,8 @@ fun DetailsScreen(
                     onDropDownDismissRequest = {
                         isExpanded.value = false
                     },
-                    onItemClick = { cardNumber, cardHolder ->
+                    onItemClick = { cardNumber ->
                         viewModel.changeSenderCard(cardNumber)
-                        viewModel.changeSenderName(cardHolder)
                         isExpanded.value = false
                     },
                     onAddCardClick = {

@@ -121,8 +121,6 @@ fun RegistrationScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
 
-    val user = viewModel.user
-
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -149,9 +147,9 @@ fun RegistrationScreen(
                 ) {
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = if ( isPasswordForgotten.value ){
+                        text = if (isPasswordForgotten.value) {
                             stringResource(R.string.password_recovery)
-                        }else{
+                        } else {
                             stringResource(R.string.sign_up)
                         },
                         color = secondaryColor,
@@ -161,9 +159,9 @@ fun RegistrationScreen(
                     Spacer(Modifier.height(10.dp))
                     Text(
                         textAlign = TextAlign.Center,
-                        text = if (isPasswordForgotten.value){
+                        text = if (isPasswordForgotten.value) {
                             stringResource(R.string.password_recovery_instruction)
-                        }else{
+                        } else {
                             stringResource(R.string.registration_instruction)
                         },
                         color = secondaryColor,
@@ -186,7 +184,8 @@ fun RegistrationScreen(
                             .focusRequester(focusRequester),
                         phoneFieldError = phoneFieldError.value,
                         isPhoneFieldEnabled = !isPasswordForgotten.value,
-                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber?:"" else phoneFieldValue.value,
+                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber
+                            ?: "" else phoneFieldValue.value,
                         phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                         onPhoneValueChange = {
                             phoneFieldValue.value = it.take(9)
@@ -243,6 +242,14 @@ fun RegistrationScreen(
                                         !isPasswordForgotten.value -> {
                                     if (confirmValue.value == passwordValue.value) {
                                         isSendResponse.value = true
+                                        viewModel.signUpUser(
+                                            user = UserModelItem(
+                                                username = "",
+                                                surname = "",
+                                                phonenumber = phoneFieldValue.value,
+                                                password = confirmValue.value
+                                            )
+                                        )
                                     } else {
                                         confirmValueError.value = true
                                     }
@@ -299,17 +306,9 @@ fun RegistrationScreen(
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever
                 )
-                viewModel.signUpUser(
-                    user = UserModelItem(
-                        username = "",
-                        surname = "",
-                        phonenumber = phoneFieldValue.value,
-                        password = passwordValue.value
-                    )
-                )
                 coroutineScope.launch {
                     delay(1500)
-                    if (user.value.id != -1) {
+                    if (viewModel.user.value.id != -1) {
                         val result = "+998" + phoneFieldValue.value
                         Log.d("UtilsLogging", "RegistrationScreen: $result")
                         withContext(Dispatchers.Main) {
@@ -321,11 +320,13 @@ fun RegistrationScreen(
                         }
                         isSendResponse.value = false
                     } else {
-                        isSendResponse.value = false
                         delay(500)
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.user_is_already_exists)
-                        )
+                        if (isSendResponse.value) {
+                            snackbarHostState.showSnackbar(
+                                message = context.getString(R.string.user_is_already_exists)
+                            )
+                        }
+                        isSendResponse.value = false
                     }
                 }
             }

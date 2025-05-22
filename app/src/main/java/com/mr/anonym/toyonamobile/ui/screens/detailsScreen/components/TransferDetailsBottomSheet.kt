@@ -62,7 +62,7 @@ fun TransferDetailsBottomSheet(
 //    DropDown field
     userCards: List<CardModel>,
     onDropDownDismissRequest:()-> Unit,
-    onItemClick:(String, String)-> Unit,
+    onItemClick:(String)-> Unit,
     onAddCardClick:()-> Unit,
     isExpanded: Boolean,
 ) {
@@ -175,8 +175,8 @@ fun TransferDetailsBottomSheet(
                             secondaryColor = secondaryColor,
                             isExpanded = isExpanded,
                             onDismissRequest = { onDropDownDismissRequest() },
-                            onItemClick = { cardNumber,cardHolder->
-                                onItemClick(cardNumber,cardHolder) },
+                            onItemClick = { cardNumber->
+                                onItemClick(cardNumber) },
                             userCards = userCards,
                             onAddCardClick = { onAddCardClick() }
                         )

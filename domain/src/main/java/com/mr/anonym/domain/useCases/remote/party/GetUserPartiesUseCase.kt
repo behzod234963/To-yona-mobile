@@ -6,17 +6,17 @@ import com.mr.anonym.domain.repository.remote.PartyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AddEventUseCase (private val repository: PartyRepository){
-    fun execute(userId: Int,partyModel: PartysItem): Flow<Boolean> = flow {
+class GetUserPartiesUseCase(private val repository: PartyRepository) {
+    fun execute(id: Int): Flow<List<PartysItem>> = flow {
         try {
-            val response = repository.addEvent(userId,partyModel)
+            val response = repository.getUserParties(id)
             if (response.isSuccessful){
                 response.body()?.let {
-                    emit(it)
+                    emit(it.partyList)
                 }
             }
         }catch (e: Exception){
-            Log.d("NetworkLogging", "AddEventUseCaseExecute: ${e.message}")
+            Log.d("NetworkLogging", "GetUserPartiesUseCaseExecute: ${e.message}")
         }
     }
 }

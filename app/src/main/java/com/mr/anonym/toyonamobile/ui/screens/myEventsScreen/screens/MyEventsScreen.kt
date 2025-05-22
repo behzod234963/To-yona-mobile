@@ -5,7 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,6 +40,7 @@ fun MyEventsScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -58,6 +59,8 @@ fun MyEventsScreen(
         else -> Color.White
     }
 
+    val parties = viewModel.parties
+
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -68,29 +71,42 @@ fun MyEventsScreen(
             ) { navController.navigateUp() }
         }
     ) { paddingValues ->
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(10.dp)
-        ){
-//            itemsIndexed(events.value){ index,model->
-//                MyEventsItem(
-//                    secondaryColor = secondaryColor,
-//                    quaternaryColor = quaternaryColor,
-//                    fiverdColor = fiverdColor,
-//                    sevenrdColor = sevenrdColor,
-//                    onEditClick = {
-//                        navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
-//                    },
-//                    onDeleteClick = {
-//                        TODO()
-//                    },
-//                    partyModel = PartysItem()
-//                ) {
-//                    TODO()
-//                }
-//            }
+        ) {
+            items(parties.value) { model ->
+                MyEventsItem(
+                    secondaryColor = secondaryColor,
+                    quaternaryColor = quaternaryColor,
+                    fiverdColor = fiverdColor,
+                    sevenrdColor = sevenrdColor,
+                    partyModel = model,
+                    onEditClick = {
+                        navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
+                    },
+                    onDeleteClick = {
+                        viewModel.deleteParty(model.id)
+                    },
+                    onCheckedChange = {
+                        viewModel.updateParty(
+                            partyID = model.id,
+                            partyModel = PartysItem(
+                                userName = model.userName,
+                                name = model.name,
+                                type = model.type,
+                                address = model.address,
+                                cardNumber = model.cardNumber,
+                                startTime = model.startTime,
+                                endTime = model.endTime,
+                                status = it
+                            )
+                        )
+                    }
+                )
+            }
         }
     }
 }

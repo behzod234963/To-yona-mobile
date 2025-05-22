@@ -20,12 +20,5 @@ class MonitoringViewModel @Inject constructor(
     val cards: State<List<CardModel>> = _cards
 
     init {
-        getCards()
-    }
-
-    fun getCards() = viewModelScope.launch {
-        localUseCases.getCardsUseCase().collect {
-            _cards.value = it
-        }
     }
 }

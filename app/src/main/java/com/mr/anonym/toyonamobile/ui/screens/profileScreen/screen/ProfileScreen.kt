@@ -108,14 +108,9 @@ fun ProfileScreen(
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
-    val showAvatarContent = rememberSaveable { mutableStateOf(false) }
-    val avatar = viewModel.profileAvatar
-
     val user = viewModel.user
-
     val firstname = viewModel.firstname
     val nameValueError = rememberSaveable { mutableStateOf(false) }
-
     val lastname = viewModel.lastname
     val lastnameValueError = rememberSaveable { mutableStateOf(false) }
 
@@ -125,6 +120,9 @@ fun ProfileScreen(
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
+    val showAvatarContent = rememberSaveable { mutableStateOf(false) }
+    val avatar = viewModel.profileAvatar
+    val avatarIndex = viewModel.avatarIndex
     val isSendResponse = remember { mutableStateOf(false) }
     Scaffold(
         containerColor = primaryColor,
@@ -262,17 +260,20 @@ fun ProfileScreen(
                         },
                         onDefaultAvatarClick = {
                             viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
+                            viewModel.onEvent(ProfileEvent.ChangeIndex(0))
                             if (bottomSheetState.isVisible) {
                                 showAvatarContent.value = false
                             }
                         },
                         onMaleClick = {
                             viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
+                            viewModel.onEvent(ProfileEvent.ChangeIndex(1))
                             if (bottomSheetState.isVisible) {
                                 showAvatarContent.value = false
                             }
                         }
                     ) {
+                        viewModel.onEvent(ProfileEvent.ChangeIndex(2))
                         viewModel.onEvent(ProfileEvent.ChangeAvatar(it))
                         if (bottomSheetState.isVisible) {
                             showAvatarContent.value = false
@@ -309,6 +310,7 @@ fun ProfileScreen(
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
+                                    sex = avatarIndex.value,
                                     phonenumber = user.value.phonenumber,
                                     password = user.value.password
                                 )
@@ -328,10 +330,11 @@ fun ProfileScreen(
                             sharedPreferences.saveAvatar(avatar.value)
                             sharedPreferences.editProfileProcess(false)
                             viewModel.updateUser(
-                                id = user.value.id?:-1,
+                                id = user.value.id,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
+                                    sex = avatarIndex.value,
                                     phonenumber = user.value.phonenumber,
                                     password = user.value.password
                                 )
@@ -352,6 +355,7 @@ fun ProfileScreen(
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
+                                    sex = avatarIndex.value,
                                     phonenumber = user.value.phonenumber,
                                     password = user.value.password
                                 )

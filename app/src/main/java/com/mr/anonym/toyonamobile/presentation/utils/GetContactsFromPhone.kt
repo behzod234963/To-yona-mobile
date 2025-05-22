@@ -2,11 +2,11 @@ package com.mr.anonym.toyonamobile.presentation.utils
 
 import android.content.Context
 import android.provider.ContactsContract
-import com.mr.anonym.domain.model.FriendsModel
+import com.mr.anonym.domain.model.UserModelItem
 
-fun getContacts(context: Context): List<FriendsModel>{
+fun getContacts(context: Context): List<UserModelItem>{
 
-    val contacts = mutableListOf<FriendsModel>()
+    val contacts = mutableListOf<UserModelItem>()
     val contentResolver = context.contentResolver
     val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
     val cursor = contentResolver.query(
@@ -26,7 +26,7 @@ fun getContacts(context: Context): List<FriendsModel>{
         while (it.moveToNext()){
             val name = it.getString(nameIndex)
             val number = it.getString(numberIndex)
-            contacts.add(FriendsModel(name = name, phone = number))
+            contacts.add(UserModelItem(username = name, phonenumber = number))
         }
     }
     return contacts

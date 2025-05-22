@@ -39,7 +39,8 @@ fun AddEventCardItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "${cardModel.bankName} ${cardModel.paymentSystem}",
+//                text = "${cardModel.bankName} ${cardModel.paymentSystem}",
+                text = "",
                 fontSize = 16.sp,
                 color = secondaryColor,
                 fontWeight = FontWeight.SemiBold

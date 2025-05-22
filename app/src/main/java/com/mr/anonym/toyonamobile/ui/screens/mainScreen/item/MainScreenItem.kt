@@ -23,12 +23,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
 
@@ -92,7 +94,13 @@ fun MainScreenItem(
                             text = if (showContacts) {
                                 "${userModel.username} ${userModel.surname}".stringEqualizerForMainScreen()
                             } else {
-                                partyModel.type ?: ""
+                                when(partyModel.type){
+                                    "0"-> ""
+                                    "1" -> stringResource(R.string.wedding)
+                                    "2" -> stringResource(R.string.sunnat_wedding)
+                                    "3" -> stringResource(R.string.birthday)
+                                    else -> partyModel.type
+                                }
                             },
                             color = secondaryColor,
                             fontSize = 17.sp,
@@ -102,7 +110,7 @@ fun MainScreenItem(
                             text = if (showContacts) {
                                 "+998${userModel.phonenumber}".phoneNumberTransformation()
                             } else {
-                                partyModel.name?:""
+                                partyModel.name
                             },
                             color = tertiaryColor,
                             fontSize = 15.sp,

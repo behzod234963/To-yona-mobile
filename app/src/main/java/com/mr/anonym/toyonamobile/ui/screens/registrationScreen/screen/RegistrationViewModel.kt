@@ -23,7 +23,7 @@ class RegistrationViewModel @Inject constructor(
     fun signUpUser(user: UserModelItem) = viewModelScope.launch {
         remoteUseCases.registerUserUseCase.execute(user).collect {
             _userModel.value = it
-            sharedPreferences.saveId(it.id ?:-1)
+            sharedPreferences.saveId(it.id)
         }
     }
 }

@@ -11,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -23,7 +22,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletScreenDialog
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.components.WalletTopBar
@@ -73,7 +71,6 @@ fun WalletScreen(
     val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
 
     val cards = viewModel.cards
-    val cardModel = remember { mutableStateOf(CardModel()) }
     sharedPreferences.addCardProcess(false)
 
     BackHandler {
@@ -151,7 +148,6 @@ fun WalletScreen(
                 quaternaryColor = quaternaryColor,
                 fiverdColor = fiverdColor,
                 onConfirmClick = {
-                    viewModel.deleteCard(cardModel.value)
                     showDeleteDialog.value = false
                 },
                 onDismissClick = { showDeleteDialog.value = false },
@@ -172,7 +168,6 @@ fun WalletScreen(
                     onChangeClick = { navController.navigate(ScreensRouter.AddCardScreen.route + "/${model.id}") },
                     onDeleteClick = { showDeleteDialog.value = true }
                 )
-                cardModel.value = model
             }
         }
     }

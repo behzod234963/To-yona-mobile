@@ -53,14 +53,16 @@ fun FilterByCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = model.bankName,
+//                    text = model.bankName,
+                    text = "",
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.width(5.dp))
                 Text(
-                    text = model.paymentSystem,
+//                    text = model.paymentSystem,
+                    text = "",
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -70,7 +72,7 @@ fun FilterByCardItem(
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text(
-                    text = model.cardNumber.cardNumberFormatter(),
+                    text = model.number.cardNumberFormatter(),
                     fontSize = 16.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -87,25 +89,4 @@ fun FilterByCardItem(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewFilterByCardItem() {
-    FilterByCardItem(
-        secondaryColor = Color.Black,
-        quaternaryColor = Color.Red,
-        fiverdColor = Color.Green,
-        model = CardModel(
-            id = 1,
-            bankName = "Agrobank",
-            paymentSystem = "Humo",
-            cardNumber = "9860030160619356",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            expiryDate = "09/25",
-            cvv = "",
-        ),
-        isSelected = true,
-        onClick = {  }
-    )
 }

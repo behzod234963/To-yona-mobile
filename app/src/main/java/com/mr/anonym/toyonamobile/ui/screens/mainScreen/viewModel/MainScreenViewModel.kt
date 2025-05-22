@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.presentation.state.ListState
@@ -32,7 +33,7 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun getAllParty() = remoteUseCases.getAllPartyUseCase.execute()
+    fun getAllParty() = remoteUseCases.getAllPartyUseCase.execute().cachedIn(viewModelScope)
     fun searchUser(searchText: String) = viewModelScope.launch {
         remoteUseCases.searchUserUseCase.execute(searchText).collect {
             _users.value = it

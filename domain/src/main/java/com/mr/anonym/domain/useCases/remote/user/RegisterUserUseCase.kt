@@ -16,9 +16,7 @@ class RegisterUserUseCase(private val userRepository: UserRepository) {
                 }
             }else{
                 emit(
-                    UserModelItem(
-                        id = -1
-                    )
+                    UserModelItem()
                 )
             }
         }catch (e: Exception){

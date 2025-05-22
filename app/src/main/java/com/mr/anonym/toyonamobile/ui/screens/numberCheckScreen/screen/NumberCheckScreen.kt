@@ -1,7 +1,9 @@
 package com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,6 +47,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.CardModel
@@ -54,9 +60,12 @@ import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.viewModel.NumberCheckViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun NumberCheckScreen(
     arguments: Arguments,
@@ -102,12 +111,19 @@ fun NumberCheckScreen(
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
 
     val addCardProcess = sharedPreferences.addCardProcessState()
-    val cardID = dataStore.getCardID().collectAsState(-1)
     val cardNumber = sharedPreferences.getCardNumber()
-    val cardHolder = dataStore.getCardHolder().collectAsState("")
+//    val cardHolder = dataStore.getCardHolder().collectAsState("")
     val expiryDate = dataStore.getExpiryDate().collectAsState("")
+    val cardID = dataStore.getCardID().collectAsState(-1)
 
-    val id = sharedPreferences.getID()
+    val isLoading = remember { mutableStateOf(false) }
+
+    val isCardAdded = viewModel.isCardAdded
+    val isCardUpdated = viewModel.isCardUpdated
+
+    val loadingAnimation = rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+    )
 
     LaunchedEffect(isRunning.value, timeLeft.intValue) {
         while (isRunning.value && timeLeft.intValue > 0) {
@@ -124,51 +140,208 @@ fun NumberCheckScreen(
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
+        if (!isLoading.value) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.3f)
-                    .padding(containerPadding.intValue.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(paddingValues),
             ) {
-                Text(
-                    text = stringResource(R.string.log_in),
-                    color = secondaryColor,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = stringResource(
-                        R.string.enter_code_below,
-                        arguments.number.phoneNumberTransformation()
-                    ),
-                    color = secondaryColor,
-                    fontSize = 16.sp,
-                )
-                Spacer(Modifier.height(10.dp))
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.35f)
-            ) {
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.3f)
+                        .padding(containerPadding.intValue.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    OTPField(
-                        secondaryColor = secondaryColor,
-                        value = otpValue.value,
-                        onSend = {
+                    Text(
+                        text = stringResource(R.string.log_in),
+                        color = secondaryColor,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = stringResource(
+                            R.string.enter_code_below,
+                            arguments.number.phoneNumberTransformation()
+                        ),
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                }
+//            OTP field
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.35f)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        OTPField(
+                            secondaryColor = secondaryColor,
+                            value = otpValue.value,
+                            onValueChange = {
+                                if (it.length <= 5 && it.isDigitsOnly()) {
+                                    otpValue.value = it
+                                }
+                            },
+                            onSend = {
+                                if (
+                                    otpValue.value.isNotEmpty() &&
+                                    otpValue.value.isNotBlank() &&
+                                    otpValue.value == correctValue.value
+                                ) {
+                                    when {
+                                        addCardProcess -> {
+                                            if (cardID.value == -1) {
+                                                isLoading.value = true
+                                                viewModel.addCard(
+                                                    cardModel = CardModel(
+                                                        number = cardNumber ?: "",
+                                                        date = expiryDate.value
+                                                    )
+                                                )
+
+                                            } else {
+                                                isLoading.value = true
+                                                viewModel.updateCard(
+                                                    cardID = cardID.value,
+                                                    cardModel = CardModel(
+                                                        number = cardNumber?:"",
+                                                        date = expiryDate.value
+                                                    )
+                                                )
+                                            }
+                                        }
+                                        isPasswordForgotten.value -> {
+//                                            val result = arguments.number.substring(4..arguments.number.length - 1)
+//                                            sharedPreferences.savePhoneNumber(result)
+//                                            navController.navigate(ScreensRouter.RegistrationScreen.route) {
+//                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+//                                                    inclusive = true
+//                                                }
+//                                            }
+                                        }
+                                        isPinForgotten.value -> {
+                                            sharedPreferences.savePhoneNumber(arguments.number)
+                                            sharedPreferences.saveNewPinState(true)
+                                            navController.navigate(ScreensRouter.NewPinScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                        else -> {
+
+                                            sharedPreferences.saveIsLoggedIn(true)
+                                            sharedPreferences.saveIsProfileSettingsState(true)
+                                            viewModel.getUserByID()
+                                            navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.please_complete_the_process)
+                                        )
+                                    }
+                                }
+                            }
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(
+                            onClick = { navController.navigateUp() }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.change_number),
+                                color = Color.Blue,
+                                fontSize = 16.sp
+                            )
+                        }
+                        IconButton(
+                            onClick = { navController.navigateUp() }
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(20.dp),
+                                imageVector = Icons.Default.Edit,
+                                tint = secondaryColor,
+                                contentDescription = "change number"
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.send_again),
+                            color = secondaryColor,
+                            fontSize = 16.sp
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        if (!isRunning.value && timeLeft.intValue == 0) {
+                            IconButton(
+                                onClick = {
+                                    isRunning.value = true
+                                    timeLeft.intValue = 40
+                                    otpValue.value = ""
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(top = 2.dp),
+                                    imageVector = Icons.Default.Refresh,
+                                    tint = secondaryColor,
+                                    contentDescription = "null"
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = timeLeft.intValue.toString(),
+                                color = secondaryColor,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.85f)
+                        .padding(horizontal = 15.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = quaternaryColor
+                        ),
+                        shape = RoundedCornerShape(10.dp),
+                        onClick = {
                             if (
                                 otpValue.value.isNotEmpty() &&
                                 otpValue.value.isNotBlank() &&
@@ -177,48 +350,34 @@ fun NumberCheckScreen(
                                 when {
                                     addCardProcess -> {
                                         if (cardID.value == -1) {
-                                            viewModel.insertCard(
-                                                CardModel(
-                                                    cardNumber = cardNumber ?: "",
-                                                    cardHolder = cardHolder.value,
-                                                    expiryDate = expiryDate.value,
+                                            isLoading.value = true
+                                            viewModel.addCard(
+                                                cardModel = CardModel(
+                                                    number = cardNumber ?: "",
+                                                    date = expiryDate.value
                                                 )
                                             )
-                                            sharedPreferences.addCardProcess(false)
-                                            navController.navigate(ScreensRouter.WalletScreen.route) {
-                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                    inclusive = true
-                                                }
-                                            }
+
                                         } else {
-                                            viewModel.insertCard(
-                                                CardModel(
-                                                    id = cardID.value,
-                                                    cardNumber = cardNumber ?: "",
-                                                    cardHolder = cardHolder.value,
-                                                    expiryDate = expiryDate.value,
+                                            isLoading.value = true
+                                            viewModel.updateCard(
+                                                cardID = cardID.value,
+                                                cardModel = CardModel(
+                                                    number = cardNumber?:"",
+                                                    date = expiryDate.value
                                                 )
                                             )
-                                            sharedPreferences.addCardProcess(false)
-                                            navController.navigate(ScreensRouter.WalletScreen.route) {
-                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                    inclusive = true
-                                                }
-                                            }
                                         }
                                     }
-
                                     isPasswordForgotten.value -> {
-                                        val result =
-                                            arguments.number.substring(4..arguments.number.length - 1)
-                                        sharedPreferences.savePhoneNumber(result)
-                                        navController.navigate(ScreensRouter.RegistrationScreen.route) {
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                inclusive = true
-                                            }
-                                        }
+//                                            val result = arguments.number.substring(4..arguments.number.length - 1)
+//                                            sharedPreferences.savePhoneNumber(result)
+//                                            navController.navigate(ScreensRouter.RegistrationScreen.route) {
+//                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+//                                                    inclusive = true
+//                                                }
+//                                            }
                                     }
-
                                     isPinForgotten.value -> {
                                         sharedPreferences.savePhoneNumber(arguments.number)
                                         sharedPreferences.saveNewPinState(true)
@@ -228,11 +387,11 @@ fun NumberCheckScreen(
                                             }
                                         }
                                     }
-
                                     else -> {
+
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)
-                                        viewModel.getUserByID(id)
+                                        viewModel.getUserByID()
                                         navController.navigate(ScreensRouter.ProfileScreen.route) {
                                             popUpTo(ScreensRouter.NumberCheckScreen.route) {
                                                 inclusive = true
@@ -249,169 +408,75 @@ fun NumberCheckScreen(
                             }
                         }
                     ) {
-                        if (it.length <= 5 && it.isDigitsOnly()) {
-                            otpValue.value = it
-                        }
-                    }
-                }
-                Spacer(Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    TextButton(
-                        onClick = { navController.navigateUp() }
-                    ) {
                         Text(
-                            text = stringResource(R.string.change_number),
-                            color = Color.Blue,
-                            fontSize = 16.sp
-                        )
-                    }
-                    IconButton(
-                        onClick = { navController.navigateUp() }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(20.dp),
-                            imageVector = Icons.Default.Edit,
-                            tint = secondaryColor,
-                            contentDescription = "change number"
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.send_again),
-                        color = secondaryColor,
-                        fontSize = 16.sp
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    if (!isRunning.value && timeLeft.intValue == 0) {
-                        IconButton(
-                            onClick = {
-                                isRunning.value = true
-                                timeLeft.intValue = 40
-                                otpValue.value = ""
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .padding(top = 2.dp),
-                                imageVector = Icons.Default.Refresh,
-                                tint = secondaryColor,
-                                contentDescription = "null"
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = timeLeft.intValue.toString(),
-                            color = secondaryColor,
-                            fontSize = 16.sp
+                            text = stringResource(R.string.Enter),
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
             }
-            Column(
+        } else {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.85f)
-                    .padding(horizontal = 15.dp),
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                Button(
+                LottieAnimation(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = quaternaryColor
-                    ),
-                    shape = RoundedCornerShape(10.dp),
-                    onClick = {
-                        if (
-                            otpValue.value.isNotEmpty() &&
-                            otpValue.value.isNotBlank() &&
-                            otpValue.value == correctValue.value
-                        ) {
-                            when {
-                                addCardProcess -> {
-                                    if (cardID.value == -1) {
-                                        viewModel.insertCard(
-                                            CardModel(
-                                                cardNumber = cardNumber ?: "",
-                                                cardHolder = cardHolder.value,
-                                                expiryDate = expiryDate.value,
-                                            )
-                                        )
-                                        sharedPreferences.addCardProcess(false)
+                        .size(150.dp),
+                    composition = loadingAnimation.value,
+                    restartOnPlay = true,
+                    iterations = LottieConstants.IterateForever
+                )
+                when {
+                    addCardProcess -> {
+                        when{
+                            isCardUpdated.value->{
+                                coroutineScope.launch {
+                                    dataStore.saveCardID(-1)
+                                    dataStore.saveExpiryDate("")
+                                    sharedPreferences.saveCardNumber("")
+                                    sharedPreferences.addCardProcess(false)
+                                    delay(1500)
+                                    isLoading.value = false
+                                    withContext(Dispatchers.Main){
                                         navController.navigate(ScreensRouter.WalletScreen.route) {
                                             popUpTo(ScreensRouter.NumberCheckScreen.route) {
                                                 inclusive = true
                                             }
-                                        }
-                                    } else {
-                                        viewModel.insertCard(
-                                            CardModel(
-                                                id = cardID.value,
-                                                cardNumber = cardNumber ?: "",
-                                                cardHolder = cardHolder.value,
-                                                expiryDate = expiryDate.value,
-                                            )
-                                        )
-                                        sharedPreferences.addCardProcess(false)
-                                        navController.navigate(ScreensRouter.WalletScreen.route) {
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                inclusive = true
-                                            }
-                                        }
-                                    }
-                                }
-
-                                isPasswordForgotten.value -> {
-                                    val result = arguments.number.substring(4..arguments.number.length - 1)
-                                    sharedPreferences.savePhoneNumber(result)
-                                    navController.navigate(ScreensRouter.RegistrationScreen.route) {
-                                        popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                            inclusive = true
-                                        }
-                                    }
-                                }
-
-                                else -> {
-                                    sharedPreferences.saveIsLoggedIn(true)
-                                    sharedPreferences.saveIsProfileSettingsState(true)
-                                    viewModel.getUserByID(id)
-                                    navController.navigate(ScreensRouter.ProfileScreen.route) {
-                                        popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                            inclusive = true
                                         }
                                     }
                                 }
                             }
-                        } else {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar(
-                                    message = context.getString(R.string.please_complete_the_process)
-                                )
+                            isCardAdded.value->{
+                                coroutineScope.launch {
+                                    dataStore.saveCardID(-1)
+                                    dataStore.saveExpiryDate("")
+                                    sharedPreferences.saveCardNumber("")
+                                    sharedPreferences.addCardProcess(false)
+                                    delay(1500)
+                                    isLoading.value = false
+                                    withContext(Dispatchers.Main){
+                                        navController.navigate(ScreensRouter.WalletScreen.route) {
+                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else-> {
+                                coroutineScope.launch {
+                                    delay(500)
+                                    snackbarHostState.showSnackbar(
+                                        message = context.getString(R.string.unknown_error)
+                                    )
+                                }
                             }
                         }
                     }
-                ) {
-                    Text(
-                        text = stringResource(R.string.Enter),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
                 }
             }
         }

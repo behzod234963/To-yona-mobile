@@ -22,14 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.FriendsModel
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 
 @Composable
 fun ContactsItem(
     secondaryColor: Color,
     sevenrdColor: Color,
-    friendsModel: FriendsModel,
+    userModel: UserModelItem,
     onContactClick:()-> Unit
 ) {
     Card (
@@ -60,14 +60,14 @@ fun ContactsItem(
             Spacer(Modifier.width(5.dp))
             Column {
                 Text(
-                    text = "${friendsModel.name} ${friendsModel.surname}",
+                    text = "${userModel.username} ${userModel.surname}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
-                    text = friendsModel.phone.phoneNumberTransformation(),
+                    text = userModel.phonenumber.phoneNumberTransformation(),
                     color = secondaryColor,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold

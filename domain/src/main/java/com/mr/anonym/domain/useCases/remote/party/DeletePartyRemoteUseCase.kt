@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.lang.Exception
 
-class DeleteEventRemoteUseCase(private val repository: PartyRepository) {
+class DeletePartyRemoteUseCase(private val repository: PartyRepository) {
     fun execute(id: Int): Flow<String> = flow {
         try {
-            val response = repository.deleteEvent(id)
+            val response = repository.deleteParty(id)
             if (response.isSuccessful){
                 response.body()?.let {
                     emit(it)

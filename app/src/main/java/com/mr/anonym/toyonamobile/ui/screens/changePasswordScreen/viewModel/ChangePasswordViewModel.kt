@@ -19,7 +19,7 @@ class ChangePasswordViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _id = mutableIntStateOf( sharedPrefs.getID() )
-    private val _user = mutableStateOf(UserModelItem() )
+    private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
     init {
         getUserByID()

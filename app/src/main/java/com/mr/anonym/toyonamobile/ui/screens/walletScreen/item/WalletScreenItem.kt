@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -62,25 +61,18 @@ fun WalletScreenItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Text(
-                        text = model.cardNumber,
+                        text = model.number,
                         color = secondaryColor,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = model.expiryDate,
+                        text = model.date,
                         color = secondaryColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                Spacer(Modifier.height(15.dp))
-                Text(
-                    text = model.cardHolder,
-                    color = secondaryColor,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
             }
             Column (
                 modifier = Modifier
@@ -130,12 +122,9 @@ private fun PreviewWalletScreenItem() {
         brush = Brush.linearGradient(colors = listOf(whiteGreen,darkerGreen,Color.Green)),
         model = CardModel(
             id = 1,
-            cardNumber = "9860 0301 6061 9356",
-            cardHolder = "BEKHZOD KHUDAYBERGENOV",
-            expiryDate = "08/25",
-            cvv = "762",
+            number = "9860 0301 6061 9356",
+            date = "08/25",
         ),
-        onChangeClick = {  },
-        onDeleteClick = {  },
-    )
+        onChangeClick = {  }
+    ) { }
 }

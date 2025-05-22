@@ -2,19 +2,19 @@ package com.mr.anonym.toyonamobile.di.module
 
 import android.content.Context
 import androidx.room.Room
-import com.mr.anonym.data.implementations.local.CardRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
+import com.mr.anonym.data.implementations.remote.CardRepositoryImpl
 import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.data.instance.local.room.CardDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
+import com.mr.anonym.data.instance.remote.CardApiService
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.data.instance.remote.UserApiService
-import com.mr.anonym.domain.repository.local.CardRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
+import com.mr.anonym.domain.repository.remote.CardRepository
 import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.toyonamobile.presentation.constants.BASE_URL
@@ -50,17 +50,8 @@ class DataModule {
 
     @Provides
     @Singleton
-    fun provideCardDAO(roomInstance: RoomInstance): CardDAO = roomInstance.cardDAO
-
-    @Provides
-    @Singleton
     fun provideNotificationRepository(notificationsDAO: NotificationsDAO): NotificationsRepository =
         NotificationsRepositoryImpl(notificationsDAO)
-
-    @Provides
-    @Singleton
-    fun provideCardRepository(cardDAO: CardDAO): CardRepository =
-        CardRepositoryImpl(cardDAO)
 
     @Provides
     @Singleton
@@ -102,9 +93,17 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provieCardApi(retrofit: Retrofit): CardApiService = retrofit.create(CardApiService::class.java)
+
+    @Provides
+    @Singleton
     fun provideUserRepository(api: UserApiService): UserRepository = UserRepositoryImpl(api)
 
     @Provides
     @Singleton
     fun providePartyRepository(api: PartyApiService): PartyRepository = PartyRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideCardRepository(api: CardApiService): CardRepository = CardRepositoryImpl(api)
 }

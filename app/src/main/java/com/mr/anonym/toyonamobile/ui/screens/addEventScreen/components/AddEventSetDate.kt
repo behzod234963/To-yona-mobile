@@ -21,7 +21,7 @@ import com.mr.anonym.toyonamobile.R
 fun AddEventSetDate(
     showDialog: Boolean,
     onDismissRequest:(Boolean)-> Unit,
-    confirmButton:(startDate:Long?, endDate: Long?, Boolean )-> Unit,
+    confirmButton:(startDate:Long?, endDate: Long? )-> Unit,
     dismissButton:(Boolean)-> Unit
 ) {
 
@@ -48,7 +48,7 @@ fun AddEventSetDate(
                         val selectedStartDateMillis = dateRangePickerState.selectedStartDateMillis
                         val selectedEndDateMillis = dateRangePickerState.selectedEndDateMillis
 
-                        confirmButton(selectedStartDateMillis,selectedEndDateMillis?:0L,true)
+                        confirmButton(selectedStartDateMillis,selectedEndDateMillis?:0L)
                     }
                 ) {
                     Text( text = "Ok" )

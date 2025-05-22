@@ -101,7 +101,7 @@ fun FilterItem(
                                 fiverdColor = fiverdColor,
                                 model = model,
                                 isSelected = isSelected == index,
-                                onClick = { onCardClick( model.cardNumber,index ) }
+                                onClick = { onCardClick( model.number,index ) }
                             )
                         }
                     }
@@ -143,9 +143,7 @@ private fun PreviewFilterItem() {
         selectedCard = "9860030160619356",
         cards = listOf(
             CardModel(
-                bankName = "Agrobank",
-                paymentSystem = "Humo",
-                cardNumber = "9860030160619356"
+                number = "9860030160619356"
             )
         )
     )

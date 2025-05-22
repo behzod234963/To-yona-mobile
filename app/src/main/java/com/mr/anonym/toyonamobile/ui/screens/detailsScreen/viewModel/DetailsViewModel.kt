@@ -28,7 +28,7 @@ class DetailsViewModel @Inject constructor(
 //    private val id = mutableIntStateOf( sharedPrefs.getID() )
 //    private val _sender = mutableStateOf(UserModelItem() )
 //    val sender: State<UserModelItem> = _sender
-    private val _user = mutableStateOf(UserModelItem() )
+    private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
     private val _cards = mutableStateOf(ListState().cards )
     val cards: State<List<CardModel>> = _cards
@@ -43,7 +43,6 @@ class DetailsViewModel @Inject constructor(
                 getUserByID(userID)
             }
         }
-        getCards()
     }
 //    fun getUser() = viewModelScope.launch {
 //        remoteUseCases.getUserByIdUseCase.execute(id.intValue).collect {
@@ -53,15 +52,6 @@ class DetailsViewModel @Inject constructor(
     fun getUserByID(id: Int) = viewModelScope.launch {
         remoteUseCases.getUserByIdUseCase.execute(id).collect {
             _user.value = it
-        }
-    }
-    fun getCards() = viewModelScope.launch {
-        localUseCases.getCardsUseCase().collect {
-            _cards.value = it
-            if (it.isNotEmpty()){
-                _senderCard.value = it[0].cardNumber
-                _senderName.value = it[0].cardHolder
-            }
         }
     }
     fun changeSenderCard(card: String){

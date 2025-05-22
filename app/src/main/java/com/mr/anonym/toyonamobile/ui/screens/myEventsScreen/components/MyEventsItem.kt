@@ -28,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.PartysItem
-import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
@@ -64,7 +63,7 @@ fun MyEventsItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = partyModel.type?:"",
+                    text = partyModel.name,
                     fontSize = 18.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold
@@ -92,7 +91,7 @@ fun MyEventsItem(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
                         fiverdColor = fiverdColor,
-                        isChecked = partyModel.status?:true,
+                        isChecked = partyModel.status,
                         onCheckedChange = {
                             onCheckedChange(it)
                         }
@@ -112,7 +111,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (partyModel.status?:true)
+                    text = if (partyModel.status)
                         stringResource(R.string.is_on)
                     else
                         stringResource(R.string.is_off),
@@ -135,7 +134,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = partyModel.type?:"",
+                    text = partyModel.type,
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -179,29 +178,29 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f),
-                    text = stringResource(R.string.card_holder_name),
-                    fontSize = 16.sp,
-                    color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = partyModel.cardNumber?:"",
-                    fontSize = 16.sp,
-                    color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.End
-                )
-            }
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 10.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                Text(
+//                    modifier = Modifier
+//                        .fillMaxWidth(0.5f),
+//                    text = stringResource(R.string.card_holder_name),
+//                    fontSize = 16.sp,
+//                    color = secondaryColor,
+//                    fontWeight = FontWeight.SemiBold
+//                )
+//                Text(
+//                    text = partyModel.cardNumber,
+//                    fontSize = 16.sp,
+//                    color = secondaryColor,
+//                    fontWeight = FontWeight.SemiBold,
+//                    textAlign = TextAlign.End
+//                )
+//            }
             Spacer(Modifier.height(5.dp))
             HorizontalDivider()
             Spacer(Modifier.height(10.dp))
@@ -221,7 +220,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = partyModel.cardNumber?:"".cardNumberFormatter(),
+                    text = partyModel.cardNumber.cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
@@ -246,15 +245,14 @@ private fun PreviewMyEventsItem() {
         partyModel = PartysItem(
             id = 1,
             userId = 1,
-            name = "",
+            userName = "Behzod",
+            name = "Behzod tuvilg'an kun",
             type = "TODO()",
             address = "TODO()",
             cardNumber = "TODO()",
             startTime = "TODO()",
             endTime = "TODO()",
-            status = true,
-            createdAt = "TODO()",
-            user = UserModelItem()
+            createdAt = "TODO()"
         )
     ) { }
 }

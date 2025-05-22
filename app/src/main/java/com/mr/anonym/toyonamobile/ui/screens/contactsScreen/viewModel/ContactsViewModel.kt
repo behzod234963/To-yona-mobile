@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mr.anonym.domain.model.FriendsModel
+import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.presentation.state.ListState
 import com.mr.anonym.toyonamobile.presentation.utils.getContacts
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +21,8 @@ class ContactsViewModel @Inject constructor(): ViewModel() {
     private val _isRefresh = MutableStateFlow(false)
     val isRefresh = _isRefresh.asStateFlow()
 
-    private val _contacts = mutableStateOf(ListState().contacts)
-    val contacts: State<List<FriendsModel>> = _contacts
+    private val _contacts = mutableStateOf(ListState().users)
+    val contacts: State<List<UserModelItem>> = _contacts
 
     fun getPhoneNumbers(context: Context,isPermissionGranted: Boolean) = viewModelScope.launch {
         if (isPermissionGranted){

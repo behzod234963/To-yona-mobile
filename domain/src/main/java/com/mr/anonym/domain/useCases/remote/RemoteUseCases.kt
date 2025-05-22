@@ -1,9 +1,17 @@
 package com.mr.anonym.domain.useCases.remote
 
-import com.mr.anonym.domain.useCases.remote.party.AddEventUseCase
-import com.mr.anonym.domain.useCases.remote.party.DeleteEventRemoteUseCase
+import com.mr.anonym.domain.useCases.remote.card.AddCardUseCase
+import com.mr.anonym.domain.useCases.remote.card.DeleteCardUseCase
+import com.mr.anonym.domain.useCases.remote.card.GetAllCardUseCase
+import com.mr.anonym.domain.useCases.remote.card.GetCardByIdUseCase
+import com.mr.anonym.domain.useCases.remote.card.GetUserCardsUseCase
+import com.mr.anonym.domain.useCases.remote.card.UpdateCardUseCase
+import com.mr.anonym.domain.useCases.remote.party.AddPartyUseCase
+import com.mr.anonym.domain.useCases.remote.party.DeletePartyRemoteUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
+import com.mr.anonym.domain.useCases.remote.party.GetUserPartiesUseCase
+import com.mr.anonym.domain.useCases.remote.party.UpdatePartyUseCase
 import com.mr.anonym.domain.useCases.remote.user.GetUserByIdUseCase
 import com.mr.anonym.domain.useCases.remote.user.LoginUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.RegisterUserUseCase
@@ -18,8 +26,17 @@ data class RemoteUseCases(
     val updateUserUseCase: UpdateUserUseCase,
     val searchUserUseCase: SearchUserUseCase,
 //    Party use cases
-    val addEventUseCase: AddEventUseCase,
+    val addPartyUseCase: AddPartyUseCase,
+    val updatePartyUseCase: UpdatePartyUseCase,
     val getAllPartyUseCase: GetAllPartyUseCase,
     val getPartyByIdUseCase: GetPartyByIdUseCase,
-    val deleteEventUseCase: DeleteEventRemoteUseCase
+    val deletePartyUseCase: DeletePartyRemoteUseCase,
+    val getUserPartiesUseCase: GetUserPartiesUseCase,
+//    Card use cases
+    val addCardUseCase: AddCardUseCase,
+    val getAllCardUseCase: GetAllCardUseCase,
+    val getCardByIdUseCase: GetCardByIdUseCase,
+    val updateCardUseCase: UpdateCardUseCase,
+    val deleteCardUseCase: DeleteCardUseCase,
+    val getUserCardsUseCase: GetUserCardsUseCase,
 )

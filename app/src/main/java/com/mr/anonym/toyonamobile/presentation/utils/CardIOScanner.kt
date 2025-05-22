@@ -18,35 +18,39 @@ fun CardScannerIO(
     onSuccess: (CardModel) -> Unit
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
     val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {result ->
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             Log.d("UtilsLogging", "AddCardScreen: $result result is worked!")
 //            if (result.resultCode == Activity.RESULT_OK){
-                val scanResult = result.data?.getParcelableExtra<CreditCard>(CardIOActivity.EXTRA_SCAN_RESULT)
-                if (scanResult != null){
-                    onSuccess(
-                        CardModel(
-                            cardNumber = scanResult.formattedCardNumber,
-                            cardHolder = scanResult.cardholderName ?: "",
-                            expiryDate = "${scanResult.expiryMonth} ${scanResult.expiryYear}",
-                        )
+            val scanResult =
+                result.data?.getParcelableExtra<CreditCard>(CardIOActivity.EXTRA_SCAN_RESULT)
+            if (scanResult != null) {
+                onSuccess(
+                    CardModel(
+                        number = scanResult.formattedCardNumber,
+                        date = "${scanResult.expiryMonth} ${scanResult.expiryYear}",
                     )
-                }
+                )
+            }
 //            }
         }
     return launcher
 }
-fun startScanning(context: Context,launcher: ManagedActivityResultLauncher<Intent, ActivityResult>){
-    val intent = Intent(context,CardIOActivity::class.java).apply {
-        putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY,false)
-        putExtra(CardIOActivity.EXTRA_REQUIRE_CARDHOLDER_NAME,false)
-        putExtra(CardIOActivity.EXTRA_REQUIRE_CVV,false)
-        putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE,false)
-        putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY,false)
-        putExtra(CardIOActivity.EXTRA_USE_CARDIO_LOGO,false)
-        putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME,true)
-        putExtra(CardIOActivity.EXTRA_LANGUAGE_OR_LOCALE,true)
-        putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY,true)
-        putExtra(CardIOActivity.EXTRA_USE_PAYPAL_ACTIONBAR_ICON,false)
+
+fun startScanning(
+    context: Context,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
+) {
+    val intent = Intent(context, CardIOActivity::class.java).apply {
+        putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, true)
+        putExtra(CardIOActivity.EXTRA_REQUIRE_CARDHOLDER_NAME, false)
+        putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false)
+        putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false)
+        putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, false)
+        putExtra(CardIOActivity.EXTRA_USE_CARDIO_LOGO, false)
+        putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, true)
+        putExtra(CardIOActivity.EXTRA_LANGUAGE_OR_LOCALE, true)
+        putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY, true)
+        putExtra(CardIOActivity.EXTRA_USE_PAYPAL_ACTIONBAR_ICON, false)
     }
     launcher.launch(intent)
 }

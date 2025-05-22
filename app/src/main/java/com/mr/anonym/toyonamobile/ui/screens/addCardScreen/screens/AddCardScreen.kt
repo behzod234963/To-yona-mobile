@@ -42,7 +42,6 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.event.CardEvents
-import com.mr.anonym.toyonamobile.presentation.extensions.cardHolderChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
@@ -52,7 +51,6 @@ import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.AddCardTop
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.CardFields
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.viewModel.AddCardViewModel
 import kotlinx.coroutines.launch
-import java.util.Locale.getDefault
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -99,13 +97,12 @@ fun AddCardScreen(
     val cardValueError = rememberSaveable { mutableStateOf(false) }
     val expiryDateValue = viewModel.expiryDate
     val cardDateError = rememberSaveable { mutableStateOf(false) }
-    val cardHolderValue = viewModel.cardHolder
-    val cardHolderValueError = rememberSaveable { mutableStateOf( false ) }
 
-    val phoneNumber = sharedPreferences.getPhoneNumber()
+    val user = viewModel.user
 
     val launcher = CardScannerIO(context) { card ->
-        viewModel.cardEvents(CardEvents.ChangeCardNumber(card.cardNumber))
+        viewModel.cardEvents(CardEvents.ChangeCardNumber(card.number))
+        viewModel.cardEvents(CardEvents.ChangeExpiryDate(card.date))
     }
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -129,6 +126,7 @@ fun AddCardScreen(
                 .background(sevenrdColor)
                 .padding(paddingValues)
         ){
+//            Add card field
             CardFields(
                 secondaryColor = secondaryColor,
                 cardValue = cardNumberValue.value,
@@ -151,15 +149,6 @@ fun AddCardScreen(
                     viewModel.cardEvents(CardEvents.ChangeExpiryDate(it))
                 },
                 cardDateError = cardDateError.value,
-                cardHolderValue = cardHolderValue.value,
-                onCardHolderValueChange = {
-                    viewModel.cardEvents(CardEvents.ChangeCardHolder(it.uppercase(getDefault())))
-                    cardHolderValueError.value = !it.cardHolderChecker()
-                },
-                cardHolderValueError = cardHolderValueError.value,
-                cardHolderFieldTrailingIcon = {
-                    viewModel.cardEvents(CardEvents.ChangeCardHolder(""))
-                },
             )
             Column(
                 modifier = Modifier
@@ -168,6 +157,7 @@ fun AddCardScreen(
                     .padding(horizontal = 16.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.Bottom,
             ) {
+//                Add card
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -185,10 +175,7 @@ fun AddCardScreen(
                             !cardValueError.value &&
                             expiryDateValue.value.isNotEmpty() &&
                             expiryDateValue.value.isNotBlank() &&
-                            !cardDateError.value &&
-                            cardHolderValue.value.isNotEmpty() &&
-                            cardHolderValue.value.isNotBlank() &&
-                            !cardHolderValueError.value
+                            !cardDateError.value
                         ){
                             val first = expiryDateValue.value.take(2)
                             val last = expiryDateValue.value.takeLast(2)
@@ -198,10 +185,9 @@ fun AddCardScreen(
                                 sharedPreferences.saveCardNumber(formatted)
                                 coroutineScope.launch {
                                     dataStore.saveCardID(-1)
-                                    dataStore.saveCardHolder(cardHolderValue.value)
                                     dataStore.saveExpiryDate("$first/$last")
                                 }
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber}"){
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/+998${user.value.phonenumber}"){
                                     popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
                                 }
                             }else{
@@ -209,10 +195,9 @@ fun AddCardScreen(
                                 sharedPreferences.saveCardNumber(formatted)
                                 coroutineScope.launch {
                                     dataStore.saveCardID(arguments.cardId)
-                                    dataStore.saveCardHolder(cardHolderValue.value)
                                     dataStore.saveExpiryDate("$first/$last")
                                 }
-                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${phoneNumber}"){
+                                navController.navigate(ScreensRouter.NumberCheckScreen.route + "/${user.value.phonenumber}"){
                                     popUpTo(ScreensRouter.AddCardScreen.route){ inclusive = true }
                                 }
                             }
@@ -233,7 +218,7 @@ fun AddCardScreen(
                     ){
                         Icon(
                             painter = painterResource(R.drawable.ic_add_circle),
-                            tint = primaryColor,
+                            tint = Color.White,
                             contentDescription = ""
                         )
                         Spacer(Modifier.width(10.dp))

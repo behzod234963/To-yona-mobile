@@ -26,6 +26,7 @@ fun AddEventOtherField(
     secondaryColor: Color,
     tertiaryColor: Color,
     isEventError: Boolean,
+    isTitle: Boolean,
     value:String,
     onValueChange:(String)->Unit,
     isValueConfirmed: Boolean,
@@ -38,7 +39,7 @@ fun AddEventOtherField(
         onValueChange = { onValueChange(it) },
         modifier = Modifier
             .fillMaxWidth(),
-        enabled = !isValueConfirmed,
+        enabled = if (isTitle) true else !isValueConfirmed,
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
@@ -46,32 +47,34 @@ fun AddEventOtherField(
         ),
         label = {
             Text(
-                stringResource(R.string.enter_the_event),
+                text = if ( isTitle ) stringResource(R.string.title) else stringResource(R.string.enter_the_event),
                 color = tertiaryColor,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold
             )
         },
         trailingIcon = {
-            if (isValueConfirmed){
-                IconButton(
-                    onClick = { onEditClick() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        tint = secondaryColor,
-                        contentDescription = ""
-                    )
-                }
-            }else{
-                IconButton(
-                    onClick = { onConfirmClick() }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        tint = secondaryColor,
-                        contentDescription = ""
-                    )
+            if ( !isTitle ){
+                if (isValueConfirmed){
+                    IconButton(
+                        onClick = { onEditClick() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                    }
+                }else{
+                    IconButton(
+                        onClick = { onConfirmClick() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            tint = secondaryColor,
+                            contentDescription = ""
+                        )
+                    }
                 }
             }
         },

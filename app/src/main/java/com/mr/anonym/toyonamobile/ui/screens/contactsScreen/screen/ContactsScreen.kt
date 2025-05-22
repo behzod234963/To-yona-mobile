@@ -182,7 +182,7 @@ fun ContactsScreen(
                         ContactsItem(
                             secondaryColor = secondaryColor,
                             sevenrdColor = sevenrdColor,
-                            friendsModel = model,
+                            userModel = model,
                             onContactClick = { navController.navigate(ScreensRouter.DetailsScreen.route) }
                         )
                     }

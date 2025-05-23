@@ -30,7 +30,7 @@
     <string name="Later">Keyinroq</string>
     <string name="allow_fingerprint">Barmoq izi orqali kirish yoqilsinmi?</string>
     <string name="main">Asosiy</string>
-    <string name="contacts">Kontaktlar</string>
+    <string name="friends">Do\'stlar</string>
     <string name="monitoring">Monitoring</string>
     <string name="wallet">Hamyon</string>
     <string name="settings">Sozlamalar</string>
@@ -149,7 +149,7 @@
     <string name="empty">Bo\'sh</string>
     <string name="filter">Filter</string>
     <string name="by_card">Kartalar bo\'yicha</string>
-    <string name="search_from_contacts">Kontaklar orasidan izlash</string>
+    <string name="search_from_contacts">Foydalanuvchilar orasidan izlash</string>
     <string name="refresh">Yangilash</string>
     <string name="give_permission">Ruxsat berish</string>
     <string name="to_give_permission_you_need_to_go_app_settings">Kontaktlarni ko\'rsatish uchun ilova sozlamalari orqali ruxsat berishingiz lozim </string>
@@ -160,4 +160,6 @@
     <string name="password_recovery">Parolni tiklash</string>
     <string name="title">Sarlavha</string>
     <string name="unknown_error">No\'malum xatolik!</string>
+    <string name="general_parties">Asosiy tadbirlar</string>
+    <string name="other_parties">Boshqa tadbirlar</string>
 </resources>

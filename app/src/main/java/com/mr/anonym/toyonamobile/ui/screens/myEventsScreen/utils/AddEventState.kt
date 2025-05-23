@@ -8,4 +8,6 @@ sealed class AddEventState(){
     data class ChangeStartDate(val startDate: String): AddEventState()
     data class ChangeEndDate(val endDate: String): AddEventState()
     data class ChangeCardNumber(val cardNumber: String): AddEventState()
+    data class ChangeTitle(val title: String): AddEventState()
+    data class ChangeOtherField(val fieldValue: String): AddEventState()
 }

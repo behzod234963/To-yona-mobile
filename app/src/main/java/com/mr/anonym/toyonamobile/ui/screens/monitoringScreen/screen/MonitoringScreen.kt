@@ -43,7 +43,9 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.Q)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "AutoboxingStateCreation",
+    "CoroutineCreationDuringComposition"
+)
 @Composable
 fun MonitoringScreen(
     navController: NavController
@@ -182,17 +184,17 @@ fun MonitoringScreen(
             MonitoringScrollableTabRow(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                selectedTabIndex = selectedTabIndex.value,
+                selectedTabIndex = selectedTabIndex.intValue,
                 tabs = months.values,
                 onClick = { index ->
-                    selectedTabIndex.value = index
+                    selectedTabIndex.intValue = index
                 },
                 content = {
                     LazyColumn(
                         modifier = Modifier
                             .padding(10.dp)
                     ) {
-                        when (selectedTabIndex.value) {
+                        when (selectedTabIndex.intValue) {
                             0 -> {
                                 items(monitoringList) { item ->
                                     MonitoringItem(

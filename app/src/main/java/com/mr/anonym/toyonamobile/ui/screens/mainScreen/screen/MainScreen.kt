@@ -6,10 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,6 +50,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenFAB
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenModalDrawerSheet
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenSearchField
+import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTabRow
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTopBar
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.item.MainScreenItem
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
@@ -134,8 +133,12 @@ fun MainScreen(
     )
 
     val user = viewModel.user
-    sharedPreferences.saveToken("${user.value.username}")
-    sharedPreferences.getToken()
+
+    val selectedTabIndex = remember { mutableIntStateOf( 0 ) }
+    val tabs = listOf(
+        stringResource(R.string.general_parties),
+        stringResource(R.string.other_parties)
+    )
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -146,7 +149,7 @@ fun MainScreen(
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
                 profileAvatar = profileAvatar,
-                onContactsClick = {
+                onFriendsClick = {
                     if (drawerState.isOpen) {
                         coroutineScope.launch {
                             drawerState.close()
@@ -229,111 +232,129 @@ fun MainScreen(
                     viewModel.changeIsRefreshState(false)
                 }
             }
-            Scaffold(
-                containerColor = primaryColor,
-                contentColor = primaryColor,
-                floatingActionButton = {
-                    MainScreenFAB(
-                        secondaryColor = secondaryColor,
-                        quaternaryColor = quaternaryColor,
-                        onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
-                    )
-                },
-                topBar = {
-                    MainScreenTopBar(
-                        primaryColor = primaryColor,
-                        secondaryColor = secondaryColor,
-                        title = stringResource(R.string.app_name),
-                        navigationIcon = profileAvatar,
-                        onActionsClick = {
-                            navController.navigate(ScreensRouter.NotificationsScreen.route)
-                        }
-                    ) {
-                        coroutineScope.launch {
-                            if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                Scaffold(
+                    containerColor = primaryColor,
+                    contentColor = primaryColor,
+                    floatingActionButton = {
+                        MainScreenFAB(
+                            secondaryColor = secondaryColor,
+                            quaternaryColor = quaternaryColor,
+                            onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
+                        )
+                    },
+                    topBar = {
+                        MainScreenTopBar(
+                            primaryColor = primaryColor,
+                            secondaryColor = secondaryColor,
+                            title = stringResource(R.string.app_name),
+                            navigationIcon = profileAvatar,
+                            onActionsClick = {
+                                navController.navigate(ScreensRouter.NotificationsScreen.route)
+                            }
+                        ) {
+                            coroutineScope.launch {
+                                if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                            }
                         }
                     }
-                }
-            ) { paddingValues ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    MainScreenSearchField(
+                ) { paddingValues ->
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp, vertical = 5.dp)
-                            .clickable { showContacts.value = true },
-                        primaryColor = primaryColor,
-                        secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
-                        value = searchValue.value,
-                        onValueChange = {
-                            showContacts.value = true
-                            if (it.isEmpty() || it.isBlank()) showContacts.value = false
-                            searchValue.value = it
-                        },
-                        onSearch = {
-                            viewModel.searchUser(searchValue.value)
-                        }
-                    )
-                    Spacer(Modifier.height(5.dp))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                            .fillMaxSize()
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        if (showContacts.value) {
-                            items(userList.value) { userModel ->
-                                MainScreenItem(
-                                    secondaryColor = secondaryColor,
-                                    tertiaryColor = tertiaryColor,
-                                    sevenrdColor = sevenrdColor,
-                                    smallFontSize = smallFontSize.intValue,
-                                    partyModel = partyModel.value,
-                                    userModel = userModel,
-                                    showContacts = showContacts.value,
-                                    onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${userModel.id}") }
-                                )
+                        MainScreenSearchField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp, vertical = 5.dp)
+                                .clickable { showContacts.value = true },
+                            primaryColor = primaryColor,
+                            secondaryColor = secondaryColor,
+                            tertiaryColor = tertiaryColor,
+                            value = searchValue.value,
+                            onValueChange = {
+                                showContacts.value = true
+                                if (it.isEmpty() || it.isBlank()) showContacts.value = false
+                                searchValue.value = it
+                            },
+                            onSearch = {
+                                viewModel.searchUser(searchValue.value)
                             }
-                        } else {
-                            items(
-                                count = partyList.itemCount,
-                                key = partyList.itemKey { it.toString() }
-                            ) { index ->
-                                val model = partyList[index]
-                                if (model != null) {
-                                    partyModel.value = model
+                        )
+                        if (showContacts.value) {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                items(userList.value) { userModel ->
                                     MainScreenItem(
                                         secondaryColor = secondaryColor,
                                         tertiaryColor = tertiaryColor,
                                         sevenrdColor = sevenrdColor,
                                         smallFontSize = smallFontSize.intValue,
-                                        partyModel = model,
-                                        userModel = user.value,
+                                        partyModel = partyModel.value,
+                                        userModel = userModel,
                                         showContacts = showContacts.value,
-                                        onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.userId}") }
+                                        onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${userModel.id}") }
                                     )
                                 }
                             }
-                            item {
-                                if (partyList.loadState.append is LoadState.Loading){
-                                    LottieAnimation(
+                        } else {
+                            MainScreenTabRow(
+                                secondaryColor = secondaryColor,
+                                tabs = tabs,
+                                content = { contentItem ->
+                                    selectedTabIndex.intValue = contentItem
+                                    LazyColumn (
                                         modifier = Modifier
-                                            .size(150.dp),
-                                        composition = loadingAnimation.value,
-                                        restartOnPlay = true,
-                                        iterations = LottieConstants.IterateForever
-                                    )
+                                            .fillMaxSize()
+                                    ){
+                                        when(selectedTabIndex.intValue){
+                                            0 ->{
+
+                                            }
+                                            1 ->{
+                                                items(
+                                                    count = partyList.itemCount,
+                                                    key = partyList.itemKey { it.toString() }
+                                                ) { index ->
+                                                    val model = partyList[index]
+                                                    if (model != null) {
+                                                        partyModel.value = model
+                                                        MainScreenItem(
+                                                            secondaryColor = secondaryColor,
+                                                            tertiaryColor = tertiaryColor,
+                                                            sevenrdColor = sevenrdColor,
+                                                            smallFontSize = smallFontSize.intValue,
+                                                            partyModel = model,
+                                                            userModel = user.value,
+                                                            showContacts = showContacts.value,
+                                                            onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.userId}") }
+                                                        )
+                                                    }
+                                                }
+                                                item {
+                                                    if (partyList.loadState.append is LoadState.Loading){
+                                                        LottieAnimation(
+                                                            modifier = Modifier
+                                                                .size(150.dp),
+                                                            composition = loadingAnimation.value,
+                                                            restartOnPlay = true,
+                                                            iterations = LottieConstants.IterateForever
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }
+                            )
                         }
                     }
                 }
-            }
         }
     }
 }

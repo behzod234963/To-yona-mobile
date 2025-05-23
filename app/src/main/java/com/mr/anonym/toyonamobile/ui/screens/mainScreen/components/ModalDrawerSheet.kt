@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -47,7 +46,7 @@ fun MainScreenModalDrawerSheet(
     profileAvatar:Int,
     userId:Int,
     viewModel: MainScreenViewModel,
-    onContactsClick:()-> Unit,
+    onFriendsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
     onMonitoringClick:()-> Unit,
     onWalletClick:()->Unit,
@@ -56,7 +55,7 @@ fun MainScreenModalDrawerSheet(
 ) {
     val isMainSelected = remember { mutableStateOf( false ) }
     val isMyEvents = remember { mutableStateOf( false ) }
-    val isContactsSelected = remember { mutableStateOf( false ) }
+    val isFriendsSelected = remember { mutableStateOf( false ) }
     val isMonitoringSelected = remember { mutableStateOf( false ) }
     val isWalletSelected = remember { mutableStateOf( false ) }
     val isSettingsSelected = remember { mutableStateOf( false ) }
@@ -113,24 +112,24 @@ fun MainScreenModalDrawerSheet(
             }
         }
         HorizontalDivider()
-//        Contacts
+//        Friends
         NavigationDrawerItem(
             icon = {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    painter = painterResource(R.drawable.ic_contact),
                     tint = secondaryColor,
                     contentDescription = ""
                 )
             },
             label = {
                 Text(
-                    text = stringResource(R.string.contacts),
+                    text = stringResource(R.string.friends),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             },
-            selected = isContactsSelected.value,
+            selected = isFriendsSelected.value,
             shape = RectangleShape,
             colors = NavigationDrawerItemDefaults.colors(
                 selectedContainerColor = tertiaryColor,
@@ -138,13 +137,13 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = true
+                isFriendsSelected.value = true
                 isMyEvents.value = false
                 isMonitoringSelected.value = false
                 isWalletSelected.value = false
                 isSettingsSelected.value = false
                 isSupportSelected.value = false
-                onContactsClick()
+                onFriendsClick()
             }
         )
 //        My events
@@ -172,7 +171,7 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = false
+                isFriendsSelected.value = false
                 isMyEvents.value = true
                 isMonitoringSelected.value = false
                 isWalletSelected.value = false
@@ -206,7 +205,7 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = false
+                isFriendsSelected.value = false
                 isMyEvents.value = false
                 isMonitoringSelected.value = true
                 isWalletSelected.value = false
@@ -240,7 +239,7 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = false
+                isFriendsSelected.value = false
                 isMyEvents.value = false
                 isMonitoringSelected.value = false
                 isWalletSelected.value = true
@@ -275,7 +274,7 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = false
+                isFriendsSelected.value = false
                 isMyEvents.value = false
                 isMonitoringSelected.value = false
                 isWalletSelected.value = false
@@ -309,7 +308,7 @@ fun MainScreenModalDrawerSheet(
             ),
             onClick = {
                 isMainSelected.value = false
-                isContactsSelected.value = false
+                isFriendsSelected.value = false
                 isMyEvents.value = false
                 isMonitoringSelected.value = false
                 isWalletSelected.value = false

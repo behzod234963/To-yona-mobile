@@ -72,7 +72,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -86,7 +85,7 @@ fun AddEventScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val calendarInstance = Calendar.getInstance()
+//    val calendarInstance = Calendar.getInstance()
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
@@ -131,15 +130,16 @@ fun AddEventScreen(
     val selectedEventIndex = viewModel.selectedEventIndex
     val isExpanded = rememberSaveable { mutableStateOf(false) }
 
-    val otherEventValue = rememberSaveable { mutableStateOf("") }
+    val otherEventValue = viewModel.otherFieldValue
     val isValueConfirmed = rememberSaveable { mutableStateOf(false) }
     val isOtherClicked = rememberSaveable { mutableStateOf(false) }
     val isOtherEventError = rememberSaveable { mutableStateOf(false) }
     val isDateReEntered = rememberSaveable { mutableStateOf(false) }
+    if (arguments.eventID != -1 && selectedEventIndex.value == 4) isOtherClicked.value = true
 
-    val showTimePicker = rememberSaveable { mutableStateOf(false) }
-    val pickedHour = calendarInstance.get(android.icu.util.Calendar.HOUR_OF_DAY)
-    val pickedMinute = calendarInstance.get(android.icu.util.Calendar.MINUTE)
+//    val showTimePicker = rememberSaveable { mutableStateOf(false) }
+//    val pickedHour = calendarInstance.get(android.icu.util.Calendar.HOUR_OF_DAY)
+//    val pickedMinute = calendarInstance.get(android.icu.util.Calendar.MINUTE)
     val isDateSet = rememberSaveable {
         mutableStateOf(
             arguments.eventID != -1
@@ -168,11 +168,11 @@ fun AddEventScreen(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
     viewModel.getUserById()
-    val user = viewModel.user
+//    val user = viewModel.user
     val party = viewModel.party
 
     val isTitleError = remember { mutableStateOf(false) }
-    val titleValue = remember { mutableStateOf("") }
+    val titleValue = viewModel.titleValue
     /*
     * Selected index index values
     * 0-> nothing was selected
@@ -229,9 +229,11 @@ fun AddEventScreen(
                                 partyModel = PartysItem(
                                     name = titleValue.value,
                                     type = eventType,
+                                    address = party.value.address,
                                     cardNumber = cardValue.value,
                                     startTime = startDate.value,
                                     endTime = endDateResult,
+                                    status = true
                                 )
                             )
                         } else {
@@ -259,9 +261,11 @@ fun AddEventScreen(
                                 partyModel = PartysItem(
                                     name = titleValue.value,
                                     type = eventType,
+                                    address = party.value.address,
                                     cardNumber = cardValue.value,
                                     startTime = startDate.value,
                                     endTime = endDateResult,
+                                    status = true
                                 )
                             )
                         } else {
@@ -292,7 +296,7 @@ fun AddEventScreen(
                     value = titleValue.value,
                     isTitle = true,
                     onValueChange = {
-                        titleValue.value = it
+                        viewModel.onEvent(AddEventState.ChangeTitle(it))
                     },
                     isValueConfirmed = false,
                     onConfirmClick = { },
@@ -388,11 +392,7 @@ fun AddEventScreen(
                         isEventError = isOtherEventError.value,
                         value = otherEventValue.value,
                         onValueChange = {
-                            if (arguments.eventID == -1) {
-                                otherEventValue.value = it
-                            } else {
-//                                viewModel.onEvent(AddEventState.ChangeEventOldValue(it))
-                            }
+                            viewModel.onEvent(AddEventState.ChangeOtherField(it))
                         },
                         isValueConfirmed = isValueConfirmed.value,
                         onConfirmClick = {
@@ -711,9 +711,9 @@ fun AddEventScreen(
                         }
                     }
                 } else {
-                    Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isPartyAdded.value}")
+                    Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isPartyUpdated.value}")
                     coroutineScope.launch {
-                        if (viewModel.isPartyAdded.value) {
+                        if (viewModel.isPartyUpdated.value) {
                             delay(1500)
                             isLoading.value = false
                             withContext(Dispatchers.Main) {

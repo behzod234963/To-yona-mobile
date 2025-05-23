@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetUserPartiesUseCase(private val repository: PartyRepository) {
-    fun execute(id: Int): Flow<List<PartysItem>> = flow {
+    fun execute(userID: Int): Flow<List<PartysItem>> = flow {
         try {
-            val response = repository.getUserParties(id)
+            val response = repository.getUserParties(userID)
             if (response.isSuccessful){
                 response.body()?.let {
-                    emit(it.partyList)
+                    Log.d("NetworkLogging", "GetUserPartiesUseCaseExecute: ${it.partylist.size}")
+                    emit(it.partylist)
                 }
             }
         }catch (e: Exception){

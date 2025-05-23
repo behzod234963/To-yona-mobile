@@ -2,10 +2,14 @@ package com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components
 
 import android.icu.util.Calendar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -39,7 +43,7 @@ fun MonitoringScrollableTabRow(
             val modifier = Modifier
                 .tabIndicatorOffset( tabPosition[selectedTabIndex])
             Box(
-                modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .height(5.dp)
                     .background(
@@ -51,17 +55,26 @@ fun MonitoringScrollableTabRow(
     ) {
         tabs.forEachIndexed { index, string ->
             Tab(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 selected = selectedTabIndex == index,
                 onClick = {
                     onClick( index )
                 }
             ) {
-                Text(
-                    text = string,
-                    color = secondaryColor,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Spacer(Modifier.width(10.dp))
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = string,
+                        color = secondaryColor,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 Spacer(Modifier.height(10.dp))
             }
         }

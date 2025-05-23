@@ -1,4 +1,4 @@
-package com.mr.anonym.data.implementations.crypto
+package com.mr.anonym.data.crypto
 
 import android.content.Context
 import com.google.crypto.tink.Aead

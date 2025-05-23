@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.item
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,16 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -32,7 +31,6 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
-import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForMainScreen
 
 @Composable
 fun MainScreenItem(
@@ -76,11 +74,15 @@ fun MainScreenItem(
                             .padding(5.dp),
                         shape = CircleShape
                     ) {
-                        Icon(
+                        Image(
                             modifier = Modifier
                                 .fillMaxSize(),
-                            imageVector = Icons.Default.Person,
-                            tint = secondaryColor,
+                            painter = when(userModel.sex){
+                                0 -> painterResource(R.drawable.ic_default_avatar)
+                                1 -> painterResource(R.drawable.ic_man)
+                                2 -> painterResource(R.drawable.ic_woman)
+                                else -> painterResource(R.drawable.ic_default_avatar)
+                            },
                             contentDescription = "profile icon"
                         )
                     }
@@ -92,7 +94,7 @@ fun MainScreenItem(
                     ) {
                         Text(
                             text = if (showContacts) {
-                                "${userModel.username} ${userModel.surname}".stringEqualizerForMainScreen()
+                                "${userModel.username} ${userModel.surname}"
                             } else {
                                 when(partyModel.type){
                                     "0"-> ""

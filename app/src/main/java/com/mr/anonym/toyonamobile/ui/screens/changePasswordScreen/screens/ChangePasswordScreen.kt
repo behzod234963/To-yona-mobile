@@ -190,6 +190,14 @@ fun ChangePasswordScreen(
                                         newPasswordValue.value == confirmNewPasswordValue.value
                                     ) {
                                         isLoading.value = true
+                                        viewModel.updateUser(
+                                            userModelItem = UserModelItem(
+                                                username = user.value.username,
+                                                surname = user.value.surname,
+                                                phonenumber = user.value.phonenumber,
+                                                password = confirmNewPasswordValue.value
+                                            )
+                                        )
                                     } else {
                                         confirmNewPasswordError.value = true
                                     }
@@ -226,14 +234,6 @@ fun ChangePasswordScreen(
                 )
                 coroutineScope.launch {
                     delay(1500)
-                    viewModel.updateUser(
-                        userModelItem = UserModelItem(
-                            username = user.value.username,
-                            surname = user.value.surname,
-                            phonenumber = user.value.phonenumber,
-                            password = confirmNewPasswordValue.value
-                        )
-                    )
                     isLoading.value = false
                     withContext(Dispatchers.Main) {
                         navController.navigate(ScreensRouter.SecurityScreen.route) {

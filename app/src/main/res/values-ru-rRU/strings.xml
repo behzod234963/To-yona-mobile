@@ -30,7 +30,7 @@
     <string name="Later">Позже</string>
     <string name="allow_fingerprint">Вход по отпечатку пальцев?</string>
     <string name="main">Главная</string>
-    <string name="contacts">Контакты</string>
+    <string name="friends">Друзья</string>
     <string name="monitoring">Мониторинг</string>
     <string name="wallet">Кошелек</string>
     <string name="settings">Настройки</string>
@@ -149,7 +149,7 @@
     <string name="empty">Пусто</string>
     <string name="filter">Фильтр</string>
     <string name="by_card">По картам</string>
-    <string name="search_from_contacts">Искать среди контактов</string>
+    <string name="search_from_contacts">Искать среди пользователей</string>
     <string name="refresh">Обновить</string>
     <string name="give_permission">Предоставить доступ</string>
     <string name="to_give_permission_you_need_to_go_app_settings">Чтобы отображать контактов вам необходимо дать разрешения через настройки приложения</string>
@@ -160,4 +160,6 @@
     <string name="password_recovery">Восстановление пароля</string>
     <string name="title">Заголовок</string>
     <string name="unknown_error">Неизвестная ошибка!</string>
+    <string name="general_parties">Главные события</string>
+    <string name="other_parties">Другие события</string>
 </resources>

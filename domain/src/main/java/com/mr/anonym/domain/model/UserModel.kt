@@ -12,7 +12,7 @@ data class UserModelItem(
 	val phonenumber: String = "",
 	val password: String = "",
 	val cardlist: List<CardModel> = emptyList(),
-	val partyList: List<PartysItem> = emptyList(),
+	val partylist: List<PartysItem> = emptyList(),
 	val createdAt: String = ""
 )
 

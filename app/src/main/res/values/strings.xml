@@ -29,7 +29,7 @@
     <string name="Later">Later</string>
     <string name="allow_fingerprint">Allow fingerprint</string>
     <string name="main">Main</string>
-    <string name="contacts">Contacts</string>
+    <string name="friends">Friends</string>
     <string name="monitoring">Monitoring</string>
     <string name="wallet">Wallet</string>
     <string name="settings">Settings</string>
@@ -148,7 +148,7 @@
     <string name="empty">Empty</string>
     <string name="filter">Filter</string>
     <string name="by_card">By card</string>
-    <string name="search_from_contacts">Search from contacts</string>
+    <string name="search_from_contacts">Search from users</string>
     <string name="refresh">Refresh</string>
     <string name="give_permission">Give permission</string>
     <string name="to_give_permission_you_need_to_go_app_settings">To give permissions to read contacts, you need to go to the application settings.</string>
@@ -159,4 +159,6 @@
     <string name="password_recovery">Password recovery</string>
     <string name="title">Title</string>
     <string name="unknown_error">Unknown error!</string>
+    <string name="general_parties">General parties</string>
+    <string name="other_parties">Other parties</string>
 </resources>

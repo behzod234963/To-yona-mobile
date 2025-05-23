@@ -11,7 +11,6 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
-import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.state.ListState
@@ -25,7 +24,6 @@ class AddEventViewModel @Inject constructor(
     context: Context,
     savedState: SavedStateHandle,
     sharedPreferences: SharedPreferencesInstance,
-    private val localUseCases: LocalUseCases,
     private val remoteUseCases: RemoteUseCases
 ) : ViewModel() {
 
@@ -48,6 +46,11 @@ class AddEventViewModel @Inject constructor(
     val startDate: State<String> = _startDate
     private val _endDate = mutableStateOf("")
     val endDate: State<String> = _endDate
+
+    private val _titleValue = mutableStateOf( "" )
+    val titleValue: State<String> = _titleValue
+    private val _otherFieldValue = mutableStateOf( "" )
+    val otherFieldValue: State<String> = _otherFieldValue
 
     private val _selectedEventIndex = mutableIntStateOf(0)
     val selectedEventIndex: State<Int> = _selectedEventIndex
@@ -79,35 +82,39 @@ class AddEventViewModel @Inject constructor(
     fun getUserCards() = viewModelScope.launch {
         remoteUseCases.getUserCardsUseCase.execute(_id.intValue).collect {
             _cards.value = it
+            _cardValue.value = it[0].number
         }
     }
     fun getPartyByID(id: Int) = viewModelScope.launch {
         remoteUseCases.getPartyByIdUseCase.execute(id).collect {
             _party.value = it
+            _titleValue.value = it.name
+            _selectedEventIndex.intValue = when(it.type){
+                "0" -> 0
+                "1" -> 1
+                "2" -> 2
+                "3" -> 3
+                else -> 4
+            }
+            _otherFieldValue.value = it.type
+            _startDate.value = it.startTime
+            _endDate.value = it.endTime
         }
     }
     fun getUserById() = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(_id.value).collect {
+        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
             _user.value = it
         }
     }
     fun onEvent(event: AddEventState) {
         when (event) {
-            is AddEventState.ChangeCardNumber -> {
-                _cardValue.value = event.cardNumber
-            }
-            is AddEventState.ChangeEndDate -> {
-                _endDate.value = event.endDate
-            }
-            is AddEventState.ChangeEventIndex -> {
-                _selectedEventIndex.intValue = event.index
-            }
-            is AddEventState.ChangeStartDate -> {
-                _startDate.value = event.startDate
-            }
-            is AddEventState.ChangeCardModel -> {
-                _card.value = event.card
-            }
+            is AddEventState.ChangeCardNumber -> _cardValue.value = event.cardNumber
+            is AddEventState.ChangeEndDate -> _endDate.value = event.endDate
+            is AddEventState.ChangeEventIndex -> _selectedEventIndex.intValue = event.index
+            is AddEventState.ChangeStartDate -> _startDate.value = event.startDate
+            is AddEventState.ChangeCardModel -> _card.value = event.card
+            is AddEventState.ChangeTitle -> _titleValue.value = event.title
+            is AddEventState.ChangeOtherField -> _otherFieldValue.value = event.fieldValue
         }
     }
 }

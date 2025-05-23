@@ -16,7 +16,7 @@ class AddPartyUseCase (private val repository: PartyRepository){
                 }
             }
         }catch (e: Exception){
-            Log.d("NetworkLogging", "AddEventUseCaseExecute: ${e.message}")
+            Log.d("NetworkLogging", "AddPartyUseCaseExecute: ${e.message}")
         }
     }
 }

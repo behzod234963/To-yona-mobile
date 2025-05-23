@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -87,6 +88,7 @@ fun MyEventsItem(
                             contentDescription = ""
                         )
                     }
+                    Spacer(Modifier.width(5.dp))
                     MyEventSwitch(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
@@ -134,7 +136,13 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = partyModel.type,
+                    text = when(partyModel.type){
+                        "0"-> ""
+                        "1" -> stringResource(R.string.wedding)
+                        "2" -> stringResource(R.string.sunnat_wedding)
+                        "3" -> stringResource(R.string.birthday)
+                        else -> partyModel.type
+                    },
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -226,8 +234,7 @@ fun MyEventsItem(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Spacer(Modifier.height(5.dp))
-            HorizontalDivider()
+            Spacer(Modifier.height(10.dp))
         }
     }
 }

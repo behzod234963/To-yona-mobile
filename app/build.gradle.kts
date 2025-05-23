@@ -102,4 +102,6 @@ dependencies {
     implementation(libs.paging3JetpackCompose)
 
     implementation(libs.tink)
+
+//    implementation(libs.chuck)
 }

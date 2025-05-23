@@ -49,9 +49,11 @@ dependencies {
     kapt(libs.roomCompiler)
     implementation(libs.gsonConverter)
     implementation(libs.retrofit2)
+    implementation(libs.okHttp)
+    implementation(platform(libs.okHttpBom))
+    implementation(libs.okHttpLoggingInterceptor)
     implementation(libs.paging3)
     implementation(libs.paging3JetpackCompose)
 
     implementation(libs.tink)
-
 }

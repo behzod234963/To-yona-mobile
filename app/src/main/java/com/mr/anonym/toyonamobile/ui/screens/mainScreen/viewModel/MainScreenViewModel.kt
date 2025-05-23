@@ -32,14 +32,12 @@ class MainScreenViewModel @Inject constructor(
             _user.value = it
         }
     }
-
     fun getAllParty() = remoteUseCases.getAllPartyUseCase.execute().cachedIn(viewModelScope)
     fun searchUser(searchText: String) = viewModelScope.launch {
         remoteUseCases.searchUserUseCase.execute(searchText).collect {
             _users.value = it
         }
     }
-
     fun changeIsRefreshState(state: Boolean) {
         _isRefresh.value = state
     }

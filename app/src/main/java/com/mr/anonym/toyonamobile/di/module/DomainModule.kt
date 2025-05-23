@@ -59,18 +59,18 @@ class DomainModule {
             registerUserUseCase = RegisterUserUseCase(userRepository),
             getUserByIdUseCase = GetUserByIdUseCase(userRepository),
             updateUserUseCase = UpdateUserUseCase(userRepository),
-            getAllPartyUseCase = GetAllPartyUseCase(partyRepository),
             searchUserUseCase = SearchUserUseCase(userRepository),
             addPartyUseCase = AddPartyUseCase(partyRepository),
-            deletePartyUseCase = DeletePartyRemoteUseCase(partyRepository),
+            updatePartyUseCase = UpdatePartyUseCase(partyRepository),
+            getAllPartyUseCase = GetAllPartyUseCase(partyRepository),
             getPartyByIdUseCase = GetPartyByIdUseCase(partyRepository),
+            deletePartyUseCase = DeletePartyRemoteUseCase(partyRepository),
             addCardUseCase = AddCardUseCase(cardRepository),
             getAllCardUseCase = GetAllCardUseCase(cardRepository),
             getCardByIdUseCase = GetCardByIdUseCase(cardRepository),
             updateCardUseCase = UpdateCardUseCase(cardRepository),
             deleteCardUseCase = DeleteCardUseCase(cardRepository),
             getUserCardsUseCase = GetUserCardsUseCase(cardRepository),
-            updatePartyUseCase = UpdatePartyUseCase(partyRepository),
             getUserPartiesUseCase = GetUserPartiesUseCase(partyRepository)
         )
 }

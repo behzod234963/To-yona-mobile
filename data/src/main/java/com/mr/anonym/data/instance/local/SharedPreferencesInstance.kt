@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import androidx.core.content.edit
 import com.mr.anonym.data.R
-import com.mr.anonym.data.implementations.crypto.AeadManager.getAead
+import com.mr.anonym.data.crypto.AeadManager.getAead
 
 class SharedPreferencesInstance( private val context: Context) {
 

@@ -1,17 +1,13 @@
-package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
@@ -19,39 +15,26 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.toyonamobile.R
 
 @Composable
-fun DetailsScreenTabRow(
-    modifier: Modifier,
+fun MainScreenTabRow(
     secondaryColor: Color,
+    tabs: List<String>,
     content: @Composable (Int)-> Unit
 ) {
-    
-    val tabs = listOf<TabsItem>(
-        TabsItem(
-            title = stringResource(R.string.actual_events),
-            icon = R.drawable.ic_active
-        ),
-        TabsItem(
-            title = stringResource(R.string.event_history),
-            icon = R.drawable.ic_history
-        )
-    )
-    val selectedTab = rememberSaveable { mutableIntStateOf( 0 ) }
-    
+
+    val selectedTab = remember { mutableIntStateOf( 0 ) }
+
     TabRow(
-        modifier = modifier,
+        modifier = Modifier
+            .padding(vertical = 10.dp),
         selectedTabIndex = selectedTab.intValue,
         indicator = { tabPosition:List<TabPosition> ->
             val modifier = Modifier
@@ -67,7 +50,7 @@ fun DetailsScreenTabRow(
             )
         }
     ) {
-        tabs.forEachIndexed { index, item ->
+        tabs.forEachIndexed { index, string ->
             Tab(
                 selected = selectedTab.intValue == index,
                 onClick = { selectedTab.intValue = index }
@@ -75,12 +58,12 @@ fun DetailsScreenTabRow(
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .height(45.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = item.title,
+                        text = string,
                         color = secondaryColor,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold
@@ -91,7 +74,3 @@ fun DetailsScreenTabRow(
     }
     content(selectedTab.intValue)
 }
-data class TabsItem(
-    val title: String,
-    val icon: Int
-)

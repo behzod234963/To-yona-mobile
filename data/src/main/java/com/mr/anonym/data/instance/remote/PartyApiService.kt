@@ -26,7 +26,7 @@ interface PartyApiService {
         @Body partyModel: PartysItem
     ): Response<Boolean>
 
-    @DELETE("/party/delete/{partyID}")
+    @DELETE("/party/delete/{id}")
     suspend fun deleteParty(
         @Path("id") partyID: Int
     ): Response<String>
@@ -37,13 +37,13 @@ interface PartyApiService {
         @Query("limit") limit: Int
     ): Response<PartyModel>
 
-    @GET("/party/getby/{partyID}")
+    @GET("/party/getby/{id}")
     suspend fun getPartyByID(
         @Path("id") partyID: Int
     ): Response<PartysItem>
 
-    @GET("/getbyid/{id}")
+    @GET("/getbyid/{userID}")
     suspend fun getUserParties(
-        @Path("id") id: Int
+        @Path("userID") userID: Int
     ): Response<UserModelItem>
 }

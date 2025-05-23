@@ -1,12 +1,15 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -57,6 +60,18 @@ fun MainScreenSearchField(
                 tint = secondaryColor,
                 contentDescription = "icon search"
             )
+        },
+        trailingIcon = {
+            IconButton(
+                onClick = { onSearch() }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    tint = secondaryColor,
+                    contentDescription = ""
+                )
+            }
+            Spacer(Modifier.width(10.dp))
         },
         shape = RoundedCornerShape(30.dp),
         keyboardOptions = keyboardOptions,

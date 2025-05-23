@@ -32,7 +32,6 @@ interface UserApiService {
 
     @GET("/getallusersearch/")
     suspend fun searchUser(
-
         @Query("search") searchText: String
     ): Response<List<UserModelItem>>
 }

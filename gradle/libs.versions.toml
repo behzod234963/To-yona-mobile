@@ -7,7 +7,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
-composeBom = "2025.05.00"
+composeBom = "2025.05.01"
 appcompat = "1.7.0"
 material = "1.12.0"
 
@@ -16,7 +16,7 @@ daggerHiltNavigationComposeVersion = "1.2.0"
 navigationVersion = "2.9.0"
 coroutinesVersion = "1.10.2"
 lifecycleVersion = "2.9.0"
-dataStoreVersion = "1.1.6"
+dataStoreVersion = "1.1.7"
 biometricAuthVersion = "1.1.0"
 roomVersion = "2.7.1"
 cardIOscannerVersion = "5.5.1"
@@ -27,6 +27,7 @@ retrofit2Version = "3.0.0"
 okHttpVersion = "4.12.0"
 paging3Version = "3.3.6"
 tinkVersion = "1.17.0"
+chuckVersion = "1.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,6 +75,7 @@ okHttpLoggingInterceptor = { group = "com.squareup.okhttp3" , name = "logging-in
 paging3 = { group = "androidx.paging" , name = "paging-runtime" , version.ref = "paging3Version" }
 paging3JetpackCompose = { group = "androidx.paging" , name = "paging-compose" , version.ref = "paging3Version" }
 tink = { group = "com.google.crypto.tink" , name  = "tink-android" , version.ref = "tinkVersion" }
+chuck = { group = "com.readystatesoftware.chuck" , name  = "library" , version.ref = "tinkVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

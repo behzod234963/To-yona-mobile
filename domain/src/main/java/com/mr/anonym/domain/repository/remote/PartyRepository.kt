@@ -5,7 +5,6 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
-import retrofit2.http.Path
 
 interface PartyRepository {
 
@@ -14,5 +13,5 @@ interface PartyRepository {
     fun getAllParty(): Flow<PagingData<PartysItem>>
     suspend fun getPartyByID(id: Int): Response<PartysItem>
     suspend fun deleteParty(id: Int): Response<String>
-    suspend fun getUserParties(id: Int): Response<UserModelItem>
+    suspend fun getUserParties(userID: Int): Response<UserModelItem>
 }

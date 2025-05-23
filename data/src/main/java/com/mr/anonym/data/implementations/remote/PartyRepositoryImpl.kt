@@ -23,5 +23,5 @@ class PartyRepositoryImpl(private val partyApiService: PartyApiService): PartyRe
     }
     override suspend fun getPartyByID(id: Int): Response<PartysItem> = partyApiService.getPartyByID(id)
     override suspend fun deleteParty(id: Int): Response<String> = partyApiService.deleteParty(id)
-    override suspend fun getUserParties(id: Int): Response<UserModelItem> = partyApiService.getUserParties(id)
+    override suspend fun getUserParties(userID: Int): Response<UserModelItem> = partyApiService.getUserParties(userID)
 }

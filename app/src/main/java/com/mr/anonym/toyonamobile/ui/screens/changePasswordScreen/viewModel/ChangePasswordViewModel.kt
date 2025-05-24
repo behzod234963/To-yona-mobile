@@ -19,18 +19,19 @@ class ChangePasswordViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _id = mutableIntStateOf( sharedPrefs.getID() )
+    private val _accessToken = mutableStateOf( sharedPrefs.getAccessToken() )
     private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
     init {
         getUserByID()
     }
     fun getUserByID() = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
+        remoteUseCases.getUserUseCase.execute().collect {
             _user.value = it
         }
     }
     fun updateUser(userModelItem: UserModelItem) = viewModelScope.launch {
-        remoteUseCases.updateUserUseCase.execute(_id.intValue,userModelItem).collect {
+        remoteUseCases.updateUserUseCase.execute(userModelItem).collect {
             _user.value = it
         }
     }

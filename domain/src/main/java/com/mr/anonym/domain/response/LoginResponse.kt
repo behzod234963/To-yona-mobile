@@ -1,8 +1,8 @@
 package com.mr.anonym.domain.response
 
 data class LoginResponse (
-    val id:Int,
-    val message: String
+    val accessToken: String,
+    val refreshToken: String
 )
 data class LoginRequest(
     val phonenumber: String,

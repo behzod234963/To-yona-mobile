@@ -162,4 +162,5 @@
     <string name="unknown_error">No\'malum xatolik!</string>
     <string name="general_parties">Asosiy tadbirlar</string>
     <string name="other_parties">Boshqa tadbirlar</string>
+    <string name="couldn_t_log_in">Kirish amalga oshirilmadi</string>
 </resources>

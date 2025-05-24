@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class GetUserByIdUseCase(private val repository: UserRepository) {
-    fun execute(id: Int): Flow<UserModelItem> = flow {
+    fun execute(): Flow<UserModelItem> = flow {
         try {
-            val response = repository.getUserByID(id)
+            val response = repository.getUserByID()
             if (response.isSuccessful){
                 response.body()?.let {
                     emit(it)

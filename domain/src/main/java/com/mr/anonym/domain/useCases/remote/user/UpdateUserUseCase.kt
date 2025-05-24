@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class UpdateUserUseCase(private val repository: UserRepository) {
-    fun execute(id: Int,user: UserModelItem): Flow<UserModelItem> = flow {
+    fun execute(user: UserModelItem): Flow<UserModelItem> = flow {
         try{
-            val response = repository.updateUser(id,user)
+            val response = repository.updateUser(user)
             if (response.isSuccessful){
                 response.body()?.let {
                    emit(it)

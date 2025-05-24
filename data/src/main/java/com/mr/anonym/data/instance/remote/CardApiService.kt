@@ -12,9 +12,8 @@ import retrofit2.http.Path
 
 interface CardApiService {
 
-    @POST("/card/add/{id}")
+    @POST("/card/add")
     suspend fun addCard(
-        @Path("id") userID: Int,
         @Body cardModel: CardModel
     ): Response<CardModel>
 
@@ -35,11 +34,8 @@ interface CardApiService {
     @DELETE("/card/delete/{id}")
     suspend fun deleteCard(
         @Path("id") cardID: Int,
-        @Body cardModel: CardModel
     ): Response<String>
 
-    @GET("/getbyid/{id}")
-    suspend fun getUserCards(
-        @Path("id") id: Int
-    ): Response<UserModelItem>
+    @GET("/getbyid")
+    suspend fun getUserCards(): Response<UserModelItem>
 }

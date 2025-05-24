@@ -10,6 +10,7 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsB
 import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
+import com.mr.anonym.domain.useCases.remote.DecodeTokenUseCase
 import com.mr.anonym.domain.useCases.remote.user.GetUserByIdUseCase
 import com.mr.anonym.domain.useCases.remote.user.LoginUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.RegisterUserUseCase
@@ -26,6 +27,7 @@ import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetUserPartiesUseCase
 import com.mr.anonym.domain.useCases.remote.party.UpdatePartyUseCase
+import com.mr.anonym.domain.useCases.remote.user.DeleteUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.SearchUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.UpdateUserUseCase
 import dagger.Module
@@ -57,7 +59,7 @@ class DomainModule {
         RemoteUseCases(
             loginUserUseCase = LoginUserUseCase(userRepository),
             registerUserUseCase = RegisterUserUseCase(userRepository),
-            getUserByIdUseCase = GetUserByIdUseCase(userRepository),
+            getUserUseCase = GetUserByIdUseCase(userRepository),
             updateUserUseCase = UpdateUserUseCase(userRepository),
             searchUserUseCase = SearchUserUseCase(userRepository),
             addPartyUseCase = AddPartyUseCase(partyRepository),
@@ -71,6 +73,8 @@ class DomainModule {
             updateCardUseCase = UpdateCardUseCase(cardRepository),
             deleteCardUseCase = DeleteCardUseCase(cardRepository),
             getUserCardsUseCase = GetUserCardsUseCase(cardRepository),
-            getUserPartiesUseCase = GetUserPartiesUseCase(partyRepository)
+            getUserPartiesUseCase = GetUserPartiesUseCase(partyRepository),
+            decodeTokenUseCase = DecodeTokenUseCase(userRepository),
+            deleteUserUseCase = DeleteUserUseCase(userRepository)
         )
 }

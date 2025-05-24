@@ -8,12 +8,13 @@ import com.mr.anonym.data.paging.PartyPagingSource
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.repository.remote.PartyRepository
+import com.mr.anonym.domain.response.AddPartyResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
 class PartyRepositoryImpl(private val partyApiService: PartyApiService): PartyRepository {
 
-    override suspend fun addParty(userId: Int, partyModel: PartysItem): Response<Boolean> = partyApiService.addParty(userId,partyModel)
+    override suspend fun addParty(partyModel: PartysItem): Response<AddPartyResponse> = partyApiService.addParty(partyModel)
     override suspend fun updateParty(partyID: Int, partyModel: PartysItem): Response<Boolean> = partyApiService.updateParty(partyID,partyModel)
     override fun getAllParty(): Flow<PagingData<PartysItem>> {
         return Pager(

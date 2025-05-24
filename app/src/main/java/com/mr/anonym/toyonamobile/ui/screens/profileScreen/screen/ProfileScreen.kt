@@ -104,11 +104,11 @@ fun ProfileScreen(
     val quaternaryColor = Color.Red
 
     val id = sharedPreferences.getID()
-    val phoneNumber = sharedPreferences.getPhoneNumber()
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
     val user = viewModel.user
+    val phoneNumber = viewModel.phoneNumber
     val firstname = viewModel.firstname
     val nameValueError = rememberSaveable { mutableStateOf(false) }
     val lastname = viewModel.lastname
@@ -299,19 +299,17 @@ fun ProfileScreen(
                     isOldUserState.value -> {
                         coroutineScope.launch {
                             delay(1500)
-                            sharedPreferences.saveAvatar(avatar.value)
                             coroutineScope.launch {
                                 dataStore.isOldUser(false)
                             }
                             sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
                             viewModel.updateUser(
-                                id = id,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
                                     sex = avatarIndex.value,
-                                    phonenumber = user.value.phonenumber,
+                                    phonenumber = phoneNumber.value,
                                     password = user.value.password
                                 )
                             )
@@ -327,10 +325,8 @@ fun ProfileScreen(
                     editProfileProcess -> {
                         coroutineScope.launch {
                             delay(1500)
-                            sharedPreferences.saveAvatar(avatar.value)
                             sharedPreferences.editProfileProcess(false)
                             viewModel.updateUser(
-                                id = user.value.id,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
@@ -351,7 +347,6 @@ fun ProfileScreen(
                     else -> {
                         coroutineScope.launch {
                             viewModel.updateUser(
-                                id = id,
                                 user = UserModelItem(
                                     username = firstname.value,
                                     surname = lastname.value,
@@ -361,7 +356,6 @@ fun ProfileScreen(
                                 )
                             )
                             delay(1500)
-                            sharedPreferences.saveAvatar(avatar.value)
                             sharedPreferences.saveIsProfileSettingsState(false)
                             sharedPreferences.saveNewPinState(true)
                             withContext(Dispatchers.Main) {

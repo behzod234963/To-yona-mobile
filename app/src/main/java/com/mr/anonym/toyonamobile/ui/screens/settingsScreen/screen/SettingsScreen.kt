@@ -116,7 +116,7 @@ fun SettingsScreen(
     }
     val isNotificationContentClicked = rememberSaveable { mutableStateOf(false) }
 
-    val profileAvatar = sharedPreferences.getAvatar()
+    val profileAvatar = viewModel.profileAvatar
     sharedPreferences.editProfileProcess(false)
 
     val languageBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -208,7 +208,7 @@ fun SettingsScreen(
                 Image(
                     modifier = Modifier
                         .size(60.dp),
-                    painter = painterResource(profileAvatar),
+                    painter = painterResource(profileAvatar.value),
                     contentDescription = ""
                 )
                 Spacer(Modifier.height(7.dp))

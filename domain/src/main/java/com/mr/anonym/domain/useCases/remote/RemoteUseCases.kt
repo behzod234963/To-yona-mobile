@@ -12,6 +12,7 @@ import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetUserPartiesUseCase
 import com.mr.anonym.domain.useCases.remote.party.UpdatePartyUseCase
+import com.mr.anonym.domain.useCases.remote.user.DeleteUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.GetUserByIdUseCase
 import com.mr.anonym.domain.useCases.remote.user.LoginUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.RegisterUserUseCase
@@ -22,9 +23,11 @@ data class RemoteUseCases(
 //    User use cases
     val loginUserUseCase: LoginUserUseCase,
     val registerUserUseCase: RegisterUserUseCase,
-    val getUserByIdUseCase: GetUserByIdUseCase,
+    val getUserUseCase: GetUserByIdUseCase,
     val updateUserUseCase: UpdateUserUseCase,
     val searchUserUseCase: SearchUserUseCase,
+    val decodeTokenUseCase:DecodeTokenUseCase,
+    val deleteUserUseCase: DeleteUserUseCase,
 //    Party use cases
     val addPartyUseCase: AddPartyUseCase,
     val updatePartyUseCase: UpdatePartyUseCase,

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEventViewModel @Inject constructor(
+class AddPartyViewModel @Inject constructor(
     context: Context,
     savedState: SavedStateHandle,
     sharedPreferences: SharedPreferencesInstance,
@@ -69,9 +69,9 @@ class AddEventViewModel @Inject constructor(
             }
         }
     }
-    fun addParty(userId: Int, partyModel: PartysItem) = viewModelScope.launch {
-        remoteUseCases.addPartyUseCase.execute(userId, partyModel).collect {
-            _isPartyAdded.value = it
+    fun addParty(partyModel: PartysItem) = viewModelScope.launch {
+        remoteUseCases.addPartyUseCase.execute(partyModel).collect {
+            _isPartyAdded.value = it.status
         }
     }
     fun updateParty(partyID: Int, partyModel: PartysItem) = viewModelScope.launch {
@@ -80,7 +80,7 @@ class AddEventViewModel @Inject constructor(
         }
     }
     fun getUserCards() = viewModelScope.launch {
-        remoteUseCases.getUserCardsUseCase.execute(_id.intValue).collect {
+        remoteUseCases.getUserCardsUseCase.execute().collect {
             _cards.value = it
             _cardValue.value = it[0].number
         }
@@ -102,7 +102,7 @@ class AddEventViewModel @Inject constructor(
         }
     }
     fun getUserById() = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
+        remoteUseCases.getUserUseCase.execute().collect {
             _user.value = it
         }
     }

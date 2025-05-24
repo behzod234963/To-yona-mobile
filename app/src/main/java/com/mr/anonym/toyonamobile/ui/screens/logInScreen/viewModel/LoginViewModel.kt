@@ -1,6 +1,8 @@
 package com.mr.anonym.toyonamobile.ui.screens.logInScreen.viewModel
 
+import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,13 +19,19 @@ class LoginViewModel @Inject constructor(
     private val remoteUseCases: RemoteUseCases
 ): ViewModel(){
 
-    private val _message = mutableStateOf("")
-    val message: State<String> = _message
+    private val _isLoginSuccess = mutableStateOf( false )
+    val isLoginSuccess: State<Boolean> = _isLoginSuccess
 
     fun loginUser(user: LoginRequest) = viewModelScope.launch {
         remoteUseCases.loginUserUseCase.execute(user).collect {
-            sharedPreferences.saveId(it.id)
-            _message.value = it.message
+            sharedPreferences.saveAccessToken(it.accessToken)
+            sharedPreferences.saveRefreshToken(it.refreshToken)
+            _isLoginSuccess.value = true
+        }
+    }
+    fun decodeToken() = viewModelScope.launch {
+        remoteUseCases.decodeTokenUseCase.execute( sharedPreferences.getAccessToken()?:"" ).collect {
+            sharedPreferences.saveId(it.decoded?.id?:-1)
         }
     }
 }

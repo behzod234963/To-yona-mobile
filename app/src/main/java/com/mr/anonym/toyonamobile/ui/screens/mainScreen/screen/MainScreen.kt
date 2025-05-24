@@ -112,7 +112,7 @@ fun MainScreen(
 
     val smallFontSize = remember { mutableIntStateOf(14) }
 
-    val profileAvatar = sharedPreferences.getAvatar()
+    val profileAvatar = viewModel.profileAvatar
 
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
@@ -148,7 +148,7 @@ fun MainScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
-                profileAvatar = profileAvatar,
+                profileAvatar = profileAvatar.value,
                 onFriendsClick = {
                     if (drawerState.isOpen) {
                         coroutineScope.launch {
@@ -247,7 +247,7 @@ fun MainScreen(
                             primaryColor = primaryColor,
                             secondaryColor = secondaryColor,
                             title = stringResource(R.string.app_name),
-                            navigationIcon = profileAvatar,
+                            navigationIcon = profileAvatar.value,
                             onActionsClick = {
                                 navController.navigate(ScreensRouter.NotificationsScreen.route)
                             }

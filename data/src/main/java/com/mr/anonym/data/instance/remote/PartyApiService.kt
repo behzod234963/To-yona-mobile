@@ -3,6 +3,7 @@ package com.mr.anonym.data.instance.remote
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
+import com.mr.anonym.domain.response.AddPartyResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -14,11 +15,10 @@ import retrofit2.http.Query
 
 interface PartyApiService {
 
-    @POST("/party/add/{id}")
+    @POST("/party/add")
     suspend fun addParty(
-        @Path("id") userId: Int,
         @Body partyModel: PartysItem
-    ): Response<Boolean>
+    ): Response<AddPartyResponse>
 
     @PUT("/party/update/{id}")
     suspend fun updateParty(

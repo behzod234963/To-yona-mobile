@@ -21,6 +21,8 @@ class ProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _id = mutableIntStateOf( sharedPreferences.getID() )
+    private val _phoneNumber = mutableStateOf( "" )
+    val phoneNumber: State<String> = _phoneNumber
     private val _firstname = mutableStateOf("")
     val firstname: State<String> = _firstname
     private val _lastname = mutableStateOf("")
@@ -37,21 +39,22 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getUserById() = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
+        remoteUseCases.getUserUseCase.execute().collect {
             _user.value = it
             _avatarIndex.intValue = it.sex
             when(it.sex){
-                0->{ _profileAvatar.intValue = R.drawable.ic_default_avatar }
-                1->{ _profileAvatar.intValue = R.drawable.ic_man }
-                2->{ _profileAvatar.intValue = R.drawable.ic_woman}
-                else -> { _profileAvatar.intValue = R.drawable.ic_default_avatar }
+                0-> _profileAvatar.intValue = R.drawable.ic_default_avatar
+                1-> _profileAvatar.intValue = R.drawable.ic_man
+                2-> _profileAvatar.intValue = R.drawable.ic_woman
+                else -> _profileAvatar.intValue = R.drawable.ic_default_avatar
             }
             _firstname.value = it.username
             _lastname.value = it.surname
+            _phoneNumber.value = it.phonenumber
         }
     }
-    fun updateUser(id: Int,user: UserModelItem) = viewModelScope.launch {
-        remoteUseCases.updateUserUseCase.execute(id,user).collect {
+    fun updateUser(user: UserModelItem) = viewModelScope.launch {
+        remoteUseCases.updateUserUseCase.execute(user).collect {
             sharedPreferences.saveId(it.id)
         }
     }

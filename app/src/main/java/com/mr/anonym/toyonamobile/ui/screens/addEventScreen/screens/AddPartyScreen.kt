@@ -65,7 +65,7 @@ import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventO
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel.AddEventViewModel
+import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel.AddPartyViewModel
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -76,10 +76,10 @@ import java.util.Locale
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun AddEventScreen(
+fun AddPartyScreen(
     arguments: Arguments,
     navController: NavController,
-    viewModel: AddEventViewModel = hiltViewModel()
+    viewModel: AddPartyViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -225,7 +225,6 @@ fun AddEventScreen(
                                 else -> ""
                             }
                             viewModel.addParty(
-                                userId = id,
                                 partyModel = PartysItem(
                                     name = titleValue.value,
                                     type = eventType,

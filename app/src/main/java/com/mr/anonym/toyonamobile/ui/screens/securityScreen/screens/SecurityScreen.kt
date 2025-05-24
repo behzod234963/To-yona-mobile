@@ -7,15 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
@@ -23,13 +26,17 @@ import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityDialog
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityFields
 import com.mr.anonym.toyonamobile.ui.screens.securityScreen.components.SecurityTopBar
+import com.mr.anonym.toyonamobile.ui.screens.securityScreen.viewModel.SecurityViewModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun SecurityScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: SecurityViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val sharedPreferences = SharedPreferencesInstance(context)
 
@@ -58,6 +65,7 @@ fun SecurityScreen(
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val isChangePinProcess = remember { mutableStateOf(false) }
     val isChangePasswordProcess = remember { mutableStateOf(false) }
@@ -65,6 +73,8 @@ fun SecurityScreen(
 
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val isFingerprintChecked = remember { mutableStateOf(isBiometricAuthOn) }
+
+    val responseMessage = viewModel.message
 
     BackHandler(
         enabled = true
@@ -85,7 +95,8 @@ fun SecurityScreen(
                     navController.navigateUp()
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -191,14 +202,22 @@ fun SecurityScreen(
                         title = stringResource(R.string.are_you_sure_to_logout_from_this_account),
                         onDismissClick = { isExitProcess.value = false },
                         onConfirmClick = {
-                            sharedPreferences.saveIsBiometricAuthOn(false)
-                            sharedPreferences.saveBiometricAuthState(false)
-                            sharedPreferences.saveIsLoggedIn(false)
-                            navController.navigate(ScreensRouter.LoginScreen.route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    inclusive = true
+                            if (responseMessage.value == "User deleted"){
+                                sharedPreferences.saveIsBiometricAuthOn(false)
+                                sharedPreferences.saveBiometricAuthState(false)
+                                sharedPreferences.saveIsLoggedIn(false)
+                                navController.navigate(ScreensRouter.LoginScreen.route) {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
                                 }
-                                launchSingleTop = true
+                            }else{
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = context.getString(R.string.unknown_error)
+                                    )
+                                }
                             }
                             isExitProcess.value = false
                         },
@@ -208,12 +227,4 @@ fun SecurityScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewSecurityScreen() {
-    SecurityScreen(
-        navController = NavController(LocalContext.current)
-    )
 }

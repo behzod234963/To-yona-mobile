@@ -1,12 +1,10 @@
 package com.mr.anonym.toyonamobile.ui.screens.addCardScreen.viewModel
 
 import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.presentation.event.CardEvents
@@ -17,11 +15,9 @@ import javax.inject.Inject
 @HiltViewModel
 class AddCardViewModel @Inject constructor(
     savedState: SavedStateHandle,
-    sharedPreferences: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases,
 ) : ViewModel() {
 
-    private val _id = mutableIntStateOf(sharedPreferences.getID())
     private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
     private val _cardNumber = mutableStateOf("")
@@ -35,7 +31,7 @@ class AddCardViewModel @Inject constructor(
                 getCardByID(cardID)
             }
         }
-        getUserByID()
+        getUser()
     }
 
     fun getCardByID(cardID: Int) = viewModelScope.launch {
@@ -45,8 +41,8 @@ class AddCardViewModel @Inject constructor(
         }
     }
 
-    fun getUserByID() = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(_id.intValue).collect {
+    fun getUser() = viewModelScope.launch {
+        remoteUseCases.getUserUseCase.execute().collect {
             _user.value = it
         }
     }

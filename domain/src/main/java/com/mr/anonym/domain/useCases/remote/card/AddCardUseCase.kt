@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class AddCardUseCase(private val repository: CardRepository) {
-    fun execute(userID: Int,cardModel: CardModel): Flow<CardModel> = flow{
+    fun execute(cardModel: CardModel): Flow<CardModel> = flow{
         try {
-            val response = repository.addCard(userID,cardModel)
+            val response = repository.addCard(cardModel)
             if ( response.isSuccessful ){
                 response.body()?.let {
                     emit(it)

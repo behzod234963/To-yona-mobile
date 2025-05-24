@@ -95,7 +95,7 @@ fun LogInScreen(
     val quaternaryColor = Color.Red
 
     val containerPadding = rememberSaveable { mutableIntStateOf(10) }
-    val isSendResponse = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
@@ -110,9 +110,8 @@ fun LogInScreen(
     val passwordValue = rememberSaveable { mutableStateOf("") }
     val passwordValueError = rememberSaveable { mutableStateOf(false) }
 
-    val responseMessage = viewModel.message
-
     val snackbarHostState = remember { SnackbarHostState() }
+    val isLoginSuccess = viewModel.isLoginSuccess
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -120,7 +119,7 @@ fun LogInScreen(
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        if (!isSendResponse.value) {
+        if (!isLoading.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -239,7 +238,7 @@ fun LogInScreen(
                                 !phoneFieldError.value &&
                                 !passwordValueError.value
                             ) {
-                                isSendResponse.value = true
+                                isLoading.value = true
                                 viewModel.loginUser(
                                     LoginRequest(
                                         phonenumber = phoneFieldValue.value,
@@ -280,7 +279,7 @@ fun LogInScreen(
                 )
                 val result = "+998" + phoneFieldValue.value
                 if (
-                    responseMessage.value == "Login success"
+                    isLoginSuccess.value
                 ) {
                     when {
                         isPinForgotten.value -> {
@@ -290,10 +289,11 @@ fun LogInScreen(
                             }
                         }
                         else -> {
+                            viewModel.decodeToken()
                             coroutineScope.launch {
                                 dataStore.isOldUser(true)
                                 delay(1500)
-                                isSendResponse.value = false
+                                isLoading.value = false
                                 withContext(Dispatchers.Main){
                                     navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                         popUpTo(ScreensRouter.LoginScreen.route) {
@@ -307,11 +307,13 @@ fun LogInScreen(
                 } else {
                     coroutineScope.launch {
                         delay(1500)
-                        isSendResponse.value = false
-                        delay(500)
-                        snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.user_is_not_found)
-                        )
+                        if (isLoading.value){
+                            delay(500)
+                            snackbarHostState.showSnackbar(
+                                message = context.getString(R.string.user_is_not_found)
+                            )
+                            isLoading.value = false
+                        }
                     }
                 }
             }

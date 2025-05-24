@@ -107,10 +107,11 @@ fun NumberCheckScreen(
     val timeLeft = remember { mutableIntStateOf(40) }
     val isRunning = remember { mutableStateOf(true) }
 
+    val addCardProcess = sharedPreferences.addCardProcessState()
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
+    val isOldUserState = dataStore.isOldUserState().collectAsState(false)
 
-    val addCardProcess = sharedPreferences.addCardProcessState()
     val cardNumber = sharedPreferences.getCardNumber()
 //    val cardHolder = dataStore.getCardHolder().collectAsState("")
     val expiryDate = dataStore.getExpiryDate().collectAsState("")
@@ -213,12 +214,13 @@ fun NumberCheckScreen(
                                                 viewModel.updateCard(
                                                     cardID = cardID.value,
                                                     cardModel = CardModel(
-                                                        number = cardNumber?:"",
+                                                        number = cardNumber ?: "",
                                                         date = expiryDate.value
                                                     )
                                                 )
                                             }
                                         }
+
                                         isPasswordForgotten.value -> {
 //                                            val result = arguments.number.substring(4..arguments.number.length - 1)
 //                                            sharedPreferences.savePhoneNumber(result)
@@ -228,6 +230,7 @@ fun NumberCheckScreen(
 //                                                }
 //                                            }
                                         }
+
                                         isPinForgotten.value -> {
                                             sharedPreferences.savePhoneNumber(arguments.number)
                                             sharedPreferences.saveNewPinState(true)
@@ -237,15 +240,20 @@ fun NumberCheckScreen(
                                                 }
                                             }
                                         }
-                                        else -> {
 
-                                            sharedPreferences.saveIsLoggedIn(true)
-                                            sharedPreferences.saveIsProfileSettingsState(true)
-                                            viewModel.getUserByID()
-                                            navController.navigate(ScreensRouter.ProfileScreen.route) {
-                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                    inclusive = true
+                                        else -> {
+                                            if (isOldUserState.value) {
+                                                sharedPreferences.saveIsLoggedIn(true)
+                                                sharedPreferences.saveIsProfileSettingsState(true)
+                                                viewModel.getUserByID()
+                                                navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                                    popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                        inclusive = true
+                                                    }
                                                 }
+                                            } else {
+                                                viewModel.loginUser()
+                                                isLoading.value = true
                                             }
                                         }
                                     }
@@ -363,12 +371,13 @@ fun NumberCheckScreen(
                                             viewModel.updateCard(
                                                 cardID = cardID.value,
                                                 cardModel = CardModel(
-                                                    number = cardNumber?:"",
+                                                    number = cardNumber ?: "",
                                                     date = expiryDate.value
                                                 )
                                             )
                                         }
                                     }
+
                                     isPasswordForgotten.value -> {
 //                                            val result = arguments.number.substring(4..arguments.number.length - 1)
 //                                            sharedPreferences.savePhoneNumber(result)
@@ -378,6 +387,7 @@ fun NumberCheckScreen(
 //                                                }
 //                                            }
                                     }
+
                                     isPinForgotten.value -> {
                                         sharedPreferences.savePhoneNumber(arguments.number)
                                         sharedPreferences.saveNewPinState(true)
@@ -387,15 +397,20 @@ fun NumberCheckScreen(
                                             }
                                         }
                                     }
-                                    else -> {
 
-                                        sharedPreferences.saveIsLoggedIn(true)
-                                        sharedPreferences.saveIsProfileSettingsState(true)
-                                        viewModel.getUserByID()
-                                        navController.navigate(ScreensRouter.ProfileScreen.route) {
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                inclusive = true
+                                    else -> {
+                                        if (isOldUserState.value) {
+                                            sharedPreferences.saveIsLoggedIn(true)
+                                            sharedPreferences.saveIsProfileSettingsState(true)
+                                            viewModel.getUserByID()
+                                            navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
+                                        } else {
+                                            viewModel.loginUser()
+                                            isLoading.value = true
                                         }
                                     }
                                 }
@@ -432,8 +447,8 @@ fun NumberCheckScreen(
                 )
                 when {
                     addCardProcess -> {
-                        when{
-                            isCardUpdated.value->{
+                        when {
+                            isCardUpdated.value -> {
                                 coroutineScope.launch {
                                     dataStore.saveCardID(-1)
                                     dataStore.saveExpiryDate("")
@@ -441,7 +456,7 @@ fun NumberCheckScreen(
                                     sharedPreferences.addCardProcess(false)
                                     delay(1500)
                                     isLoading.value = false
-                                    withContext(Dispatchers.Main){
+                                    withContext(Dispatchers.Main) {
                                         navController.navigate(ScreensRouter.WalletScreen.route) {
                                             popUpTo(ScreensRouter.NumberCheckScreen.route) {
                                                 inclusive = true
@@ -450,30 +465,55 @@ fun NumberCheckScreen(
                                     }
                                 }
                             }
-                            isCardAdded.value->{
+                            isCardAdded.value -> {
                                 coroutineScope.launch {
                                     dataStore.saveCardID(-1)
                                     dataStore.saveExpiryDate("")
                                     sharedPreferences.saveCardNumber("")
                                     sharedPreferences.addCardProcess(false)
                                     delay(1500)
-                                    isLoading.value = false
-                                    withContext(Dispatchers.Main){
+                                    withContext(Dispatchers.Main) {
                                         navController.navigate(ScreensRouter.WalletScreen.route) {
                                             popUpTo(ScreensRouter.NumberCheckScreen.route) {
                                                 inclusive = true
                                             }
                                         }
                                     }
+                                    isLoading.value = false
                                 }
                             }
-                            else-> {
+                            else -> {
                                 coroutineScope.launch {
-                                    delay(500)
-                                    snackbarHostState.showSnackbar(
-                                        message = context.getString(R.string.unknown_error)
-                                    )
+                                    if(isLoading.value){
+                                        delay(2500)
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.unknown_error)
+                                        )
+                                        isLoading.value = false
+                                    }
                                 }
+                            }
+                        }
+                    }
+                    !isOldUserState.value ->{
+                        coroutineScope.launch {
+                            delay(3000)
+                            if (viewModel.isLoginSuccess.value){
+                                viewModel.decodeToken()
+                                sharedPreferences.saveIsLoggedIn(true)
+                                sharedPreferences.saveIsProfileSettingsState(true)
+                                delay(2000)
+                                navController.navigate(ScreensRouter.ProfileScreen.route) {
+                                    popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                        inclusive = true
+                                    }
+                                }
+                                isLoading.value = false
+                            }else{
+                                snackbarHostState.showSnackbar(
+                                    context.getString(R.string.couldn_t_log_in)
+                                )
+                                isLoading.value = false
                             }
                         }
                     }

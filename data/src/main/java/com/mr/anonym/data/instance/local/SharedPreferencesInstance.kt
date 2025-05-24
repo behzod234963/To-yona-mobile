@@ -7,7 +7,7 @@ import androidx.core.content.edit
 import com.mr.anonym.data.R
 import com.mr.anonym.data.crypto.AeadManager.getAead
 
-class SharedPreferencesInstance( private val context: Context) {
+class SharedPreferencesInstance( private val context: Context ) {
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
 
@@ -67,13 +67,6 @@ class SharedPreferencesInstance( private val context: Context) {
         return sharedPreferences.getBoolean("changePinProcess",false)
     }
 
-    fun saveAvatar(avatar: Int){
-        sharedPreferences.edit { putInt("avatar", avatar) }
-    }
-    fun getAvatar(): Int{
-        return sharedPreferences.getInt("avatar",R.drawable.ic_default_avatar)
-    }
-
     fun saveBiometricAuthState(state: Boolean){
         sharedPreferences.edit { putBoolean("bioState",state) }
     }
@@ -116,13 +109,27 @@ class SharedPreferencesInstance( private val context: Context) {
         return sharedPreferences.getInt("saveId",-1)
     }
 
-    fun saveToken(token: String){
+    fun saveAccessToken(token: String){
         val aead = getAead(context)
         val encrypted = aead.encrypt( token.toByteArray(),null )
         val encryptedBase64 = Base64.encodeToString( encrypted, Base64.DEFAULT )
         sharedPreferences.edit { putString( "saveToken",encryptedBase64 ) }
     }
-    fun getToken(): String?{
+    fun getAccessToken(): String?{
+        val encryptedBase64 = sharedPreferences.getString("saveToken",null)?:return null
+        val encrypted = Base64.decode( encryptedBase64, Base64.DEFAULT )
+        val aead = getAead(context)
+        val decrypted = aead.decrypt( encrypted,null )
+        return String(decrypted)
+    }
+
+    fun saveRefreshToken(token: String){
+        val aead = getAead(context)
+        val encrypted = aead.encrypt( token.toByteArray(),null )
+        val encryptedBase64 = Base64.encodeToString( encrypted, Base64.DEFAULT )
+        sharedPreferences.edit { putString( "saveToken",encryptedBase64 ) }
+    }
+    fun getRefreshToken(): String?{
         val encryptedBase64 = sharedPreferences.getString("saveToken",null)?:return null
         val encrypted = Base64.decode( encryptedBase64, Base64.DEFAULT )
         val aead = getAead(context)
@@ -152,6 +159,19 @@ class SharedPreferencesInstance( private val context: Context) {
     }
     fun getPhoneNumber(): String?{
         val encryptedBase64 = sharedPreferences.getString("phoneNumber",null)?:return null
+        val encrypted = Base64.decode( encryptedBase64, Base64.DEFAULT )
+        val aead = getAead(context)
+        val decrypted = aead.decrypt( encrypted,null )
+        return String(decrypted)
+    }
+    fun savePassword(password: String){
+        val aead = getAead(context)
+        val encrypted = aead.encrypt( password.toByteArray(),null )
+        val encryptedBase64 = Base64.encodeToString( encrypted, Base64.DEFAULT )
+        sharedPreferences.edit { putString( "savePassword",encryptedBase64 ) }
+    }
+    fun getPassword(): String?{
+        val encryptedBase64 = sharedPreferences.getString("savePassword",null)?:return null
         val encrypted = Base64.decode( encryptedBase64, Base64.DEFAULT )
         val aead = getAead(context)
         val decrypted = aead.decrypt( encrypted,null )

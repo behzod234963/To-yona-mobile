@@ -162,4 +162,5 @@
     <string name="unknown_error">Неизвестная ошибка!</string>
     <string name="general_parties">Главные события</string>
     <string name="other_parties">Другие события</string>
+    <string name="couldn_t_log_in">Не удалось осуществить вход</string>
 </resources>

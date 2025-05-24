@@ -109,7 +109,7 @@ fun DetailsScreen(
         else -> Color.White
     }
 
-    val profileAvatar = sharedPreferences.getAvatar()
+    val profileAvatar = viewModel.profileAvatar
 
     val selectedTab = rememberSaveable { mutableIntStateOf(1) }
 
@@ -120,9 +120,9 @@ fun DetailsScreen(
     val partyModel = remember { mutableStateOf( PartysItem()) }
     val transactionsModel = TransactionsModel(
         id = 1,
-        userId = user.value.id ?:-1,
+        userId = user.value.id,
         sender = "userModel.cardlist",
-        receiver = partyModel.value.cardNumber ?:"",
+        receiver = partyModel.value.cardNumber,
         price = priceValue.value.ifEmpty { "0.0" },
         dateTime = "30.04.2025"
     )
@@ -177,7 +177,7 @@ fun DetailsScreen(
                     Image(
                         modifier = Modifier
                             .size(70.dp),
-                        painter = painterResource(profileAvatar),
+                        painter = painterResource(profileAvatar.value),
                         contentDescription = ""
                     )
                     Spacer(Modifier.height(10.dp))

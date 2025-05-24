@@ -1,7 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,7 +100,7 @@ fun RegistrationScreen(
     val quaternaryColor = Color.Red
 
     val containerPadding = remember { mutableIntStateOf(10) }
-    val isSendResponse = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
@@ -115,11 +114,12 @@ fun RegistrationScreen(
     val confirmValue = rememberSaveable { mutableStateOf("") }
     val confirmValueError = remember { mutableStateOf(false) }
 
-    val phoneNumber = sharedPreferences.getPhoneNumber()
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
+
+    val phoneNumber = ""
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -131,7 +131,7 @@ fun RegistrationScreen(
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
-        if (!isSendResponse.value) {
+        if (!isLoading.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -241,7 +241,7 @@ fun RegistrationScreen(
                                         !passwordValueError.value &&
                                         !isPasswordForgotten.value -> {
                                     if (confirmValue.value == passwordValue.value) {
-                                        isSendResponse.value = true
+                                        isLoading.value = true
                                         viewModel.signUpUser(
                                             user = UserModelItem(
                                                 username = "",
@@ -254,13 +254,14 @@ fun RegistrationScreen(
                                         confirmValueError.value = true
                                     }
                                 }
+
                                 isPasswordForgotten.value &&
                                         !passwordValueError.value -> {
                                     if (confirmValue.value == passwordValue.value) {
                                         coroutineScope.launch {
                                             dataStore.isPasswordForgotten(false)
                                             dataStore.isOldUser(true)
-                                            sharedPreferences.savePhoneNumber("+998${phoneNumber}")
+                                            sharedPreferences.savePhoneNumber("+998${phoneFieldValue}")
                                         }
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)
@@ -273,6 +274,7 @@ fun RegistrationScreen(
                                         confirmValueError.value = true
                                     }
                                 }
+
                                 else -> {
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
@@ -309,8 +311,9 @@ fun RegistrationScreen(
                 coroutineScope.launch {
                     delay(1500)
                     if (viewModel.user.value.id != -1) {
+                        sharedPreferences.savePhoneNumber(phoneFieldValue.value)
+                        sharedPreferences.savePassword(confirmValue.value)
                         val result = "+998" + phoneFieldValue.value
-                        Log.d("UtilsLogging", "RegistrationScreen: $result")
                         withContext(Dispatchers.Main) {
                             navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                 popUpTo(ScreensRouter.RegistrationScreen.route) {
@@ -318,15 +321,15 @@ fun RegistrationScreen(
                                 }
                             }
                         }
-                        isSendResponse.value = false
+                        isLoading.value = false
                     } else {
                         delay(500)
-                        if (isSendResponse.value) {
+                        if (isLoading.value) {
                             snackbarHostState.showSnackbar(
                                 message = context.getString(R.string.user_is_already_exists)
                             )
                         }
-                        isSendResponse.value = false
+                        isLoading.value = false
                     }
                 }
             }

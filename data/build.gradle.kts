@@ -55,5 +55,10 @@ dependencies {
     implementation(libs.paging3)
     implementation(libs.paging3JetpackCompose)
 
+    implementation(libs.daggerHilt)
+    implementation(libs.daggerHilt.navigation.compose)
+    kapt(libs.daggerHiltCompiler)
+    kapt(libs.daggerHiltAndroidCompiler)
+
     implementation(libs.tink)
 }

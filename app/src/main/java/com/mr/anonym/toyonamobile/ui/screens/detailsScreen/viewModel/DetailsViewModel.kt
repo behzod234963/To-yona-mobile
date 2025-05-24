@@ -2,6 +2,7 @@ package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.viewModel
 
 import android.content.Context
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -36,11 +37,13 @@ class DetailsViewModel @Inject constructor(
     val senderCard: State<String> = _senderCard
     private val _senderName = mutableStateOf(context.getString(R.string.you_have_not_active_card))
     val senderName: State<String> = senderCard
+    private val _profileAvatar = mutableIntStateOf( R.drawable.ic_default_avatar )
+    val profileAvatar: State<Int> = _profileAvatar
 
     init {
         savedState.get<Int>("userID")?.let { userID->
             if ( userID != -1 ){
-                getUserByID(userID)
+                getUserByID()
             }
         }
     }
@@ -49,9 +52,15 @@ class DetailsViewModel @Inject constructor(
 //            _sender.value = it
 //        }
 //    }
-    fun getUserByID(id: Int) = viewModelScope.launch {
-        remoteUseCases.getUserByIdUseCase.execute(id).collect {
+    fun getUserByID() = viewModelScope.launch {
+        remoteUseCases.getUserUseCase.execute().collect {
             _user.value = it
+            _profileAvatar.intValue = when(it.sex){
+                0 -> R.drawable.ic_default_avatar
+                1 -> R.drawable.ic_man
+                2 -> R.drawable.ic_woman
+                else -> R.drawable.ic_default_avatar
+            }
         }
     }
     fun changeSenderCard(card: String){

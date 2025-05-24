@@ -2,6 +2,9 @@ package com.mr.anonym.toyonamobile.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.mr.anonym.data.auth.AuthInterceptor
+import com.mr.anonym.data.auth.TokenAuthenticator
+import com.mr.anonym.data.auth.TokenManager
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.implementations.remote.CardRepositoryImpl
 import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
@@ -27,12 +30,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
-
     @Provides
     @Singleton
     fun provideRoomInstance(@ApplicationContext context: Context): RoomInstance {
@@ -41,6 +44,10 @@ class DataModule {
             RoomInstance::class.java,
             RoomInstance.DB_NAME
         ).build()
+    }
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
     }
 
     @Provides
@@ -63,37 +70,63 @@ class DataModule {
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferencesInstance =
         SharedPreferencesInstance(context)
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
+    @Provides
+    @Singleton
+    fun provideAuthInterceptor(sharedPreferences: SharedPreferencesInstance): AuthInterceptor =
+        AuthInterceptor(tokenProvider = sharedPreferences)
 
     @Provides
     @Singleton
-    fun provideRetrofit2(): Retrofit =
+    fun provideTokenManager(
+        userApiProvider: Provider<UserApiService>,
+        sharedPrefs: SharedPreferencesInstance
+    ): TokenManager = TokenManager(userApiProvider = userApiProvider, sharedPreferences =  sharedPrefs)
+
+    @Provides
+    @Singleton
+    fun provideTokenAuthenticator(
+        tokenManager: TokenManager,
+        sharedPreferences: SharedPreferencesInstance,
+    ): TokenAuthenticator =
+        TokenAuthenticator(tokenManager, sharedPreferences)
+
+    @Provides
+    @Singleton
+    fun provideOkHTTP(
+        authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideRetrofit2(
+        okHttpClient: OkHttpClient
+    ): Retrofit =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(provideOkHTTP())
+            .client(okHttpClient)
             .build()
 
     @Provides
     @Singleton
-    fun provideOkHTTP(): OkHttpClient =
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
+    fun provideUserApi(retrofit: Retrofit): UserApiService =
+        retrofit.create(UserApiService::class.java)
 
     @Provides
     @Singleton
-    fun provieUserApi(retrofit: Retrofit): UserApiService = retrofit.create(UserApiService::class.java)
+    fun proviePartyApi(retrofit: Retrofit): PartyApiService =
+        retrofit.create(PartyApiService::class.java)
 
     @Provides
     @Singleton
-    fun proviePartyApi(retrofit: Retrofit): PartyApiService = retrofit.create(PartyApiService::class.java)
-
-    @Provides
-    @Singleton
-    fun provieCardApi(retrofit: Retrofit): CardApiService = retrofit.create(CardApiService::class.java)
+    fun provieCardApi(retrofit: Retrofit): CardApiService =
+        retrofit.create(CardApiService::class.java)
 
     @Provides
     @Singleton

@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -106,6 +107,16 @@ fun AddCardScreen(
     }
     val snackbarHostState = remember { SnackbarHostState() }
 
+    BackHandler (
+        enabled = true
+    ){
+        navController.navigate(ScreensRouter.WalletScreen.route){
+            popUpTo(ScreensRouter.AddCardScreen.route){
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+    }
     Scaffold(
         modifier = Modifier
             .imePadding(),
@@ -116,7 +127,14 @@ fun AddCardScreen(
             AddCardTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.navigateUp() }
+                onNavigationClick = {
+                    navController.navigate(ScreensRouter.WalletScreen.route){
+                        popUpTo(ScreensRouter.AddCardScreen.route){
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     ) { paddingValues ->

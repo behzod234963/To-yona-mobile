@@ -6,10 +6,14 @@ import com.mr.anonym.domain.useCases.remote.card.GetAllCardUseCase
 import com.mr.anonym.domain.useCases.remote.card.GetCardByIdUseCase
 import com.mr.anonym.domain.useCases.remote.card.GetUserCardsUseCase
 import com.mr.anonym.domain.useCases.remote.card.UpdateCardUseCase
+import com.mr.anonym.domain.useCases.remote.friends.AddFriendUseCase
+import com.mr.anonym.domain.useCases.remote.friends.DeleteFriendUseCase
+import com.mr.anonym.domain.useCases.remote.friends.GetAllMyFriendUseCase
 import com.mr.anonym.domain.useCases.remote.party.AddPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.DeletePartyRemoteUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
+import com.mr.anonym.domain.useCases.remote.party.GetUserActiveParties
 import com.mr.anonym.domain.useCases.remote.party.GetUserPartiesUseCase
 import com.mr.anonym.domain.useCases.remote.party.UpdatePartyUseCase
 import com.mr.anonym.domain.useCases.remote.user.DeleteUserUseCase
@@ -35,6 +39,7 @@ data class RemoteUseCases(
     val getPartyByIdUseCase: GetPartyByIdUseCase,
     val deletePartyUseCase: DeletePartyRemoteUseCase,
     val getUserPartiesUseCase: GetUserPartiesUseCase,
+    val getUserActiveParties: GetUserActiveParties,
 //    Card use cases
     val addCardUseCase: AddCardUseCase,
     val getAllCardUseCase: GetAllCardUseCase,
@@ -42,4 +47,8 @@ data class RemoteUseCases(
     val updateCardUseCase: UpdateCardUseCase,
     val deleteCardUseCase: DeleteCardUseCase,
     val getUserCardsUseCase: GetUserCardsUseCase,
+//    Friends use cases
+    val addFriendUseCase: AddFriendUseCase,
+    val getAllMyFriendUseCase: GetAllMyFriendUseCase,
+    val deleteFriendUseCase: DeleteFriendUseCase,
 )

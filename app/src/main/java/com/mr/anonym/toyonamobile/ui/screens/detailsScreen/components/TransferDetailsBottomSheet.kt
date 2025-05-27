@@ -45,8 +45,8 @@ fun TransferDetailsBottomSheet(
     tertiaryColor:Color,
     quaternaryColor: Color,
     state: SheetState,
-    senderName:String,
-    userModel: UserModelItem,
+    sender: UserModelItem,
+    receiver: UserModelItem,
     partyModel: PartysItem,
 
 //    Price field
@@ -110,13 +110,13 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${userModel.username} ${userModel.surname}",
+                        text = "${receiver.username} ${receiver.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                partyModel.cardNumber?.cardNumberFormatter()?.let {
+                partyModel.cardNumber.cardNumberFormatter().let {
                     Text(
                         text = it,
                         color = secondaryColor,
@@ -145,7 +145,7 @@ fun TransferDetailsBottomSheet(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = senderName,
+                        text = "${sender.username} ${sender.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold

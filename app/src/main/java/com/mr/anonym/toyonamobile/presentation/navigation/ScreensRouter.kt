@@ -16,7 +16,7 @@ sealed class ScreensRouter (val route:String){
     data object SupportScreen: ScreensRouter("SupportScreen")
     data object DetailsScreen: ScreensRouter("DetailsScreen")
     data object MyEventsScreen: ScreensRouter("MyEventsScreen")
-    data object AddEventScreen: ScreensRouter("AddEventScreen")
+    data object AddPartyScreen: ScreensRouter("AddEventScreen")
     data object LoginScreen: ScreensRouter("LoginScreen")
     data object AddCardScreen: ScreensRouter("AddCardScreen")
     data object SecurityScreen: ScreensRouter("SecurityScreen")

@@ -184,8 +184,7 @@ fun RegistrationScreen(
                             .focusRequester(focusRequester),
                         phoneFieldError = phoneFieldError.value,
                         isPhoneFieldEnabled = !isPasswordForgotten.value,
-                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber
-                            ?: "" else phoneFieldValue.value,
+                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber else phoneFieldValue.value,
                         phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
                         onPhoneValueChange = {
                             phoneFieldValue.value = it.take(9)

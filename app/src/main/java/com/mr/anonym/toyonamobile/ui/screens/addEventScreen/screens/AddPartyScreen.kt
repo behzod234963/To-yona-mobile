@@ -53,7 +53,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
@@ -86,7 +85,6 @@ fun AddPartyScreen(
     val coroutineScope = rememberCoroutineScope()
 
 //    val calendarInstance = Calendar.getInstance()
-    val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
@@ -162,7 +160,6 @@ fun AddPartyScreen(
     val endDate = viewModel.endDate
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
-    val id = sharedPreferences.getID()
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
@@ -183,7 +180,21 @@ fun AddPartyScreen(
     * */
 
     BackHandler {
-        navController.navigateUp()
+        if(arguments.eventID == -1){
+            navController.navigate(ScreensRouter.MainScreen.route){
+                popUpTo(ScreensRouter.AddPartyScreen.route){
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }else{
+            navController.navigate(ScreensRouter.MyEventsScreen.route){
+                popUpTo(ScreensRouter.AddPartyScreen.route){
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }
     }
     Scaffold(
         modifier = Modifier
@@ -195,7 +206,21 @@ fun AddPartyScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationIconClick = {
-                    navController.navigateUp()
+                    if(arguments.eventID == -1){
+                        navController.navigate(ScreensRouter.MainScreen.route){
+                            popUpTo(ScreensRouter.AddPartyScreen.route){
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }else{
+                        navController.navigate(ScreensRouter.MyEventsScreen.route){
+                            popUpTo(ScreensRouter.AddPartyScreen.route){
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
                 }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },
@@ -575,9 +600,7 @@ fun AddPartyScreen(
                             viewModel.onEvent(AddEventState.ChangeCardNumber(it.number))
                         },
                         onAddCardClick = {
-                            coroutineScope.launch {
-                                dataStore.addCardFromAddEvent(true)
-                            }
+                            sharedPreferences.addCardFromAddEvent(true)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         },
                         cardModel = cardModel.value
@@ -609,9 +632,7 @@ fun AddPartyScreen(
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            coroutineScope.launch {
-                                dataStore.addCardFromAddEvent(true)
-                            }
+                            sharedPreferences.addCardFromAddEvent(true)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         }
                     ) {
@@ -657,9 +678,7 @@ fun AddPartyScreen(
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
-                            coroutineScope.launch {
-                                dataStore.addCardFromAddEvent(true)
-                            }
+                            sharedPreferences.addCardFromAddEvent(true)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         }
                     ) {
@@ -703,7 +722,7 @@ fun AddPartyScreen(
                             isLoading.value = false
                             withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MainScreen.route) {
-                                    popUpTo(ScreensRouter.AddEventScreen.route) { inclusive = true }
+                                    popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             }
@@ -717,7 +736,7 @@ fun AddPartyScreen(
                             isLoading.value = false
                             withContext(Dispatchers.Main) {
                                 navController.navigate(ScreensRouter.MyEventsScreen.route) {
-                                    popUpTo(ScreensRouter.AddEventScreen.route) { inclusive = true }
+                                    popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
                                     launchSingleTop = true
                                 }
                             }

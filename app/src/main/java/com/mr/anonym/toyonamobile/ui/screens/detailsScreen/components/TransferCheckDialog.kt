@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.mr.anonym.domain.model.TransactionsModel
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
@@ -39,9 +39,11 @@ fun TransferCheckDialog(
     secondaryColor: Color,
     quaternaryColor: Color,
     commission: String,
-    senderName: String,
-    userModel: UserModelItem,
-    transactionsModel: TransactionsModel,
+    sender: UserModelItem,
+    senderCard: String,
+    receiver: UserModelItem,
+    transferAmount:String,
+    partyModel: PartysItem,
     onDismissClick: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
@@ -88,7 +90,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.dateTime,
+                        text = "$",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
@@ -113,7 +115,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = "${transactionsModel.price.moneySeparator()} ${stringResource(R.string.uzs)}",
+                        text = "${transferAmount.moneySeparator()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
@@ -162,9 +164,9 @@ fun TransferCheckDialog(
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
-                    userModel.surname?.length?.let {
+                    receiver.surname.length.let {
                         Text(
-                            text = "${userModel.username} ${if (it > 10) userModel.surname?.stringEqualizerForDetails() else userModel.surname }",
+                            text = "${receiver.username} ${if (it > 10) receiver.surname.stringEqualizerForDetails() else receiver.surname }",
                             fontSize = 16.sp,
                             color = secondaryColor,
                             fontWeight = FontWeight.SemiBold,
@@ -191,7 +193,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.receiver.cardNumberFormatter(),
+                        text = partyModel.cardNumber.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
@@ -216,7 +218,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                         Text(
-                            text = senderName,
+                            text = "${sender.username} ${sender.surname}",
                             fontSize = 16.sp,
                             color = secondaryColor,
                             fontWeight = FontWeight.SemiBold,
@@ -242,7 +244,7 @@ fun TransferCheckDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = transactionsModel.sender.cardNumberFormatter(),
+                        text = senderCard.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold

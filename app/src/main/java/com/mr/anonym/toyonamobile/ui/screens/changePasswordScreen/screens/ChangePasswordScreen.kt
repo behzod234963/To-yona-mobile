@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -98,8 +97,6 @@ fun ChangePasswordScreen(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
     val isLoading = remember { mutableStateOf(false) }
-
-    val user = viewModel.user
 
     Scaffold(
         modifier = Modifier
@@ -186,15 +183,15 @@ fun ChangePasswordScreen(
                                         newPasswordValue.value.isNotBlank() &&
                                         !newPasswordError.value -> {
                                     if (
-                                        oldPasswordValue.value == user.value.password &&
+                                        oldPasswordValue.value == viewModel.user.value.password &&
                                         newPasswordValue.value == confirmNewPasswordValue.value
                                     ) {
                                         isLoading.value = true
                                         viewModel.updateUser(
                                             userModelItem = UserModelItem(
-                                                username = user.value.username,
-                                                surname = user.value.surname,
-                                                phonenumber = user.value.phonenumber,
+                                                username = viewModel.user.value.username,
+                                                surname = viewModel.user.value.surname,
+                                                phonenumber = viewModel.user.value.phonenumber,
                                                 password = confirmNewPasswordValue.value
                                             )
                                         )
@@ -234,7 +231,6 @@ fun ChangePasswordScreen(
                 )
                 coroutineScope.launch {
                     delay(1500)
-                    isLoading.value = false
                     withContext(Dispatchers.Main) {
                         navController.navigate(ScreensRouter.SecurityScreen.route) {
                             popUpTo(ScreensRouter.ChangePasswordScreen.route) {
@@ -242,16 +238,9 @@ fun ChangePasswordScreen(
                             }
                         }
                     }
+                    isLoading.value = false
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewChangePasswordScreen() {
-    ChangePasswordScreen(
-        navController = NavController(LocalContext.current)
-    )
 }

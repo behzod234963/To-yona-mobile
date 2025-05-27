@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import androidx.core.content.edit
-import com.mr.anonym.data.R
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import com.mr.anonym.data.crypto.AeadManager.getAead
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SharedPreferencesInstance( private val context: Context ) {
 
@@ -190,5 +193,19 @@ class SharedPreferencesInstance( private val context: Context ) {
         val aead = getAead(context)
         val decrypted = aead.decrypt( encrypted,null )
         return String(decrypted)
+    }
+
+    fun addCardFromDetails(state: Boolean){
+        sharedPreferences.edit { putBoolean("addCardFromDetails",state) }
+    }
+    fun addCardFromDetailsState(): Boolean{
+        return sharedPreferences.getBoolean("addCardFromDetails",false)
+    }
+
+    fun addCardFromAddEvent(state: Boolean){
+        sharedPreferences.edit { putBoolean("addCardFromAddEvent",state) }
+    }
+    fun addCardFromAddEventState(): Boolean{
+        return sharedPreferences.getBoolean("addCardFromAddEvent",false)
     }
 }

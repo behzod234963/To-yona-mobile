@@ -14,7 +14,7 @@ interface UserRepository {
 
     suspend fun loginUser(user: LoginRequest): Response<LoginResponse>
     suspend fun registerUser(user: UserModelItem): Response<UserModelItem>
-    suspend fun getUserByID(): Response<UserModelItem>
+    suspend fun getUserByID(userID: Int): Response<UserModelItem>
     suspend fun updateUser(user: UserModelItem): Response<UserModelItem>
     suspend fun searchUser(searchText: String): Response<List<UserModelItem>>
     fun refreshToken(refreshToken: RefreshTokenRequest): Call<RefreshTokenResponse>

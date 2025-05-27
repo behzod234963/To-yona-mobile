@@ -63,7 +63,7 @@ class NumberCheckViewModel @Inject constructor(
     }
 
     fun getUserByID() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute().collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             sharedPrefs.savePhoneNumber(it.phonenumber)
         }
     }

@@ -16,5 +16,5 @@ class CardRepositoryImpl(private val api: CardApiService): CardRepository {
     override suspend fun deleteCard(cardID: Int): Response<String> = api.deleteCard(
         cardID
     )
-    override suspend fun getUserCards(): Response<UserModelItem> = api.getUserCards()
+    override suspend fun getUserCards(userID: Int): Response<UserModelItem> = api.getUserCards(userID)
 }

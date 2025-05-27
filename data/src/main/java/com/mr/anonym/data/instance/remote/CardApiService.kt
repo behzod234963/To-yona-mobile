@@ -36,6 +36,8 @@ interface CardApiService {
         @Path("id") cardID: Int,
     ): Response<String>
 
-    @GET("/getbyid")
-    suspend fun getUserCards(): Response<UserModelItem>
+    @GET("/getbyid/{id}")
+    suspend fun getUserCards(
+        @Path("id") userID: Int
+    ): Response<UserModelItem>
 }

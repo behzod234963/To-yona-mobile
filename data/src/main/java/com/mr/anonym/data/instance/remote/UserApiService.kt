@@ -16,6 +16,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserApiService {
@@ -31,8 +32,10 @@ interface UserApiService {
         @Body user: UserModelItem
     ): Response<UserModelItem>
 
-    @GET("/getbyid")
-    suspend fun getUserByID(): Response<UserModelItem>
+    @GET("/getbyid/{id}")
+    suspend fun getUserByID(
+        @Path("id") userID: Int
+    ): Response<UserModelItem>
 
     @GET("/getallusersearch/")
     suspend fun searchUser(

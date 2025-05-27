@@ -15,7 +15,7 @@ import retrofit2.Response
 class UserRepositoryImpl( private val userApiService: UserApiService): UserRepository {
     override suspend fun loginUser(user: LoginRequest): Response<LoginResponse> = userApiService.loginUser(user)
     override suspend fun registerUser(user: UserModelItem): Response<UserModelItem> = userApiService.registerUser(user)
-    override suspend fun getUserByID(): Response<UserModelItem> = userApiService.getUserByID()
+    override suspend fun getUserByID(userID: Int): Response<UserModelItem> = userApiService.getUserByID(userID)
     override suspend fun updateUser(user: UserModelItem): Response<UserModelItem> = userApiService.updateUser(user)
     override suspend fun searchUser(searchText: String): Response<List<UserModelItem>> = userApiService.searchUser(searchText)
     override fun refreshToken(refreshToken: RefreshTokenRequest): Call<RefreshTokenResponse> = userApiService.refreshToken(refreshToken)

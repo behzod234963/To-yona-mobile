@@ -27,7 +27,7 @@ class SettingsViewModel @Inject constructor(
         getUserByID()
     }
     fun getUserByID() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute().collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
             _profileAvatar.intValue = when(it.sex){
                 0 -> R.drawable.ic_default_avatar

@@ -105,7 +105,7 @@ fun MyEventsScreen(
                         sevenrdColor = sevenrdColor,
                         partyModel = model,
                         onEditClick = {
-                            navController.navigate(ScreensRouter.AddEventScreen.route + "/${model.id}")
+                            navController.navigate(ScreensRouter.AddPartyScreen.route + "/${model.id}")
                         },
                         onDeleteClick = {
                             isLoading.value = true

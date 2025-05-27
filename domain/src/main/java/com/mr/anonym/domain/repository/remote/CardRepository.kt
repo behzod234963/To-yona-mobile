@@ -10,5 +10,5 @@ interface CardRepository {
     suspend fun getCardByID(cardID: Int): Response<CardModel>
     suspend fun updateCard(cardID: Int,cardModel: CardModel): Response<CardModel>
     suspend fun deleteCard(cardID: Int): Response<String>
-    suspend fun getUserCards(): Response<UserModelItem>
+    suspend fun getUserCards(userID: Int): Response<UserModelItem>
 }

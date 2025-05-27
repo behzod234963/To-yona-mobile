@@ -239,7 +239,7 @@ fun MainScreen(
                         MainScreenFAB(
                             secondaryColor = secondaryColor,
                             quaternaryColor = quaternaryColor,
-                            onFabClick = { navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") }
+                            onFabClick = { navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") }
                         )
                     },
                     topBar = {
@@ -304,6 +304,7 @@ fun MainScreen(
                             }
                         } else {
                             MainScreenTabRow(
+                                primaryColor = primaryColor,
                                 secondaryColor = secondaryColor,
                                 tabs = tabs,
                                 content = { contentItem ->

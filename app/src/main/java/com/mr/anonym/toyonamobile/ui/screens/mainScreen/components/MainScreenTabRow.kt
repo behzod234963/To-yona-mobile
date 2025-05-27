@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MainScreenTabRow(
+    primaryColor:Color,
     secondaryColor: Color,
     tabs: List<String>,
     content: @Composable (Int)-> Unit
@@ -58,7 +59,8 @@ fun MainScreenTabRow(
                 Row (
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(45.dp),
+                        .height(45.dp)
+                        .background(primaryColor),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ){

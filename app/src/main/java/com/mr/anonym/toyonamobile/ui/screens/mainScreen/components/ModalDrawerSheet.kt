@@ -61,7 +61,7 @@ fun MainScreenModalDrawerSheet(
     val isSettingsSelected = remember { mutableStateOf( false ) }
     val isSupportSelected = remember { mutableStateOf( false) }
 
-    viewModel.getUserByID(userId)
+    viewModel.getUserByID()
     val user = viewModel.user
 
     ModalDrawerSheet(
@@ -96,7 +96,7 @@ fun MainScreenModalDrawerSheet(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                viewModel.getUserByID(userId)
+                viewModel.getUserByID()
                 Text(
                     text = "${user.value.username} ${user.value.surname}",
                     color = secondaryColor,

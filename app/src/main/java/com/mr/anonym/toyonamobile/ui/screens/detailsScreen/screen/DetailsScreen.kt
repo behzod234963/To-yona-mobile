@@ -44,10 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.PartysItem
-import com.mr.anonym.domain.model.TransactionsModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -73,7 +71,6 @@ fun DetailsScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
@@ -115,24 +112,17 @@ fun DetailsScreen(
 
     val priceValue = remember { mutableStateOf("") }
 
-    val user = viewModel.user
-    val partyList = emptyList<PartysItem>()
-    val partyModel = remember { mutableStateOf( PartysItem()) }
-    val transactionsModel = TransactionsModel(
-        id = 1,
-        userId = user.value.id,
-        sender = "userModel.cardlist",
-        receiver = partyModel.value.cardNumber,
-        price = priceValue.value.ifEmpty { "0.0" },
-        dateTime = "30.04.2025"
-    )
+    val receiver = viewModel.user
+    val sender = viewModel.sender
+    val activeParties = viewModel.activeParties
+    val parties = viewModel.parties
+    val partyModel = remember { mutableStateOf(PartysItem()) }
 
     val showTransferDetails = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isExpanded = remember { mutableStateOf(false) }
     val isPriceFieldEnabled = remember { mutableStateOf(false) }
     val senderCardNumber = viewModel.senderCard
-    val senderName = viewModel.senderName
     val cards = viewModel.cards
     val priceFieldError = rememberSaveable { mutableStateOf(false) }
     val showCheckDetails = rememberSaveable { mutableStateOf(false) }
@@ -182,7 +172,7 @@ fun DetailsScreen(
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = "${user.value.username} ${user.value.surname}",
+                        text = "${receiver.value.username} ${receiver.value.surname}",
                         color = secondaryColor,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -190,7 +180,7 @@ fun DetailsScreen(
                     )
                     Spacer(Modifier.height(5.dp))
                     Text(
-                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
+                        text = "+998${receiver.value.phonenumber}".phoneNumberTransformation(),
                         color = secondaryColor,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold
@@ -202,11 +192,11 @@ fun DetailsScreen(
                             type = ContactsContract.RawContacts.CONTENT_TYPE
                             putExtra(
                                 ContactsContract.Intents.Insert.NAME,
-                                "${user.value.username} ${user.value.surname}"
+                                "${receiver.value.username} ${receiver.value.surname}"
                             )
                             putExtra(
                                 ContactsContract.Intents.Insert.PHONE,
-                                user.value.phonenumber
+                                receiver.value.phonenumber
                             )
                         }
                         contactsLauncher.launch(intent)
@@ -215,7 +205,7 @@ fun DetailsScreen(
                     Icon(
                         modifier = Modifier
                             .size(30.dp),
-                        painter = painterResource(R.drawable.ic_contact),
+                        painter = painterResource(R.drawable.ic_add_friend),
                         tint = secondaryColor,
                         contentDescription = ""
                     )
@@ -234,14 +224,14 @@ fun DetailsScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
-                                items(partyList) { model ->
+                                items(activeParties.value) { model ->
                                     partyModel.value = model
                                     ActualEventsItem(
                                         secondaryColor = secondaryColor,
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
                                         partyModel = model,
-                                        userModel = user.value,
+                                        userModel = receiver.value,
                                         priceFieldError = priceFieldError.value,
                                     ) { price ->
                                         partyModel.value = model
@@ -274,13 +264,13 @@ fun DetailsScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                             ) {
-                                items(partyList) { model ->
+                                items(parties.value) { model ->
                                     partyModel.value = model
                                     DetailsHistoryItem(
                                         secondaryColor = secondaryColor,
                                         fiverdColor = fiverdColor,
                                         sevenrdColor = sevenrdColor,
-                                        userModel = user.value,
+                                        userModel = receiver.value,
                                         partyModel = model,
                                         priceFieldError = priceHistoryValueError.value,
                                     ) { price ->
@@ -318,6 +308,20 @@ fun DetailsScreen(
                     tertiaryColor = tertiaryColor,
                     quaternaryColor = quaternaryColor,
                     state = bottomSheetState,
+                    sender = sender.value,
+                    receiver = receiver.value,
+                    partyModel = partyModel.value,
+                    isFieldEnabled = isPriceFieldEnabled.value,
+//                Price field properties
+                    priceValue = priceValue.value,
+                    onValueChange = {
+                        priceValue.value = it
+                    },
+                    onTrailingIconClick = {
+                        isPriceFieldEnabled.value = true
+                    },
+                    senderCardNumber = senderCardNumber.value,
+//                DropDown menu properties
                     onConfirmButtonClick = {
                         if (
                             priceValue.value.isDigitsOnly() &&
@@ -338,20 +342,9 @@ fun DetailsScreen(
                         priceFieldError.value = false
                         isPriceFieldEnabled.value = false
                     },
-                    senderCardNumber = senderCardNumber.value,
                     onSelectCardClick = {
                         isExpanded.value = true
                     },
-//                Price field properties
-                    isFieldEnabled = isPriceFieldEnabled.value,
-                    priceValue = priceValue.value,
-                    onValueChange = {
-                        priceValue.value = it
-                    },
-                    onTrailingIconClick = {
-                        isPriceFieldEnabled.value = true
-                    },
-//                DropDown menu properties
                     userCards = cards.value,
                     onDropDownDismissRequest = {
                         isExpanded.value = false
@@ -362,15 +355,10 @@ fun DetailsScreen(
                     },
                     onAddCardClick = {
                         isExpanded.value = false
-                        coroutineScope.launch {
-                            dataStore.addCardFromDetails(true)
-                        }
+                        sharedPreferences.addCardFromDetails(true)
                         navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                     },
                     isExpanded = isExpanded.value,
-                    senderName = senderName.value,
-                    userModel = user.value,
-                    partyModel = partyModel.value,
                 )
             }
             if (showCheckDetails.value) {
@@ -378,10 +366,12 @@ fun DetailsScreen(
                     secondaryColor = secondaryColor,
                     quaternaryColor = quaternaryColor,
                     commission = "500",
-                    userModel = user.value,
-                    senderName = senderName.value,
-                    transactionsModel = transactionsModel,
+                    sender = sender.value,
+                    receiver = receiver.value,
                     onDismissClick = { showCheckDetails.value = false },
+                    senderCard = senderCardNumber.value,
+                    transferAmount = priceValue.value,
+                    partyModel = partyModel.value,
                 ) {
                     showCheckDetails.value = false
                     navController.navigate(ScreensRouter.MainScreen.route) {

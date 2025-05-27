@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +28,6 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -50,20 +48,20 @@ fun WalletScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
-    val addCardFromDetailsState = dataStore.addCardFromDetailsState().collectAsState(false)
-    val addCardFromAddEvent = dataStore.addCardFromAddEventState().collectAsState(false)
+    val addCardFromDetailsState = sharedPreferences.addCardFromDetailsState()
+    val addCardFromAddEvent = sharedPreferences.addCardFromAddEventState()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -85,17 +83,15 @@ fun WalletScreen(
     val cardID = remember { mutableIntStateOf(-1) }
     sharedPreferences.addCardProcess(false)
 
-    val isLoading = remember { mutableStateOf( false) }
+    val isLoading = remember { mutableStateOf(false) }
     val loadingAnimations = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.ic_loading)
     )
 
     BackHandler {
         when {
-            addCardFromDetailsState.value -> {
-                coroutineScope.launch {
-                    dataStore.addCardFromDetails(false)
-                }
+            addCardFromDetailsState -> {
+                sharedPreferences.addCardFromDetails(false)
                 navController.navigate(ScreensRouter.DetailsScreen.route) {
                     popUpTo(ScreensRouter.DetailsScreen.route) {
                         inclusive = true
@@ -103,12 +99,10 @@ fun WalletScreen(
                     launchSingleTop = true
                 }
             }
-            addCardFromAddEvent.value->{
-                coroutineScope.launch {
-                    dataStore.addCardFromAddEvent(false)
-                }
-                navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") {
-                    popUpTo(ScreensRouter.AddEventScreen.route) {
+            addCardFromAddEvent -> {
+                sharedPreferences.addCardFromAddEvent(false)
+                navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") {
+                    popUpTo(ScreensRouter.AddPartyScreen.route) {
                         inclusive = true
                     }
                     launchSingleTop = true
@@ -128,10 +122,8 @@ fun WalletScreen(
                 secondaryColor = secondaryColor,
                 navigationClick = {
                     when {
-                        addCardFromDetailsState.value -> {
-                            coroutineScope.launch {
-                                dataStore.addCardFromDetails(false)
-                            }
+                        addCardFromDetailsState -> {
+                            sharedPreferences.addCardFromDetails(false)
                             navController.navigate(ScreensRouter.DetailsScreen.route) {
                                 popUpTo(ScreensRouter.DetailsScreen.route) {
                                     inclusive = true
@@ -139,12 +131,10 @@ fun WalletScreen(
                                 launchSingleTop = true
                             }
                         }
-                        addCardFromAddEvent.value->{
-                            coroutineScope.launch {
-                                dataStore.addCardFromAddEvent(false)
-                            }
-                            navController.navigate(ScreensRouter.AddEventScreen.route + "/-1") {
-                                popUpTo(ScreensRouter.AddEventScreen.route) {
+                        addCardFromAddEvent -> {
+                            sharedPreferences.addCardFromAddEvent(false)
+                            navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") {
+                                popUpTo(ScreensRouter.AddPartyScreen.route) {
                                     inclusive = true
                                 }
                                 launchSingleTop = true
@@ -159,7 +149,7 @@ fun WalletScreen(
             )
         }
     ) { paddingValues ->
-        if (!isLoading.value){
+        if (!isLoading.value) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -195,12 +185,12 @@ fun WalletScreen(
                     onDismissRequest = { showDeleteDialog.value = false }
                 )
             }
-        }else{
+        } else {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 LottieAnimation(
                     modifier = Modifier
                         .size(150.dp),

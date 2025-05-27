@@ -306,12 +306,14 @@ fun LogInScreen(
                     }
                 } else {
                     coroutineScope.launch {
-                        delay(1500)
+                        delay(2500)
                         if (isLoading.value){
                             delay(500)
                             snackbarHostState.showSnackbar(
                                 message = context.getString(R.string.user_is_not_found)
                             )
+                            isLoading.value = false
+                        }else{
                             isLoading.value = false
                         }
                     }

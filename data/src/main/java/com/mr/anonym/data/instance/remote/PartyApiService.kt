@@ -42,8 +42,8 @@ interface PartyApiService {
         @Path("id") partyID: Int
     ): Response<PartysItem>
 
-    @GET("/getbyid/{userID}")
+    @GET("/getbyid/{id}")
     suspend fun getUserParties(
-        @Path("userID") userID: Int
+        @Path("id") userID: Int,
     ): Response<UserModelItem>
 }

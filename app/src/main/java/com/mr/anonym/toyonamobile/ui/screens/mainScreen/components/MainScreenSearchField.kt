@@ -73,7 +73,7 @@ fun MainScreenSearchField(
             }
             Spacer(Modifier.width(10.dp))
         },
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(20.dp),
         keyboardOptions = keyboardOptions,
     )
 }

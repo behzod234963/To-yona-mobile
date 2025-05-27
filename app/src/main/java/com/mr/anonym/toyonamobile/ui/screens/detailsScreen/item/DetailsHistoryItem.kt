@@ -74,14 +74,12 @@ fun DetailsHistoryItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                partyModel.type?.let {
-                    Text(
-                        text = it,
-                        color = secondaryColor,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+                Text(
+                    text = partyModel.name,
+                    color = secondaryColor,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -117,14 +115,19 @@ fun DetailsHistoryItem(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                        partyModel.type?.let {
-                            Text(
-                                text = it,
-                                color = secondaryColor,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Text(
+                            text = when(partyModel.type){
+                                "0" -> ""
+                                "1" -> stringResource(R.string.wedding)
+                                "2" -> stringResource(R.string.sunnat_wedding)
+                                "3" -> stringResource(R.string.birthday)
+                                "4" -> partyModel.type
+                                else -> ""
+                            },
+                            color = secondaryColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
@@ -145,24 +148,20 @@ fun DetailsHistoryItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Column {
-                            partyModel.startTime?.let {
-                                Text(
-                                    text = it,
-                                    color = secondaryColor,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                            partyModel.endTime?.let {
-                                Text(
-                                    text = it,
-                                    color = secondaryColor,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    textAlign = TextAlign.End
-                                )
-                            }
+                            Text(
+                                text = partyModel.startTime,
+                                color = secondaryColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.End
+                            )
+                            Text(
+                                text = partyModel.endTime,
+                                color = secondaryColor,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                textAlign = TextAlign.End
+                            )
                         }
                     }
                     Spacer(Modifier.height(5.dp))
@@ -221,7 +220,7 @@ fun DetailsHistoryItem(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
-                        partyModel.cardNumber?.cardNumberFormatter()?.let {
+                        partyModel.cardNumber.cardNumberFormatter().let {
                             Text(
                                 text = it,
                                 color = secondaryColor,

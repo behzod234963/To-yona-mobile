@@ -80,7 +80,7 @@ class AddPartyViewModel @Inject constructor(
         }
     }
     fun getUserCards() = viewModelScope.launch {
-        remoteUseCases.getUserCardsUseCase.execute().collect {
+        remoteUseCases.getUserCardsUseCase.execute(_id.intValue).collect {
             _cards.value = it
             _cardValue.value = it[0].number
         }
@@ -102,7 +102,7 @@ class AddPartyViewModel @Inject constructor(
         }
     }
     fun getUserById() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute().collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
         }
     }

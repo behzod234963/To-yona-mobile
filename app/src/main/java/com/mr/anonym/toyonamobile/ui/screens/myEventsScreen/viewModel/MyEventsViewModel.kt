@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyEventsViewModel @Inject constructor(
-    sharedPreferences: SharedPreferencesInstance,
+    sharedPrefs: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases,
 ) : ViewModel(){
 
-    private val _id = mutableIntStateOf( sharedPreferences.getID() )
+    private val _id = mutableIntStateOf( sharedPrefs.getID() )
     private val _user = mutableStateOf(UserModelItem() )
     val user: State<UserModelItem> = _user
     private val _parties = mutableStateOf(emptyList<PartysItem>())

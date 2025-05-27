@@ -2,6 +2,7 @@ package com.mr.anonym.toyonamobile.di.module
 
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
+import com.mr.anonym.domain.repository.remote.FriendsRepository
 import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.domain.useCases.local.notificationUseCase.ClearNotificationsUseCase
@@ -21,10 +22,14 @@ import com.mr.anonym.domain.useCases.remote.card.GetAllCardUseCase
 import com.mr.anonym.domain.useCases.remote.card.GetCardByIdUseCase
 import com.mr.anonym.domain.useCases.remote.card.GetUserCardsUseCase
 import com.mr.anonym.domain.useCases.remote.card.UpdateCardUseCase
+import com.mr.anonym.domain.useCases.remote.friends.AddFriendUseCase
+import com.mr.anonym.domain.useCases.remote.friends.DeleteFriendUseCase
+import com.mr.anonym.domain.useCases.remote.friends.GetAllMyFriendUseCase
 import com.mr.anonym.domain.useCases.remote.party.AddPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.DeletePartyRemoteUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetAllPartyUseCase
 import com.mr.anonym.domain.useCases.remote.party.GetPartyByIdUseCase
+import com.mr.anonym.domain.useCases.remote.party.GetUserActiveParties
 import com.mr.anonym.domain.useCases.remote.party.GetUserPartiesUseCase
 import com.mr.anonym.domain.useCases.remote.party.UpdatePartyUseCase
 import com.mr.anonym.domain.useCases.remote.user.DeleteUserUseCase
@@ -55,7 +60,12 @@ class DomainModule {
 
     @Provides
     @Singleton
-    fun provideRemoteUseCases(userRepository: UserRepository,partyRepository: PartyRepository,cardRepository: CardRepository): RemoteUseCases =
+    fun provideRemoteUseCases(
+        userRepository: UserRepository,
+        partyRepository: PartyRepository,
+        cardRepository: CardRepository,
+        friendsRepository: FriendsRepository
+    ): RemoteUseCases =
         RemoteUseCases(
             loginUserUseCase = LoginUserUseCase(userRepository),
             registerUserUseCase = RegisterUserUseCase(userRepository),
@@ -75,6 +85,10 @@ class DomainModule {
             getUserCardsUseCase = GetUserCardsUseCase(cardRepository),
             getUserPartiesUseCase = GetUserPartiesUseCase(partyRepository),
             decodeTokenUseCase = DecodeTokenUseCase(userRepository),
-            deleteUserUseCase = DeleteUserUseCase(userRepository)
+            deleteUserUseCase = DeleteUserUseCase(userRepository),
+            getUserActiveParties = GetUserActiveParties(partyRepository),
+            addFriendUseCase = AddFriendUseCase(friendsRepository),
+            getAllMyFriendUseCase = GetAllMyFriendUseCase(friendsRepository),
+            deleteFriendUseCase = DeleteFriendUseCase(friendsRepository),
         )
 }

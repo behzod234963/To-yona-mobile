@@ -7,6 +7,7 @@ import com.mr.anonym.data.auth.TokenAuthenticator
 import com.mr.anonym.data.auth.TokenManager
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.implementations.remote.CardRepositoryImpl
+import com.mr.anonym.data.implementations.remote.FriendsRepositoryImpl
 import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
@@ -14,10 +15,12 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
 import com.mr.anonym.data.instance.remote.CardApiService
+import com.mr.anonym.data.instance.remote.FriendsApiService
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.data.instance.remote.UserApiService
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
+import com.mr.anonym.domain.repository.remote.FriendsRepository
 import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.toyonamobile.presentation.constants.BASE_URL
@@ -125,6 +128,11 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideFriendsApiService(retrofit: Retrofit): FriendsApiService = retrofit.create(
+        FriendsApiService::class.java)
+
+    @Provides
+    @Singleton
     fun provieCardApi(retrofit: Retrofit): CardApiService =
         retrofit.create(CardApiService::class.java)
 
@@ -139,4 +147,8 @@ class DataModule {
     @Provides
     @Singleton
     fun provideCardRepository(api: CardApiService): CardRepository = CardRepositoryImpl(api)
+
+    @Provides
+    @Singleton
+    fun provideFriendsRepository(api: FriendsApiService): FriendsRepository = FriendsRepositoryImpl(api)
 }

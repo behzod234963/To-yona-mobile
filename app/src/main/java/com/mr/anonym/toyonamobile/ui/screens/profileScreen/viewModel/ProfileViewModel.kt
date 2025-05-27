@@ -39,7 +39,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun getUserById() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute().collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
             _avatarIndex.intValue = it.sex
             when(it.sex){

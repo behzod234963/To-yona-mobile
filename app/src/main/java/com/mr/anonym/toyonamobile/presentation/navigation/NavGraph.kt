@@ -125,7 +125,7 @@ fun NavGraph(
             MyEventsScreen(navController)
         }
         composable(
-            route = ScreensRouter.AddEventScreen.route + "/{eventID}",
+            route = ScreensRouter.AddPartyScreen.route + "/{eventID}",
             arguments = listOf(
                 navArgument("eventID") {
                     type = NavType.IntType

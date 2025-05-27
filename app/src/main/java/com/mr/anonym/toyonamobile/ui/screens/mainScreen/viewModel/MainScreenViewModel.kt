@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.R
@@ -19,9 +20,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
+    sharedPrefs: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases
 ) : ViewModel() {
 
+    private val _id = mutableIntStateOf( sharedPrefs.getID() )
     private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
     private val _users = mutableStateOf(ListState().users)
@@ -31,8 +34,8 @@ class MainScreenViewModel @Inject constructor(
     private val _profileAvatar = mutableIntStateOf( R.drawable.ic_default_avatar )
     val profileAvatar: State<Int> = _profileAvatar
 
-    fun getUserByID(id: Int) = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute().collect {
+    fun getUserByID() = viewModelScope.launch {
+        remoteUseCases.getUserUseCase.execute(_id.value).collect {
             _user.value = it
             _profileAvatar.intValue = when(it.sex){
                 0 -> R.drawable.ic_default_avatar

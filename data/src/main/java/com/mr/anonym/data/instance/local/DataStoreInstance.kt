@@ -50,19 +50,6 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:false
         }
     }
-
-    suspend fun saveCardHolder(cardHolder: String){
-        val key = stringPreferencesKey("cardHolder")
-        context.dataStore.edit {
-            it[key] = cardHolder
-        }
-    }
-    fun getCardHolder(): Flow<String>{
-        val key = stringPreferencesKey("cardHolder")
-        return context.dataStore.data.map {
-            it[key]?:""
-        }
-    }
     suspend fun saveExpiryDate(date: String){
         val key = stringPreferencesKey("ExpiryDate")
         context.dataStore.edit {
@@ -87,18 +74,6 @@ class DataStoreInstance(private val context: Context) {
             it[key]?:-1
         }
     }
-    suspend fun addCardFromDetails(state: Boolean){
-        val key = booleanPreferencesKey("addCardFromDetails")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun addCardFromDetailsState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("addCardFromDetails")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
     suspend fun showBiometricAuthManually(state: Boolean){
         val key = booleanPreferencesKey("showBiometricAuthManually")
         context.dataStore.edit {
@@ -119,18 +94,6 @@ class DataStoreInstance(private val context: Context) {
     }
     fun openSecurityContentState(): Flow<Boolean>{
         val key = booleanPreferencesKey("openSecurityContent")
-        return context.dataStore.data.map {
-            it[key]?:false
-        }
-    }
-    suspend fun addCardFromAddEvent(state: Boolean){
-        val key = booleanPreferencesKey("addCardFromAddEvent")
-        context.dataStore.edit {
-            it[key] = state
-        }
-    }
-    fun addCardFromAddEventState(): Flow<Boolean>{
-        val key = booleanPreferencesKey("addCardFromAddEvent")
         return context.dataStore.data.map {
             it[key]?:false
         }

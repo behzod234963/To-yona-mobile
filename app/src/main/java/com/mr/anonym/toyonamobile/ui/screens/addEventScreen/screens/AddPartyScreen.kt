@@ -162,7 +162,7 @@ fun AddPartyScreen(
 
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
     viewModel.getUserById()
 //    val user = viewModel.user

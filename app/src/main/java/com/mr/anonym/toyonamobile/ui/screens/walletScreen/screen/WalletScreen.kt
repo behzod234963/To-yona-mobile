@@ -85,7 +85,7 @@ fun WalletScreen(
 
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimations = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
 
     BackHandler {

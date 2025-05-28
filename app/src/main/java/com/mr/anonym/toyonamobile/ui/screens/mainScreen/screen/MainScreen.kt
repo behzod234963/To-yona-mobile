@@ -129,7 +129,7 @@ fun MainScreen(
     val isRefresh = viewModel.isRefresh.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
 
     val user = viewModel.user
@@ -291,6 +291,7 @@ fun MainScreen(
                             ) {
                                 items(userList.value) { userModel ->
                                     MainScreenItem(
+                                        primaryColor = primaryColor,
                                         secondaryColor = secondaryColor,
                                         tertiaryColor = tertiaryColor,
                                         sevenrdColor = sevenrdColor,
@@ -326,6 +327,7 @@ fun MainScreen(
                                                     if (model != null) {
                                                         partyModel.value = model
                                                         MainScreenItem(
+                                                            primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
                                                             sevenrdColor = sevenrdColor,

@@ -27,6 +27,8 @@ class DetailsViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _id = mutableIntStateOf( sharedPrefs.getID() )
+    private val _isFriendAdded = mutableStateOf( false )
+    val isFriendAdded: State<Boolean> = _isFriendAdded
     private val _sender = mutableStateOf(UserModelItem() )
     val sender: State<UserModelItem> = _sender
     private val _user = mutableStateOf(UserModelItem())
@@ -48,6 +50,7 @@ class DetailsViewModel @Inject constructor(
             if ( userID != -1 ){
                 getUser(userID)
                 getUserActiveParties(userID)
+                getAllFriends(userID)
             }
         }
         getSender()
@@ -57,6 +60,15 @@ class DetailsViewModel @Inject constructor(
             _sender.value = it
             _cards.value = it.cardlist
             _senderCard.value = it.cardlist[0].number
+        }
+    }
+    fun getAllFriends(userID: Int) = viewModelScope.launch {
+        remoteUseCases.getAllMyFriendUseCase.execute().collect {
+            it.forEach {item ->
+                if (item.friendId == userID){
+                    _isFriendAdded.value = true
+                }
+            }
         }
     }
     fun getUser(userID: Int) = viewModelScope.launch {
@@ -78,6 +90,13 @@ class DetailsViewModel @Inject constructor(
     }
     fun addFriend(friendID:Int) = viewModelScope.launch {
         remoteUseCases.addFriendUseCase.execute(friendsID = friendID).collect {}
+    }
+    fun deleteFriend(friendID: Int) = viewModelScope.launch {
+        remoteUseCases.deleteFriendUseCase.execute(friendID).collect {
+            if (it.message == "Friends deleted"){
+                _isFriendAdded.value = false
+            }
+        }
     }
     fun changeSenderCard(card: String){
         _senderCard.value = card

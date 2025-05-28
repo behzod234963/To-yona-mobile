@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.contactsScreen.item
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,17 +20,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr.anonym.domain.model.Friend
 import com.mr.anonym.domain.model.UserModelItem
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 
 @Composable
 fun ContactsItem(
     secondaryColor: Color,
     sevenrdColor: Color,
-    userModel: UserModelItem,
+    friend: Friend,
     onContactClick:()-> Unit
 ) {
     Card (
@@ -50,24 +54,27 @@ fun ContactsItem(
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Icon(
+            Image(
                 modifier = Modifier
-                    .size(50.dp),
-                imageVector = Icons.Default.Person,
-                tint = secondaryColor,
+                    .size(40.dp),
+                painter = when(friend.sex){
+                    0 -> painterResource(R.drawable.ic_default_avatar)
+                    1 -> painterResource(R.drawable.ic_man)
+                    2 -> painterResource(R.drawable.ic_woman)
+                    else -> painterResource(R.drawable.ic_default_avatar)
+                },
                 contentDescription = ""
             )
-            Spacer(Modifier.width(5.dp))
+            Spacer(Modifier.width(10.dp))
             Column {
                 Text(
-                    text = "${userModel.username} ${userModel.surname}",
+                    text = "${friend.username} ${friend.surname}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Spacer(Modifier.height(5.dp))
                 Text(
-                    text = userModel.phonenumber.phoneNumberTransformation(),
+                    text = "+998${friend.phonenumber}".phoneNumberTransformation(),
                     color = secondaryColor,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold

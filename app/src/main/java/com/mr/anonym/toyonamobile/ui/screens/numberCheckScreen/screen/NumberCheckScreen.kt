@@ -123,7 +123,7 @@ fun NumberCheckScreen(
     val isCardUpdated = viewModel.isCardUpdated
 
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
 
     LaunchedEffect(isRunning.value, timeLeft.intValue) {

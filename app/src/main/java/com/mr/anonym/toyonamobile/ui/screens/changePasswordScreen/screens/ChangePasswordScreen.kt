@@ -94,7 +94,7 @@ fun ChangePasswordScreen(
     val confirmNewPasswordError = rememberSaveable { mutableStateOf(false) }
 
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
     val isLoading = remember { mutableStateOf(false) }
 

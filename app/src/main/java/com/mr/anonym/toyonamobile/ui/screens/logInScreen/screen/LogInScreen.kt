@@ -97,7 +97,7 @@ fun LogInScreen(
     val containerPadding = rememberSaveable { mutableIntStateOf(10) }
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
-        spec = LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        spec = LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
     val focusRequester = remember { FocusRequester() }
     LaunchedEffect(Unit) {

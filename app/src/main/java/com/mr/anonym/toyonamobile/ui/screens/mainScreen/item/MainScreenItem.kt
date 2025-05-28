@@ -7,14 +7,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformat
 
 @Composable
 fun MainScreenItem(
+    primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
     sevenrdColor: Color,
@@ -64,24 +66,38 @@ fun MainScreenItem(
             ) {
                 Row(
                     modifier = Modifier
-                        .height(60.dp),
+                        .height(60.dp)
+                        .padding(start = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 //                    Avatar
                     Card(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(5.dp),
-                        shape = CircleShape
+                        colors = CardDefaults.cardColors(
+                            containerColor = primaryColor,
+                            contentColor = primaryColor
+                        ),
+                        shape = if (showContacts) CircleShape else RoundedCornerShape(20.dp)
                     ) {
                         Image(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            painter = when(userModel.sex){
-                                0 -> painterResource(R.drawable.ic_default_avatar)
-                                1 -> painterResource(R.drawable.ic_man)
-                                2 -> painterResource(R.drawable.ic_woman)
-                                else -> painterResource(R.drawable.ic_default_avatar)
+                                .size(40.dp)
+                                .padding(3.dp),
+                            painter = if (showContacts){
+                                when(userModel.sex){
+                                    0 -> painterResource(R.drawable.ic_default_avatar)
+                                    1 -> painterResource(R.drawable.ic_man)
+                                    2 -> painterResource(R.drawable.ic_woman)
+                                    else -> painterResource(R.drawable.ic_default_avatar)
+                                }
+                            }else{
+                                when(partyModel.type){
+                                    "0" -> painterResource(R.drawable.ic_more)
+                                    "1" -> painterResource(R.drawable.ic_rings)
+                                    "2" -> painterResource(R.drawable.ic_sunnat)
+                                    "3" -> painterResource(R.drawable.ic_birthday)
+                                    "4" -> painterResource(R.drawable.ic_more)
+                                    else -> painterResource(R.drawable.ic_more)
+                                }
                             },
                             contentDescription = "profile icon"
                         )

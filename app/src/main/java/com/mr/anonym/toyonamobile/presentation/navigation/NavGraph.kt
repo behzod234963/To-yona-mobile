@@ -14,7 +14,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens.AddCardScreen
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddPartyScreen
 import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.screens.ChangePasswordScreen
-import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.ContactsScreen
+import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.FriendsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
@@ -90,7 +90,7 @@ fun NavGraph(
             NotificationsScreen(navController)
         }
         composable(ScreensRouter.ContactsScreen.route) {
-            ContactsScreen(navController)
+            FriendsScreen(navController)
         }
         composable(ScreensRouter.MonitoringScreen.route) {
             MonitoringScreen(navController)

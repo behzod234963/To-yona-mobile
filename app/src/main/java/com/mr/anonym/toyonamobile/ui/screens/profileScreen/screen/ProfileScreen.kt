@@ -118,7 +118,7 @@ fun ProfileScreen(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
     val showAvatarContent = rememberSaveable { mutableStateOf(false) }
     val avatar = viewModel.profileAvatar

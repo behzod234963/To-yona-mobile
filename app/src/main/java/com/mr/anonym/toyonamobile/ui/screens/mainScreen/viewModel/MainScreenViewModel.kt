@@ -35,7 +35,7 @@ class MainScreenViewModel @Inject constructor(
     val profileAvatar: State<Int> = _profileAvatar
 
     fun getUserByID() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute(_id.value).collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
             _profileAvatar.intValue = when(it.sex){
                 0 -> R.drawable.ic_default_avatar

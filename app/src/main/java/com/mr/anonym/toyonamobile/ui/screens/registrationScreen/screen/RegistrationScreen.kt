@@ -102,7 +102,7 @@ fun RegistrationScreen(
     val containerPadding = remember { mutableIntStateOf(10) }
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.ic_loading)
+        LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
 
     val phoneFieldError = remember { mutableStateOf(false) }

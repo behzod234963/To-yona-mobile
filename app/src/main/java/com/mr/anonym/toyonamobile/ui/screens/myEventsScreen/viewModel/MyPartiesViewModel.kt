@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyEventsViewModel @Inject constructor(
+class MyPartiesViewModel @Inject constructor(
     sharedPrefs: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases,
 ) : ViewModel(){

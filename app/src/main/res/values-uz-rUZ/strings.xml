@@ -163,4 +163,7 @@
     <string name="general_parties">Asosiy tadbirlar</string>
     <string name="other_parties">Boshqa tadbirlar</string>
     <string name="couldn_t_log_in">Kirish amalga oshirilmadi</string>
+    <string name="set_date">Sana o\'rnatish</string>
+    <string name="change_date">Sanani o\'zgartirish</string>
+    <string name="address">Manzil</string>
 </resources>

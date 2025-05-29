@@ -12,7 +12,7 @@ import androidx.navigation.navArgument
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens.AddCardScreen
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens.AddPartyScreen
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.screens.AddPartyScreen
 import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.screens.ChangePasswordScreen
 import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.FriendsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
@@ -21,7 +21,7 @@ import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringFilterScreen
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringScreen
-import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyEventsScreen
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyPartiesScreen
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen.NewPinScreen
 import com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.screen.NotificationsScreen
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen.NumberCheckScreen
@@ -122,7 +122,7 @@ fun NavGraph(
             )
         }
         composable(ScreensRouter.MyEventsScreen.route) {
-            MyEventsScreen(navController)
+            MyPartiesScreen(navController)
         }
         composable(
             route = ScreensRouter.AddPartyScreen.route + "/{eventID}",

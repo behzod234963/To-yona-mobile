@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel
+package com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.viewModel
 
 import android.content.Context
 import androidx.compose.runtime.State
@@ -31,29 +31,27 @@ class AddPartyViewModel @Inject constructor(
 
     private val _user = mutableStateOf(UserModelItem())
     val user: State<UserModelItem> = _user
-
     private val _party = mutableStateOf(PartysItem())
     val party: State<PartysItem> = _party
-
     private val _cards = mutableStateOf(ListState().cards)
     val cards: State<List<CardModel>> = _cards
     private val _card = mutableStateOf(CardModel())
     val card: State<CardModel> = _card
     private val _cardValue = mutableStateOf(context.getString(R.string.empty))
     val cardValue: State<String> = _cardValue
-
     private val _startDate = mutableStateOf("")
     val startDate: State<String> = _startDate
     private val _endDate = mutableStateOf("")
     val endDate: State<String> = _endDate
-
     private val _titleValue = mutableStateOf( "" )
     val titleValue: State<String> = _titleValue
     private val _otherFieldValue = mutableStateOf( "" )
     val otherFieldValue: State<String> = _otherFieldValue
-
     private val _selectedEventIndex = mutableIntStateOf(0)
     val selectedEventIndex: State<Int> = _selectedEventIndex
+    private val _address = mutableStateOf( "" )
+    val address : State<String> = _address
+
     private val _isPartyAdded = mutableStateOf( true )
     val isPartyAdded: State<Boolean> = _isPartyAdded
     private val _isPartyUpdated = mutableStateOf( true )
@@ -99,6 +97,7 @@ class AddPartyViewModel @Inject constructor(
             _otherFieldValue.value = it.type
             _startDate.value = it.startTime
             _endDate.value = it.endTime
+            _address.value = it.address
         }
     }
     fun getUserById() = viewModelScope.launch {
@@ -115,6 +114,7 @@ class AddPartyViewModel @Inject constructor(
             is AddEventState.ChangeCardModel -> _card.value = event.card
             is AddEventState.ChangeTitle -> _titleValue.value = event.title
             is AddEventState.ChangeOtherField -> _otherFieldValue.value = event.fieldValue
+            is AddEventState.ChangeAddressField -> _address.value = event.address
         }
     }
 }

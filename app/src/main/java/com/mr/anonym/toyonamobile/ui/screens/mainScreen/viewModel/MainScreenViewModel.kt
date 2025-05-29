@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.R
@@ -29,20 +31,41 @@ class MainScreenViewModel @Inject constructor(
     val user: State<UserModelItem> = _user
     private val _users = mutableStateOf(ListState().users)
     val users: State<List<UserModelItem>> = _users
-    private val _isRefresh = MutableStateFlow(false)
+    private val _isRefresh = MutableStateFlow(true)
     val isRefresh: StateFlow<Boolean> = _isRefresh.asStateFlow()
     private val _profileAvatar = mutableIntStateOf( R.drawable.ic_default_avatar )
     val profileAvatar: State<Int> = _profileAvatar
 
+    @SuppressLint("MutableCollectionMutableState")
+    private val _closerParties = mutableStateOf( arrayListOf<PartysItem>() )
+    val closerParties: State<List<PartysItem>> = _closerParties
+
     fun getUserByID() = viewModelScope.launch {
         remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
+            _closerParties.value.addAll(
+                it.partylist.filter {party-> party.status }
+            )
             _profileAvatar.intValue = when(it.sex){
                 0 -> R.drawable.ic_default_avatar
                 1 -> R.drawable.ic_man
                 2 -> R.drawable.ic_woman
                 else -> R.drawable.ic_default_avatar
             }
+        }
+    }
+    fun getAllFriends() = viewModelScope.launch {
+        remoteUseCases.getAllMyFriendUseCase.execute().collect {
+            it.forEach { item ->
+                getFriendParties(item.friendId)
+            }
+        }
+    }
+    fun getFriendParties(friendID: Int) = viewModelScope.launch {
+        remoteUseCases.getUserUseCase.execute(friendID).collect {
+            _closerParties.value.addAll(
+                it.partylist.filter {party-> party.status }
+            )
         }
     }
     fun getAllParty() = remoteUseCases.getAllPartyUseCase.execute().cachedIn(viewModelScope)

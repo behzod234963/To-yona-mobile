@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.addEventScreen.screens
+package com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -18,9 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.twotone.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,11 +25,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,13 +54,14 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventDropDownMenu
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventFAB
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventOtherField
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.viewModel.AddPartyViewModel
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddPartyAddressField
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.PartyTypeButtons
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.viewModel.AddPartyViewModel
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -112,6 +109,7 @@ fun AddPartyScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
+    val sixrdColor = Color.Blue
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         isSystemTheme -> systemSevenrdColor
@@ -126,9 +124,9 @@ fun AddPartyScreen(
     val scaffoldState = remember { SnackbarHostState() }
 
     val selectedEventIndex = viewModel.selectedEventIndex
-    val isExpanded = rememberSaveable { mutableStateOf(false) }
 
     val otherEventValue = viewModel.otherFieldValue
+    val address = viewModel.address
     val isValueConfirmed = rememberSaveable { mutableStateOf(false) }
     val isOtherClicked = rememberSaveable { mutableStateOf(false) }
     val isOtherEventError = rememberSaveable { mutableStateOf(false) }
@@ -160,12 +158,12 @@ fun AddPartyScreen(
     val endDate = viewModel.endDate
     val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
 
-    val isLoading = remember { mutableStateOf(false) }
+    val isOldParty = remember { mutableStateOf(arguments.eventID != -1) }
+    val isLoading = remember { mutableStateOf(arguments.eventID != -1) }
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
     viewModel.getUserById()
-//    val user = viewModel.user
     val party = viewModel.party
 
     val isTitleError = remember { mutableStateOf(false) }
@@ -180,21 +178,7 @@ fun AddPartyScreen(
     * */
 
     BackHandler {
-        if(arguments.eventID == -1){
-            navController.navigate(ScreensRouter.MainScreen.route){
-                popUpTo(ScreensRouter.AddPartyScreen.route){
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
-        }else{
-            navController.navigate(ScreensRouter.MyEventsScreen.route){
-                popUpTo(ScreensRouter.AddPartyScreen.route){
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
-        }
+        navController.navigateUp()
     }
     Scaffold(
         modifier = Modifier
@@ -206,21 +190,7 @@ fun AddPartyScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationIconClick = {
-                    if(arguments.eventID == -1){
-                        navController.navigate(ScreensRouter.MainScreen.route){
-                            popUpTo(ScreensRouter.AddPartyScreen.route){
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
-                    }else{
-                        navController.navigate(ScreensRouter.MyEventsScreen.route){
-                            popUpTo(ScreensRouter.AddPartyScreen.route){
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
-                    }
+                    navController.navigateUp()
                 }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },
@@ -253,7 +223,7 @@ fun AddPartyScreen(
                                 partyModel = PartysItem(
                                     name = titleValue.value,
                                     type = eventType,
-                                    address = party.value.address,
+                                    address = address.value,
                                     cardNumber = cardValue.value,
                                     startTime = startDate.value,
                                     endTime = endDateResult,
@@ -285,7 +255,7 @@ fun AddPartyScreen(
                                 partyModel = PartysItem(
                                     name = titleValue.value,
                                     type = eventType,
-                                    address = party.value.address,
+                                    address = address.value,
                                     cardNumber = cardValue.value,
                                     startTime = startDate.value,
                                     endTime = endDateResult,
@@ -327,89 +297,26 @@ fun AddPartyScreen(
                     onEditClick = { }
                 )
 //                Event
-                Card(
-                    shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = sevenrdColor,
-                        contentColor = sevenrdColor
-                    ),
-                    elevation = CardDefaults.cardElevation(7.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f),
-                            text = stringResource(R.string.event),
-                            fontSize = 18.sp,
-                            color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = when (selectedEventIndex.value) {
-                                    0 -> ""
-                                    1 -> stringResource(R.string.wedding)
-                                    2 -> stringResource(R.string.sunnat_wedding)
-                                    3 -> stringResource(R.string.birthday)
-                                    4 -> stringResource(R.string.other)
-                                    else -> ""
-                                },
-                                textAlign = TextAlign.End,
-                                color = secondaryColor,
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            IconButton(
-                                onClick = { isExpanded.value = !isExpanded.value }
-                            ) {
-                                Icon(
-                                    imageVector = if (isExpanded.value) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                                    tint = secondaryColor,
-                                    contentDescription = ""
-                                )
-                            }
-                            if (isExpanded.value) {
-                                AddEventDropDownMenu(
-                                    secondaryColor = secondaryColor,
-                                    tertiaryColor = tertiaryColor,
-                                    isExpanded = isExpanded.value,
-                                    onDismissRequest = { isExpanded.value = false },
-                                    onWeddingClick = {
-                                        viewModel.onEvent(AddEventState.ChangeEventIndex(1))
-                                        isExpanded.value = false
-                                        isOtherClicked.value = false
-                                    },
-                                    onSunnatClick = {
-                                        viewModel.onEvent(AddEventState.ChangeEventIndex(2))
-                                        isExpanded.value = false
-                                        isOtherClicked.value = false
-                                    },
-                                    onBirthdayClick = {
-                                        viewModel.onEvent(AddEventState.ChangeEventIndex(3))
-                                        isExpanded.value = false
-                                        isOtherClicked.value = false
-                                    },
-                                    onOtherClick = {
-                                        viewModel.onEvent(AddEventState.ChangeEventIndex(4))
-                                        isExpanded.value = false
-                                        isOtherClicked.value = true
-                                    }
-                                )
-                            }
-                        }
+                PartyTypeButtons(
+                    primaryColor = primaryColor,
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    selectedEventIndex = selectedEventIndex.value,
+                    onItemClick = {
+                        viewModel.onEvent(AddEventState.ChangeEventIndex(it))
+                        isOtherClicked.value = it == 4
                     }
-                }
+                )
                 Spacer(Modifier.height(10.dp))
 //                Other field
                 if (isOtherClicked.value) {
+                    viewModel.onEvent(AddEventState.ChangeOtherField(when(party.value.type){
+                        "0"-> ""
+                        "1" -> stringResource(R.string.wedding)
+                        "2" -> stringResource(R.string.sunnat_wedding)
+                        "3" -> stringResource(R.string.birthday)
+                        else -> party.value.type
+                    }))
                     AddEventOtherField(
                         secondaryColor = secondaryColor,
                         tertiaryColor = tertiaryColor,
@@ -468,24 +375,20 @@ fun AddPartyScreen(
                         Row(
                             horizontalArrangement = Arrangement.End,
                         ) {
-                            IconButton(
+                            TextButton(
                                 onClick = { showDatePicker.value = !showDatePicker.value }
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    tint = secondaryColor,
-                                    contentDescription = ""
+                                Text(
+                                    text = if (arguments.eventID == -1) {
+                                        stringResource(R.string.set_date)
+                                    } else {
+                                        stringResource(R.string.change_date)
+                                    },
+                                    color = sixrdColor,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold
                                 )
                             }
-//                            IconButton(
-//                                onClick = { showTimePicker.value = !showTimePicker.value }
-//                            ) {
-//                                Icon(
-//                                    painter = painterResource(R.drawable.ic_clock),
-//                                    tint = secondaryColor,
-//                                    contentDescription = ""
-//                                )
-//                            }
                         }
                     }
                 }
@@ -523,6 +426,13 @@ fun AddPartyScreen(
                         }
                     }
                 }
+//                Address
+                AddPartyAddressField(
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    value = address.value,
+                    onValueChange = { viewModel.onEvent(AddEventState.ChangeAddressField(it)) }
+                )
 //                Date picker
                 if (showDatePicker.value) {
                     AddEventSetDate(
@@ -561,32 +471,6 @@ fun AddPartyScreen(
                 }
                 Spacer(Modifier.height(10.dp))
 //                Requisites
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 10.dp),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    Text(
-//                        modifier = Modifier
-//                            .fillMaxWidth(0.5f),
-//                        text = stringResource(R.string.card_holder_name),
-//                        fontSize = 16.sp,
-//                        color = secondaryColor,
-//                        fontWeight = FontWeight.SemiBold
-//                    )
-//                    Text(
-//                        text = cardHolderValue.value,
-//                        fontSize = 16.sp,
-//                        color = secondaryColor,
-//                        fontWeight = FontWeight.SemiBold,
-//                        textAlign = TextAlign.End
-//                    )
-//                }
-                Spacer(Modifier.height(5.dp))
-                HorizontalDivider()
-                Spacer(Modifier.height(10.dp))
 //                Cards
                 if (cards.value.isNotEmpty()) {
                     isCardError.value = false
@@ -715,29 +599,37 @@ fun AddPartyScreen(
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever
                 )
-                if (arguments.eventID == -1) {
+                if (isOldParty.value){
                     coroutineScope.launch {
-                        if (viewModel.isPartyAdded.value) {
-                            delay(1500)
-                            isLoading.value = false
-                            withContext(Dispatchers.Main) {
-                                navController.navigate(ScreensRouter.MainScreen.route) {
-                                    popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
-                                    launchSingleTop = true
+                        delay(2000L)
+                        isOldParty.value = false
+                        isLoading.value = false
+                    }
+                }else{
+                    if (arguments.eventID == -1) {
+                        coroutineScope.launch {
+                            if (viewModel.isPartyAdded.value) {
+                                delay(1500)
+                                isLoading.value = false
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(ScreensRouter.MainScreen.route) {
+                                        popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
                         }
-                    }
-                } else {
-                    Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isPartyUpdated.value}")
-                    coroutineScope.launch {
-                        if (viewModel.isPartyUpdated.value) {
-                            delay(1500)
-                            isLoading.value = false
-                            withContext(Dispatchers.Main) {
-                                navController.navigate(ScreensRouter.MyEventsScreen.route) {
-                                    popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
-                                    launchSingleTop = true
+                    } else {
+                        Log.d("UtilsLogging", "AddEventScreen: ${viewModel.isPartyUpdated.value}")
+                        coroutineScope.launch {
+                            if (viewModel.isPartyUpdated.value) {
+                                delay(1500)
+                                isLoading.value = false
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(ScreensRouter.MyEventsScreen.route) {
+                                        popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
                         }

@@ -10,4 +10,5 @@ sealed class AddEventState(){
     data class ChangeCardNumber(val cardNumber: String): AddEventState()
     data class ChangeTitle(val title: String): AddEventState()
     data class ChangeOtherField(val fieldValue: String): AddEventState()
+    data class ChangeAddressField(val address: String): AddEventState()
 }

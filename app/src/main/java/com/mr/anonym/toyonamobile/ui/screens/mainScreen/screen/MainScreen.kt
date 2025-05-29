@@ -228,7 +228,9 @@ fun MainScreen(
             if( isRefresh.value ) {
                 partyList = viewModel.getAllParty().collectAsLazyPagingItems()
                 coroutineScope.launch {
-                    delay(2000)
+                    delay(3000L)
+                    viewModel.getAllFriends()
+                    viewModel.closerParties
                     viewModel.changeIsRefreshState(false)
                 }
             }
@@ -316,7 +318,21 @@ fun MainScreen(
                                     ){
                                         when(selectedTabIndex.intValue){
                                             0 ->{
-
+                                                items(viewModel.closerParties.value.distinctBy { it.id }){ party->
+                                                    MainScreenItem(
+                                                        primaryColor = primaryColor,
+                                                        secondaryColor = secondaryColor,
+                                                        tertiaryColor = tertiaryColor,
+                                                        sevenrdColor = sevenrdColor,
+                                                        smallFontSize = smallFontSize.intValue,
+                                                        partyModel = party,
+                                                        userModel = user.value,
+                                                        showContacts = showContacts.value,
+                                                        onItemClick = {
+                                                            navController.navigate(ScreensRouter.DetailsScreen.route + "/${party.userId}")
+                                                        }
+                                                    )
+                                                }
                                             }
                                             1 ->{
                                                 items(

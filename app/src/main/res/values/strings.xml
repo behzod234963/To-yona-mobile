@@ -162,4 +162,7 @@
     <string name="general_parties">General parties</string>
     <string name="other_parties">Other parties</string>
     <string name="couldn_t_log_in">Couldn\'t log in</string>
+    <string name="set_date">Set date</string>
+    <string name="change_date">Change date</string>
+    <string name="address">Address</string>
 </resources>

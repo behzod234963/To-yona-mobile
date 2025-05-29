@@ -21,7 +21,7 @@ class FriendsViewModel @Inject constructor(
     private val _friends = mutableStateOf( emptyList<AddedByMeItem>() )
     val friends: State<List<AddedByMeItem>> = _friends
 
-    private val _isRefresh = MutableStateFlow(false)
+    private val _isRefresh = MutableStateFlow(true)
     val isRefresh = _isRefresh.asStateFlow()
 
     init {

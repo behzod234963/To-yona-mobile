@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.contactsScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.friendsScreen.components
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons

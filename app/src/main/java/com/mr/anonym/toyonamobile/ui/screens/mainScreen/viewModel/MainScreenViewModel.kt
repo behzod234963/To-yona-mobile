@@ -3,7 +3,9 @@ package com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel
 import android.annotation.SuppressLint
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -37,13 +39,13 @@ class MainScreenViewModel @Inject constructor(
     val profileAvatar: State<Int> = _profileAvatar
 
     @SuppressLint("MutableCollectionMutableState")
-    private val _closerParties = mutableStateOf( arrayListOf<PartysItem>() )
-    val closerParties: State<List<PartysItem>> = _closerParties
+    private val _closerParties = mutableStateListOf<PartysItem>()
+    val closerParties: SnapshotStateList<PartysItem> = _closerParties
 
     fun getUserByID() = viewModelScope.launch {
         remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
-            _closerParties.value.addAll(
+            _closerParties.addAll(
                 it.partylist.filter {party-> party.status }
             )
             _profileAvatar.intValue = when(it.sex){
@@ -63,7 +65,7 @@ class MainScreenViewModel @Inject constructor(
     }
     fun getFriendParties(friendID: Int) = viewModelScope.launch {
         remoteUseCases.getUserUseCase.execute(friendID).collect {
-            _closerParties.value.addAll(
+            _closerParties.addAll(
                 it.partylist.filter {party-> party.status }
             )
         }

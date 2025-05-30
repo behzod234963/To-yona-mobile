@@ -46,7 +46,7 @@ class AddCardViewModel @Inject constructor(
     }
 
     fun getUser() = viewModelScope.launch {
-        remoteUseCases.getUserUseCase.execute(_id.value).collect {
+        remoteUseCases.getUserUseCase.execute(_id.intValue).collect {
             _user.value = it
         }
     }

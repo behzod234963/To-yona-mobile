@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.contactsScreen.viewModel
+package com.mr.anonym.toyonamobile.ui.screens.friendsScreen.viewModel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

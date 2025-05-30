@@ -33,7 +33,7 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 
 @Composable
-fun MyEventsItem(
+fun MyPartiesItem(
     secondaryColor: Color,
     quaternaryColor: Color,
     fiverdColor: Color,
@@ -173,6 +173,30 @@ fun MyEventsItem(
                 )
             }
             HorizontalDivider()
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                    text = stringResource(R.string.address),
+                    color = secondaryColor,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = partyModel.address,
+                    color = secondaryColor,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.End
+                )
+            }
+            HorizontalDivider()
             Spacer(Modifier.height(10.dp))
             Row(
                 modifier = Modifier
@@ -242,7 +266,7 @@ fun MyEventsItem(
 @Preview
 @Composable
 private fun PreviewMyEventsItem() {
-    MyEventsItem(
+    MyPartiesItem(
         secondaryColor = Color.Black,
         quaternaryColor = Color.Red,
         fiverdColor = Color.Green,

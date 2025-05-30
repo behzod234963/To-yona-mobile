@@ -6,8 +6,10 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +28,52 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShimmerEffectForMainScreen() {
+fun ShimmerEffectForUser() {
+
+    val shimmerColor = listOf(
+        Color.LightGray.copy( alpha = 0.6f ),
+        Color.LightGray.copy( alpha = 0.2f ),
+        Color.LightGray.copy( alpha = 0.6f ),
+    )
+    val transition = rememberInfiniteTransition()
+    val translateAnimation = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing)
+        )
+    )
+    val brush = Brush.linearGradient(
+        colors = shimmerColor,
+        start = Offset.Zero,
+        end = Offset(x = translateAnimation.value,y = translateAnimation.value)
+    )
+    Row (
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Box(
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape)
+                .background(brush)
+        )
+        Spacer(Modifier.width(10.dp))
+        Box(
+            modifier = Modifier
+                .height(25.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(4.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp)
+        )
+    }
+    Spacer(Modifier.height(10.dp))
+}
+@Composable
+fun ShimmerEffectForProfile() {
 
     val shimmerColor = listOf(
         Color.LightGray.copy( alpha = 0.6f ),
@@ -48,23 +95,35 @@ fun ShimmerEffectForMainScreen() {
     )
     Column (
         modifier = Modifier
-            .padding(horizontal = 8.dp)
-            .width(80.dp),
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Box(
             modifier = Modifier
-                .size(64.dp)
+                .size(50.dp)
                 .clip(CircleShape)
                 .background(brush)
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(10.dp))
         Box(
             modifier = Modifier
-                .height(12.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
+                .height(25.dp)
+                .width(200.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(brush)
+                .padding(horizontal = 10.dp)
+        )
+        Spacer(Modifier.height(7.dp))
+        Box(
+            modifier = Modifier
+                .height(23.5.dp)
+                .width(200.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
         )
     }
+    Spacer(Modifier.height(10.dp))
 }

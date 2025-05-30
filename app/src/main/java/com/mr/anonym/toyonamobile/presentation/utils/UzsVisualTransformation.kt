@@ -5,7 +5,6 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.Currency
 import java.util.Locale
 
 class UzsVisualTransformation(private val currency: String): VisualTransformation {
@@ -21,7 +20,7 @@ class UzsVisualTransformation(private val currency: String): VisualTransformatio
         }
         return TransformedText(
             text = AnnotatedString("$formatted $currency"),
-            offsetMapping = UzsOffsetMapping( text.text,formatted )
+            offsetMapping = MoneyOffsetMapping( text.text,formatted )
         )
     }
 }

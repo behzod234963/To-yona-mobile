@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,7 +52,9 @@ import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsF
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.ThemeBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.viewModel.SettingsViewModel
+import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForProfile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -132,6 +135,12 @@ fun SettingsScreen(
     val isThemeSelected = rememberSaveable { mutableStateOf(false) }
     val showThemeContent = rememberSaveable { mutableStateOf(false) }
 
+    val isLoading = remember { mutableStateOf( true ) }
+    LaunchedEffect(Unit) {
+        delay(1500L)
+        isLoading.value = false
+    }
+
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
 
     viewModel.getUserByID()
@@ -198,31 +207,35 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .padding(7.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
+            if (isLoading.value){
+                ShimmerEffectForProfile()
+            }else{
+                Column(
                     modifier = Modifier
-                        .size(60.dp),
-                    painter = painterResource(profileAvatar.value),
-                    contentDescription = ""
-                )
-                Spacer(Modifier.height(7.dp))
-                Text(
-                    text = "${user.value.username} ${user.value.surname}",
-                    fontSize = 16.sp,
-                    color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
-                    fontSize = 16.sp,
-                    color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
-                )
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(60.dp),
+                        painter = painterResource(profileAvatar.value),
+                        contentDescription = ""
+                    )
+                    Spacer(Modifier.height(7.dp))
+                    Text(
+                        text = "${user.value.username} ${user.value.surname}",
+                        fontSize = 16.sp,
+                        color = secondaryColor,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
+                        fontSize = 16.sp,
+                        color = secondaryColor,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
             Spacer(Modifier.height(10.dp))
 //            Personal data content

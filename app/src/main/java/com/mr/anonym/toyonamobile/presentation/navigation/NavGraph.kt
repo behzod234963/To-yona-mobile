@@ -14,7 +14,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.screens.AddCardScreen
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.screens.AddPartyScreen
 import com.mr.anonym.toyonamobile.ui.screens.changePasswordScreen.screens.ChangePasswordScreen
-import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen.FriendsScreen
+import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.screen.FriendsScreen
 import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen.DetailsScreen
 import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen

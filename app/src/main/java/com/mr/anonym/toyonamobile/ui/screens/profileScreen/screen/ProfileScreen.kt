@@ -26,6 +26,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -59,6 +60,7 @@ import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarCont
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
+import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -103,7 +105,6 @@ fun ProfileScreen(
     }
     val quaternaryColor = Color.Red
 
-    val id = sharedPreferences.getID()
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
 
@@ -124,6 +125,11 @@ fun ProfileScreen(
     val avatar = viewModel.profileAvatar
     val avatarIndex = viewModel.avatarIndex
     val isSendResponse = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf( true ) }
+    LaunchedEffect(Unit) {
+        delay(1500L)
+        isLoading.value = false
+    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -144,38 +150,42 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.3f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Card(
+                if (isLoading.value){
+                    ShimmerEffectForProfile()
+                }else{
+                    Column(
                         modifier = Modifier
-                            .size(90.dp),
-                        shape = CircleShape,
-                        onClick = {
-                            showAvatarContent.value = true
-                        }
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.3f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Image(
-                            painter = painterResource(avatar.value),
-                            contentDescription = "man"
+                        Card(
+                            modifier = Modifier
+                                .size(90.dp),
+                            shape = CircleShape,
+                            onClick = {
+                                showAvatarContent.value = true
+                            }
+                        ) {
+                            Image(
+                                painter = painterResource(avatar.value),
+                                contentDescription = "man"
+                            )
+                        }
+                        Text(
+                            text = "${firstname.value} ${lastname.value}",
+                            color = secondaryColor,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
+                            color = secondaryColor,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp
                         )
                     }
-                    Text(
-                        text = "${firstname.value} ${lastname.value}",
-                        color = secondaryColor,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
-                        color = secondaryColor,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp
-                    )
                 }
                 Column(
                     modifier = Modifier

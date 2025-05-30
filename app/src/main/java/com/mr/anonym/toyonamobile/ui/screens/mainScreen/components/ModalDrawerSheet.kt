@@ -22,6 +22,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
+import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForUser
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreenModalDrawerSheet(
@@ -44,7 +47,6 @@ fun MainScreenModalDrawerSheet(
     secondaryColor: Color,
     tertiaryColor: Color,
     profileAvatar:Int,
-    userId:Int,
     viewModel: MainScreenViewModel,
     onFriendsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
@@ -63,6 +65,12 @@ fun MainScreenModalDrawerSheet(
 
     viewModel.getUserByID()
     val user = viewModel.user
+    val isUserLoading = remember { mutableStateOf( true ) }
+
+    LaunchedEffect(Unit) {
+        delay(2500L)
+        isUserLoading.value = false
+    }
 
     ModalDrawerSheet(
         modifier = Modifier
@@ -70,45 +78,49 @@ fun MainScreenModalDrawerSheet(
         drawerContentColor = primaryColor,
         drawerContainerColor = primaryColor,
     ) {
-        Row (
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(top = 10.dp, bottom = 10.dp , start = 10.dp ,end = 30.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
-                ),
-                shape = CircleShape
+        if (isUserLoading.value){
+            ShimmerEffectForUser()
+        }else{
+            Row (
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(top = 10.dp, bottom = 10.dp , start = 10.dp ,end = 30.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = Modifier
-                        .size(45.dp),
-                    painter = painterResource(profileAvatar),
-                    contentDescription = ""
-                )
-            }
-            Spacer(Modifier.width(10.dp))
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                viewModel.getUserByID()
-                Text(
-                    text = "${user.value.username} ${user.value.surname}",
-                    color = secondaryColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
-                    color = secondaryColor,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = primaryColor,
+                        contentColor = primaryColor
+                    ),
+                    shape = CircleShape
+                ) {
+                    Image(
+                        modifier = Modifier
+                            .size(45.dp),
+                        painter = painterResource(profileAvatar),
+                        contentDescription = ""
+                    )
+                }
+                Spacer(Modifier.width(10.dp))
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    viewModel.getUserByID()
+                    Text(
+                        text = "${user.value.username} ${user.value.surname}",
+                        color = secondaryColor,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
+                        color = secondaryColor,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
         HorizontalDivider()

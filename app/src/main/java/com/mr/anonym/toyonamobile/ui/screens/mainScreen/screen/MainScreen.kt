@@ -54,6 +54,7 @@ import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTab
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.components.MainScreenTopBar
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.item.MainScreenItem
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.viewModel.MainScreenViewModel
+import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -77,7 +78,6 @@ fun MainScreen(
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
-    val id = sharedPreferences.getID()
 
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
@@ -149,6 +149,7 @@ fun MainScreen(
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
                 profileAvatar = profileAvatar.value,
+                viewModel = viewModel,
                 onFriendsClick = {
                     if (drawerState.isOpen) {
                         coroutineScope.launch {
@@ -203,21 +204,18 @@ fun MainScreen(
                             }
                         }
                     }
-                },
-                userId = id,
-                onSupportClick = {
-                    if (drawerState.isOpen) {
-                        coroutineScope.launch {
-                            drawerState.close()
-                            delay(250)
-                            withContext(Dispatchers.Main) {
-                                navController.navigate(ScreensRouter.SupportScreen.route)
-                            }
+                }
+            ) {
+                if (drawerState.isOpen) {
+                    coroutineScope.launch {
+                        drawerState.close()
+                        delay(250)
+                        withContext(Dispatchers.Main) {
+                            navController.navigate(ScreensRouter.SupportScreen.route)
                         }
                     }
-                },
-                viewModel = viewModel
-            )
+                }
+            }
         }
     ) {
         PullToRefreshBox(
@@ -228,9 +226,8 @@ fun MainScreen(
             if( isRefresh.value ) {
                 partyList = viewModel.getAllParty().collectAsLazyPagingItems()
                 coroutineScope.launch {
-                    delay(3000L)
+                    delay(2000L)
                     viewModel.getAllFriends()
-                    viewModel.closerParties
                     viewModel.changeIsRefreshState(false)
                 }
             }
@@ -318,52 +315,65 @@ fun MainScreen(
                                     ){
                                         when(selectedTabIndex.intValue){
                                             0 ->{
-                                                items(viewModel.closerParties.value.distinctBy { it.id }){ party->
-                                                    MainScreenItem(
-                                                        primaryColor = primaryColor,
-                                                        secondaryColor = secondaryColor,
-                                                        tertiaryColor = tertiaryColor,
-                                                        sevenrdColor = sevenrdColor,
-                                                        smallFontSize = smallFontSize.intValue,
-                                                        partyModel = party,
-                                                        userModel = user.value,
-                                                        showContacts = showContacts.value,
-                                                        onItemClick = {
-                                                            navController.navigate(ScreensRouter.DetailsScreen.route + "/${party.userId}")
-                                                        }
-                                                    )
-                                                }
-                                            }
-                                            1 ->{
-                                                items(
-                                                    count = partyList.itemCount,
-                                                    key = partyList.itemKey { it.toString() }
-                                                ) { index ->
-                                                    val model = partyList[index]
-                                                    if (model != null) {
-                                                        partyModel.value = model
+//                                                viewModel.closerParties
+                                                if ( isRefresh.value ){
+                                                    items(20){
+                                                        ShimmerEffectForUser()
+                                                    }
+                                                }else{
+                                                    items(viewModel.closerParties.distinctBy { it.id }){ party->
                                                         MainScreenItem(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
                                                             sevenrdColor = sevenrdColor,
                                                             smallFontSize = smallFontSize.intValue,
-                                                            partyModel = model,
+                                                            partyModel = party,
                                                             userModel = user.value,
                                                             showContacts = showContacts.value,
-                                                            onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.userId}") }
+                                                            onItemClick = {
+                                                                navController.navigate(ScreensRouter.DetailsScreen.route + "/${party.userId}")
+                                                            }
                                                         )
                                                     }
                                                 }
-                                                item {
-                                                    if (partyList.loadState.append is LoadState.Loading){
-                                                        LottieAnimation(
-                                                            modifier = Modifier
-                                                                .size(150.dp),
-                                                            composition = loadingAnimation.value,
-                                                            restartOnPlay = true,
-                                                            iterations = LottieConstants.IterateForever
-                                                        )
+                                            }
+                                            1 ->{
+                                                if (isRefresh.value){
+                                                    items(20){
+                                                        ShimmerEffectForUser()
+                                                    }
+                                                }else{
+                                                    items(
+                                                        count = partyList.itemCount,
+                                                        key = partyList.itemKey { it.toString() }
+                                                    ) { index ->
+                                                        val model = partyList[index]
+                                                        if (model != null) {
+                                                            partyModel.value = model
+                                                            MainScreenItem(
+                                                                primaryColor = primaryColor,
+                                                                secondaryColor = secondaryColor,
+                                                                tertiaryColor = tertiaryColor,
+                                                                sevenrdColor = sevenrdColor,
+                                                                smallFontSize = smallFontSize.intValue,
+                                                                partyModel = model,
+                                                                userModel = user.value,
+                                                                showContacts = showContacts.value,
+                                                                onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.userId}") }
+                                                            )
+                                                        }
+                                                    }
+                                                    item {
+                                                        if (partyList.loadState.append is LoadState.Loading){
+                                                            LottieAnimation(
+                                                                modifier = Modifier
+                                                                    .size(150.dp),
+                                                                composition = loadingAnimation.value,
+                                                                restartOnPlay = true,
+                                                                iterations = LottieConstants.IterateForever
+                                                            )
+                                                        }
                                                     }
                                                 }
                                             }

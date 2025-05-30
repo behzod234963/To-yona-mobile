@@ -1,7 +1,6 @@
-package com.mr.anonym.toyonamobile.ui.screens.contactsScreen.screen
+package com.mr.anonym.toyonamobile.ui.screens.friendsScreen.screen
 
 import android.annotation.SuppressLint
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -31,9 +30,10 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.OpenNewContactMethod
 import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
-import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.components.ContactsTopBar
-import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.item.ContactsItem
-import com.mr.anonym.toyonamobile.ui.screens.contactsScreen.viewModel.FriendsViewModel
+import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.components.ContactsTopBar
+import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.item.ContactsItem
+import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.viewModel.FriendsViewModel
+import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -154,13 +154,19 @@ fun FriendsScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                items(friends.value) { model ->
-                    ContactsItem(
-                        secondaryColor = secondaryColor,
-                        sevenrdColor = sevenrdColor,
-                        friend = model.friend,
-                        onContactClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.friendId}") }
-                    )
+                if (isRefresh.value){
+                    items(20) {
+                        ShimmerEffectForUser()
+                    }
+                }else{
+                    items(friends.value) { model ->
+                        ContactsItem(
+                            secondaryColor = secondaryColor,
+                            sevenrdColor = sevenrdColor,
+                            friend = model.friend,
+                            onContactClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.friendId}") }
+                        )
+                    }
                 }
             }
         }

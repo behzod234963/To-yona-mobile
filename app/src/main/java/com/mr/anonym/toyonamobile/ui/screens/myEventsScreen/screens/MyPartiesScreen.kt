@@ -29,7 +29,7 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventTopBar
-import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyEventsItem
+import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.components.MyPartiesItem
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.viewModel.MyPartiesViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -98,7 +98,7 @@ fun MyPartiesScreen(
                     .padding(10.dp)
             ) {
                 items(parties.value) { model ->
-                    MyEventsItem(
+                    MyPartiesItem(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
                         fiverdColor = fiverdColor,

@@ -43,11 +43,11 @@ fun DetailsHistoryItem(
     userModel: UserModelItem,
     partyModel: PartysItem,
     priceFieldError: Boolean,
-    onTransferClick:(String)-> Unit
+    onTransferClick: (String) -> Unit
 ) {
 
-    val isExpanded = rememberSaveable { mutableStateOf( false ) }
-    val priceHistoryValue = remember { mutableStateOf("" ) }
+    val isExpanded = rememberSaveable { mutableStateOf(false) }
+    val priceHistoryValue = remember { mutableStateOf("") }
 
     Card(
         modifier = Modifier
@@ -56,7 +56,7 @@ fun DetailsHistoryItem(
             containerColor = sevenrdColor,
             contentColor = sevenrdColor
         ),
-        elevation = CardDefaults.cardElevation( 10.dp ),
+        elevation = CardDefaults.cardElevation(10.dp),
         shape = RoundedCornerShape(10.dp),
         onClick = {
             isExpanded.value = !isExpanded.value
@@ -116,7 +116,7 @@ fun DetailsHistoryItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = when(partyModel.type){
+                            text = when (partyModel.type) {
                                 "0" -> ""
                                 "1" -> stringResource(R.string.wedding)
                                 "2" -> stringResource(R.string.sunnat_wedding)
@@ -167,6 +167,32 @@ fun DetailsHistoryItem(
                     Spacer(Modifier.height(5.dp))
                     HorizontalDivider()
                     Spacer(Modifier.height(10.dp))
+//                    Address
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f),
+                            text = stringResource(R.string.address),
+                            color = secondaryColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = partyModel.address,
+                            color = secondaryColor,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.End
+                        )
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    HorizontalDivider()
+                    Spacer(Modifier.height(10.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -196,7 +222,7 @@ fun DetailsHistoryItem(
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            text = "${ userModel.username} ${userModel.surname}",
+                            text = "${userModel.username} ${userModel.surname}",
                             color = secondaryColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold,

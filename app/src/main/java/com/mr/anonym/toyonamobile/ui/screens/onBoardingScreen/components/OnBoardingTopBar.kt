@@ -36,7 +36,7 @@ fun OnBoardingTopBar(
     val localeManager = LocaleConfigurations(context)
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val expanded = remember { mutableStateOf( false ) }
+    val expanded = remember { mutableStateOf( true ) }
 
     val localeValue = remember { mutableStateOf( localeManager.getPrimaryLocale().replaceFirstChar { it.titlecase() } ) }
 

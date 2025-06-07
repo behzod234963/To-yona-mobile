@@ -4,11 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
 import androidx.core.content.edit
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import com.mr.anonym.data.crypto.AeadManager.getAead
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class SharedPreferencesInstance( private val context: Context ) {
 
@@ -207,5 +203,19 @@ class SharedPreferencesInstance( private val context: Context ) {
     }
     fun addCardFromAddEventState(): Boolean{
         return sharedPreferences.getBoolean("addCardFromAddEvent",false)
+    }
+
+    fun partyIndex(index: Int){
+        sharedPreferences.edit { putInt("partyIndex",index) }
+    }
+    fun getPartyIndex(): Int{
+        return sharedPreferences.getInt("partyIndex",-1)
+    }
+
+    fun detailIndex(index: Int){
+        sharedPreferences.edit { putInt("detailIndex",index) }
+    }
+    fun getDetailIndex(): Int{
+        return sharedPreferences.getInt("detailIndex",-1)
     }
 }

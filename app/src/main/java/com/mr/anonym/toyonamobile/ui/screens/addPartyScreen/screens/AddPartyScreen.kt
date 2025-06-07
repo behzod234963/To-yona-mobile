@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.AddCircle
 import androidx.compose.material3.Button
@@ -168,6 +170,7 @@ fun AddPartyScreen(
 
     val isTitleError = remember { mutableStateOf(false) }
     val titleValue = viewModel.titleValue
+    val scrollState = rememberScrollState()
     /*
     * Selected index index values
     * 0-> nothing was selected
@@ -178,7 +181,9 @@ fun AddPartyScreen(
     * */
 
     BackHandler {
-        navController.navigateUp()
+        navController.navigate(ScreensRouter.MainScreen.route){
+            popUpTo(ScreensRouter.AddPartyScreen.route + "/-1"){ inclusive = true }
+        }
     }
     Scaffold(
         modifier = Modifier
@@ -190,7 +195,9 @@ fun AddPartyScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationIconClick = {
-                    navController.navigateUp()
+                    navController.navigate(ScreensRouter.MainScreen.route){
+                        popUpTo(ScreensRouter.AddPartyScreen.route + "/-1"){ inclusive = true }
+                    }
                 }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
         },
@@ -281,6 +288,7 @@ fun AddPartyScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(10.dp)
+                    .verticalScroll(scrollState)
             ) {
 //                Title
                 AddEventOtherField(
@@ -485,6 +493,7 @@ fun AddPartyScreen(
                         },
                         onAddCardClick = {
                             sharedPreferences.addCardFromAddEvent(true)
+                                sharedPreferences.partyIndex(arguments.eventID)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         },
                         cardModel = cardModel.value
@@ -517,6 +526,7 @@ fun AddPartyScreen(
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
                             sharedPreferences.addCardFromAddEvent(true)
+                                sharedPreferences.partyIndex(arguments.eventID)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         }
                     ) {

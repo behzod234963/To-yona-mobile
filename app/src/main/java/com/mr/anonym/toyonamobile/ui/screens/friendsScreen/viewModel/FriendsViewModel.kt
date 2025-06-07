@@ -41,12 +41,4 @@ class FriendsViewModel @Inject constructor(
             getAllFriends()
         }
     }
-    //    private val _contacts = mutableStateOf(ListState().users)
-//    fun getPhoneNumbers(context: Context,isPermissionGranted: Boolean) = viewModelScope.launch {
-//        if (isPermissionGranted){
-//            _contacts.value = getContacts(context)
-//        }
-//    }
-
-//    val contacts: State<List<UserModelItem>> = _contacts
 }

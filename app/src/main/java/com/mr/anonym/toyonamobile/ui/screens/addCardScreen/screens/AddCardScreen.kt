@@ -110,12 +110,7 @@ fun AddCardScreen(
     BackHandler (
         enabled = true
     ){
-        navController.navigate(ScreensRouter.WalletScreen.route){
-            popUpTo(ScreensRouter.AddCardScreen.route){
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
+        navController.navigateUp()
     }
     Scaffold(
         modifier = Modifier
@@ -128,12 +123,7 @@ fun AddCardScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 onNavigationClick = {
-                    navController.navigate(ScreensRouter.WalletScreen.route){
-                        popUpTo(ScreensRouter.AddCardScreen.route){
-                            inclusive = true
-                        }
-                        launchSingleTop = true
-                    }
+                    navController.navigateUp()
                 }
             )
         }

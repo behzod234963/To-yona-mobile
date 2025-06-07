@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -138,6 +139,9 @@ fun DetailsScreen(
 
 //    val contactsLauncher = OpenNewContactMethod(context)
 
+    BackHandler {
+        navController.navigate(ScreensRouter.MainScreen.route)
+    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -155,7 +159,7 @@ fun DetailsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     IconButton(
-                        onClick = { navController.navigateUp() }
+                        onClick = { navController.navigate(ScreensRouter.MainScreen.route) }
                     ) {
                         Icon(
                             modifier = Modifier
@@ -367,6 +371,7 @@ fun DetailsScreen(
                         onAddCardClick = {
                             isExpanded.value = false
                             sharedPreferences.addCardFromDetails(true)
+                            sharedPreferences.detailIndex(arguments.userId)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         },
                         isExpanded = isExpanded.value,

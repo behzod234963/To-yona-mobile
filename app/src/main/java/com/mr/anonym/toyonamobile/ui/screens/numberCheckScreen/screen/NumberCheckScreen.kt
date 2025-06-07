@@ -111,6 +111,10 @@ fun NumberCheckScreen(
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
+    val addCardFromDetails = sharedPreferences.addCardFromDetailsState()
+    val addCardFromParty = sharedPreferences.addCardFromAddEventState()
+    val partyIndex = sharedPreferences.getPartyIndex()
+    val detailIndex = sharedPreferences.getDetailIndex()
 
     val cardNumber = sharedPreferences.getCardNumber()
 //    val cardHolder = dataStore.getCardHolder().collectAsState("")
@@ -448,48 +452,115 @@ fun NumberCheckScreen(
                 when {
                     addCardProcess -> {
                         when {
-                            isCardUpdated.value -> {
-                                coroutineScope.launch {
-                                    dataStore.saveCardID(-1)
-                                    dataStore.saveExpiryDate("")
-                                    sharedPreferences.saveCardNumber("")
-                                    sharedPreferences.addCardProcess(false)
-                                    delay(1500)
-                                    isLoading.value = false
-                                    withContext(Dispatchers.Main) {
-                                        navController.navigate(ScreensRouter.WalletScreen.route) {
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                inclusive = true
+                            addCardFromDetails->{
+                                if (isCardUpdated.value)  {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
+                                        isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.DetailsScreen.route + "/${detailIndex}") {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
                                         }
+                                        sharedPreferences.detailIndex(-1)
+                                    }
+                                }
+                                if (isCardAdded.value) {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
+                                        isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.DetailsScreen.route + "/${detailIndex}") {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                        sharedPreferences.detailIndex(-1)
                                     }
                                 }
                             }
-                            isCardAdded.value -> {
-                                coroutineScope.launch {
-                                    dataStore.saveCardID(-1)
-                                    dataStore.saveExpiryDate("")
-                                    sharedPreferences.saveCardNumber("")
-                                    sharedPreferences.addCardProcess(false)
-                                    delay(1500)
-                                    withContext(Dispatchers.Main) {
-                                        navController.navigate(ScreensRouter.WalletScreen.route) {
-                                            popUpTo(ScreensRouter.NumberCheckScreen.route) {
-                                                inclusive = true
+                            addCardFromParty->{
+                                if (isCardUpdated.value)  {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
+                                        isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.AddPartyScreen.route + "/${partyIndex}") {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
                                         }
+                                        sharedPreferences.partyIndex(-1)
                                     }
-                                    isLoading.value = false
+                                }
+                                if (isCardAdded.value) {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
+                                        isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.AddPartyScreen.route + "/${partyIndex}") {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                        sharedPreferences.partyIndex(-1)
+                                    }
                                 }
                             }
                             else -> {
-                                coroutineScope.launch {
-                                    if(isLoading.value){
-                                        delay(2500)
-                                        snackbarHostState.showSnackbar(
-                                            message = context.getString(R.string.unknown_error)
-                                        )
+                                if (isCardUpdated.value)  {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
                                         isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.WalletScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (isCardAdded.value) {
+                                    coroutineScope.launch {
+                                        dataStore.saveCardID(-1)
+                                        dataStore.saveExpiryDate("")
+                                        sharedPreferences.saveCardNumber("")
+                                        sharedPreferences.addCardProcess(false)
+                                        delay(1500)
+                                        isLoading.value = false
+                                        withContext(Dispatchers.Main) {
+                                            navController.navigate(ScreensRouter.WalletScreen.route) {
+                                                popUpTo(ScreensRouter.NumberCheckScreen.route) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

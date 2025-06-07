@@ -53,9 +53,6 @@ fun WalletScreen(
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
-    val addCardFromDetailsState = sharedPreferences.addCardFromDetailsState()
-    val addCardFromAddEvent = sharedPreferences.addCardFromAddEventState()
-
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -89,27 +86,9 @@ fun WalletScreen(
     )
 
     BackHandler {
-        when {
-            addCardFromDetailsState -> {
-                sharedPreferences.addCardFromDetails(false)
-                navController.navigate(ScreensRouter.DetailsScreen.route) {
-                    popUpTo(ScreensRouter.DetailsScreen.route) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                }
-            }
-            addCardFromAddEvent -> {
-                sharedPreferences.addCardFromAddEvent(false)
-                navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") {
-                    popUpTo(ScreensRouter.AddPartyScreen.route) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
-                }
-            }
-            else -> {
-                navController.navigateUp()
+        navController.navigate(ScreensRouter.MainScreen.route){
+            popUpTo(ScreensRouter.WalletScreen.route){
+                inclusive = true
             }
         }
     }
@@ -121,27 +100,9 @@ fun WalletScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationClick = {
-                    when {
-                        addCardFromDetailsState -> {
-                            sharedPreferences.addCardFromDetails(false)
-                            navController.navigate(ScreensRouter.DetailsScreen.route) {
-                                popUpTo(ScreensRouter.DetailsScreen.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
-                        }
-                        addCardFromAddEvent -> {
-                            sharedPreferences.addCardFromAddEvent(false)
-                            navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") {
-                                popUpTo(ScreensRouter.AddPartyScreen.route) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
-                            }
-                        }
-                        else -> {
-                            navController.navigateUp()
+                    navController.navigate(ScreensRouter.MainScreen.route){
+                        popUpTo(ScreensRouter.WalletScreen.route){
+                            inclusive = true
                         }
                     }
                 },

@@ -1,8 +1,7 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.core.net.toUri
 
 fun openSupportBot(context: Context,bot: String){

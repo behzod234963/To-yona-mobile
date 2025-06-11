@@ -1,8 +1,8 @@
 package com.mr.anonym.toyonamobile.di.module
 
 import android.content.Context
-import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
+import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.managers.PermissionController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

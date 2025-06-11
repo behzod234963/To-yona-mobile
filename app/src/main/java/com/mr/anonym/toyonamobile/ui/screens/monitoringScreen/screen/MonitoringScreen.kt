@@ -30,8 +30,8 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.MonitoringModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.presentation.utils.pdfGenerator
-import com.mr.anonym.toyonamobile.presentation.utils.shareTransfer
+import com.mr.anonym.toyonamobile.presentation.managers.pdfGenerator
+import com.mr.anonym.toyonamobile.presentation.managers.shareTransfer
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringScrollableTabRow
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringTopBar

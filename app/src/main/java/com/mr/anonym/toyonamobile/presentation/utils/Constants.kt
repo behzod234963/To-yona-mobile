@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.constants
+package com.mr.anonym.toyonamobile.presentation.utils
 
 /*
 * 0

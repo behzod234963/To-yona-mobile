@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -6,8 +6,6 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
-import com.mr.anonym.data.instance.local.SharedPreferencesInstance
-import com.mr.anonym.domain.repository.remote.UserRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 

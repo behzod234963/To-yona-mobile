@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.Manifest
 import android.app.Activity
@@ -12,8 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.core.app.ActivityCompat
-import com.mr.anonym.toyonamobile.presentation.constants.IO_REQUEST_CODE
-import com.mr.anonym.toyonamobile.presentation.constants.NOTIFICATIONS_REQUEST_CODE
+import com.mr.anonym.toyonamobile.presentation.utils.IO_REQUEST_CODE
+import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATIONS_REQUEST_CODE
 
 class PermissionController(private val context: Context) {
 

@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.content.Context
 import android.content.Intent
@@ -13,8 +13,7 @@ import io.card.payment.CardIOActivity
 import io.card.payment.CreditCard
 
 @Composable
-fun CardScannerIO(
-    context: Context,
+fun cardScannerIO(
     onSuccess: (CardModel) -> Unit
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
     val launcher =

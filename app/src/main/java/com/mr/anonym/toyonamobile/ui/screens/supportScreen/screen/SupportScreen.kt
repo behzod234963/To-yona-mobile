@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.constants.SUPPORT_BOT
-import com.mr.anonym.toyonamobile.presentation.utils.openSupportBot
+import com.mr.anonym.toyonamobile.presentation.utils.SUPPORT_BOT
+import com.mr.anonym.toyonamobile.presentation.managers.openSupportBot
 import com.mr.anonym.toyonamobile.ui.screens.supportScreen.components.SupportField
 import com.mr.anonym.toyonamobile.ui.screens.supportScreen.components.SupportTopBar
 

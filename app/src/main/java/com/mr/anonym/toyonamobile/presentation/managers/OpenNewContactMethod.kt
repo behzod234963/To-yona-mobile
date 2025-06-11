@@ -1,9 +1,8 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult

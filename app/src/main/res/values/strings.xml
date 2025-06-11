@@ -165,4 +165,6 @@
     <string name="set_date">Set date</string>
     <string name="change_date">Change date</string>
     <string name="address">Address</string>
+    <string name="no_connection">No connection</string>
+    <string name="no_connection_instruction">Please check your device internet connections</string>
 </resources>

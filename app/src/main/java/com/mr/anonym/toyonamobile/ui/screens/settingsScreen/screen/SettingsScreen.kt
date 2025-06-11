@@ -45,8 +45,8 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
-import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import com.mr.anonym.toyonamobile.presentation.utils.restartApp
+import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.managers.restartApp
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsField
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.SettingsTopBar

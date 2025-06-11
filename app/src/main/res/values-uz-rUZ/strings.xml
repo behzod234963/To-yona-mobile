@@ -166,4 +166,6 @@
     <string name="set_date">Sana o\'rnatish</string>
     <string name="change_date">Sanani o\'zgartirish</string>
     <string name="address">Manzil</string>
+    <string name="no_connection">Internetga bog\'lanish mavjud emas</string>
+    <string name="no_connection_instruction">Iltimos qurilmangizning internetga bog\'lanish sozlamalarini tekshiring</string>
 </resources>

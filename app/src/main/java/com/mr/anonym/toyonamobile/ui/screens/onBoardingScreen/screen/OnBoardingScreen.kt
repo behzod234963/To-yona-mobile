@@ -37,7 +37,7 @@ import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingPager
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingTopBar
 import java.util.Locale

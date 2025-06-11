@@ -1,5 +1,6 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -60,10 +61,10 @@ fun pdfGenerator(context: Context,activity: Activity, fileName: String, model: M
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q){
         if (ActivityCompat.checkSelfPermission(
             context,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED ||
             ActivityCompat.checkSelfPermission(
-                context, android.Manifest.permission.READ_EXTERNAL_STORAGE
+                context, Manifest.permission.READ_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_GRANTED
         ){
             saveFileToMemoryWithDefault(fileName, pdfBytes = pdfByteArray)

@@ -26,7 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 
 @Composable
 fun OnBoardingPager(

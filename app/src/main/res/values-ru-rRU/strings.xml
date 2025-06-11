@@ -166,4 +166,6 @@
     <string name="set_date">Установить дату</string>
     <string name="change_date">Изменить дату</string>
     <string name="address">Адрес</string>
+    <string name="no_connection">Отсутствует подключения к интернету</string>
+    <string name="no_connection_instruction">Пожалуйста проверьте подключение к интернету вашего устройства</string>
 </resources>

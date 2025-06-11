@@ -25,10 +25,10 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.presentation.utils.BiometricAuthManager
-import com.mr.anonym.toyonamobile.presentation.utils.BiometricResult
-import com.mr.anonym.toyonamobile.presentation.utils.LocaleConfigurations
-import com.mr.anonym.toyonamobile.presentation.utils.PermissionController
+import com.mr.anonym.toyonamobile.presentation.managers.BiometricAuthManager
+import com.mr.anonym.toyonamobile.presentation.managers.BiometricResult
+import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
+import com.mr.anonym.toyonamobile.presentation.managers.PermissionController
 import com.mr.anonym.toyonamobile.ui.theme.ToyonaMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

@@ -46,8 +46,8 @@ import com.mr.anonym.toyonamobile.presentation.event.CardEvents
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.presentation.utils.CardScannerIO
-import com.mr.anonym.toyonamobile.presentation.utils.startScanning
+import com.mr.anonym.toyonamobile.presentation.managers.cardScannerIO
+import com.mr.anonym.toyonamobile.presentation.managers.startScanning
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.AddCardTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.components.CardFields
 import com.mr.anonym.toyonamobile.ui.screens.addCardScreen.viewModel.AddCardViewModel
@@ -101,7 +101,7 @@ fun AddCardScreen(
 
     val user = viewModel.user
 
-    val launcher = CardScannerIO(context) { card ->
+    val launcher = cardScannerIO { card ->
         viewModel.cardEvents(CardEvents.ChangeCardNumber(card.number))
         viewModel.cardEvents(CardEvents.ChangeExpiryDate(card.date))
     }

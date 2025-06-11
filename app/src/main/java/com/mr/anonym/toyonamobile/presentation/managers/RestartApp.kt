@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.utils
+package com.mr.anonym.toyonamobile.presentation.managers
 
 import android.content.ComponentName
 import android.content.Context

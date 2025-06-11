@@ -23,7 +23,7 @@ import com.mr.anonym.domain.repository.remote.CardRepository
 import com.mr.anonym.domain.repository.remote.FriendsRepository
 import com.mr.anonym.domain.repository.remote.PartyRepository
 import com.mr.anonym.domain.repository.remote.UserRepository
-import com.mr.anonym.toyonamobile.presentation.constants.BASE_URL
+import com.mr.anonym.toyonamobile.presentation.utils.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

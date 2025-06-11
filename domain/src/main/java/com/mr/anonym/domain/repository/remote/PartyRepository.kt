@@ -1,5 +1,6 @@
 package com.mr.anonym.domain.repository.remote
 
+import androidx.annotation.Keep
 import androidx.paging.PagingData
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
@@ -7,7 +8,7 @@ import com.mr.anonym.domain.response.AddPartyResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
-interface PartyRepository {
+@Keep interface PartyRepository {
 
     suspend fun addParty(partyModel: PartysItem): Response<AddPartyResponse>
     suspend fun updateParty(partyID: Int,partyModel: PartysItem): Response<Boolean>

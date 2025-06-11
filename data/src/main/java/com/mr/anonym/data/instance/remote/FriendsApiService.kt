@@ -1,5 +1,6 @@
 package com.mr.anonym.data.instance.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.AddedByMeItem
 import com.mr.anonym.domain.model.FriendsModel
 import com.mr.anonym.domain.response.DeleteFriendResponse
@@ -9,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface FriendsApiService {
+@Keep interface FriendsApiService {
 
     @POST("/friend/add/friendid/{id}")
     suspend fun addFriend(

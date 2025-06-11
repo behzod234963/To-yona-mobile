@@ -1,6 +1,8 @@
 package com.mr.anonym.domain.model
 
-data class PartyModel(
+import androidx.annotation.Keep
+
+@Keep data class PartyModel(
 	val allparty: Int = 0,
 	val allpages: Int = 0,
 	val partys: List<PartysItem> = emptyList(),
@@ -8,7 +10,7 @@ data class PartyModel(
 	val currentpage: Int? = null
 )
 
-data class PartysItem(
+@Keep data class PartysItem(
 	val id: Int = -1,
 	val userId: Int = -1,
 	val userName: String = "",

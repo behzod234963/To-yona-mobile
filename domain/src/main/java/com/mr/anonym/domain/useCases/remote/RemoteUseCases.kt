@@ -1,5 +1,6 @@
 package com.mr.anonym.domain.useCases.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.useCases.remote.card.AddCardUseCase
 import com.mr.anonym.domain.useCases.remote.card.DeleteCardUseCase
 import com.mr.anonym.domain.useCases.remote.card.GetAllCardUseCase
@@ -23,7 +24,7 @@ import com.mr.anonym.domain.useCases.remote.user.RegisterUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.SearchUserUseCase
 import com.mr.anonym.domain.useCases.remote.user.UpdateUserUseCase
 
-data class RemoteUseCases(
+@Keep data class RemoteUseCases(
 //    User use cases
     val loginUserUseCase: LoginUserUseCase,
     val registerUserUseCase: RegisterUserUseCase,

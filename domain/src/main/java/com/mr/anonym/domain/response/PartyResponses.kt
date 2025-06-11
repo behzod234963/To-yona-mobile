@@ -1,5 +1,7 @@
 package com.mr.anonym.domain.response
 
-data class AddPartyResponse(
+import androidx.annotation.Keep
+
+@Keep data class AddPartyResponse(
     val status: Boolean
 )

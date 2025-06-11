@@ -1,9 +1,11 @@
 package com.mr.anonym.domain.response
 
-data class RefreshTokenRequest(
+import androidx.annotation.Keep
+
+@Keep data class RefreshTokenRequest(
     val refreshToken: String
 )
 
-data class RefreshTokenResponse (
+@Keep data class RefreshTokenResponse (
     val newAccessToken: String = ""
 )

@@ -1,12 +1,13 @@
 package com.mr.anonym.data.auth
 
+import androidx.annotation.Keep
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 
-class TokenAuthenticator(
+@Keep class TokenAuthenticator(
     private val tokenManager: TokenManager,
     private val sharedPreferences: SharedPreferencesInstance,
 ) : Authenticator{

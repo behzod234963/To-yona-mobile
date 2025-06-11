@@ -1,5 +1,7 @@
 package com.mr.anonym.domain.response
 
-data class DeleteUserResponse(
+import androidx.annotation.Keep
+
+@Keep data class DeleteUserResponse(
     val message: String
 )

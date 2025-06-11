@@ -1,13 +1,14 @@
 package com.mr.anonym.domain.useCases.remote.user
 
 import android.util.Log
+import androidx.annotation.Keep
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.domain.response.DeleteUserResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
 
-class DeleteUserUseCase(private val repository: UserRepository) {
+@Keep class DeleteUserUseCase(private val repository: UserRepository) {
     fun execute(): Flow<DeleteUserResponse> = flow {
         try {
             val response = repository.deleteUser()

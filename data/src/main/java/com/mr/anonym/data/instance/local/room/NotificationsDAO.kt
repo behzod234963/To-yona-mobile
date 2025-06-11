@@ -1,5 +1,6 @@
 package com.mr.anonym.data.instance.local.room
 
+import androidx.annotation.Keep
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,7 +10,7 @@ import com.mr.anonym.domain.model.NotificationsModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface NotificationsDAO {
+@Keep interface NotificationsDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNotification(notification: NotificationsModel)

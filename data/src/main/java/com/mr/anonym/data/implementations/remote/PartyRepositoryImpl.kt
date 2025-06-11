@@ -1,5 +1,6 @@
 package com.mr.anonym.data.implementations.remote
 
+import androidx.annotation.Keep
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -12,7 +13,7 @@ import com.mr.anonym.domain.response.AddPartyResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 
-class PartyRepositoryImpl(private val partyApiService: PartyApiService): PartyRepository {
+@Keep class PartyRepositoryImpl(private val partyApiService: PartyApiService): PartyRepository {
 
     override suspend fun addParty(partyModel: PartysItem): Response<AddPartyResponse> = partyApiService.addParty(partyModel)
     override suspend fun updateParty(partyID: Int, partyModel: PartysItem): Response<Boolean> = partyApiService.updateParty(partyID,partyModel)

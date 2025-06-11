@@ -1,5 +1,7 @@
 package com.mr.anonym.domain.response
 
-data class DeleteFriendResponse (
+import androidx.annotation.Keep
+
+@Keep data class DeleteFriendResponse (
     val message: String
 )

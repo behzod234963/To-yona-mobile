@@ -1,9 +1,8 @@
 package com.mr.anonym.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.annotation.Keep
 
-data class MonitoringModel(
+@Keep data class MonitoringModel(
     val id:Int? = null,
     val monthIndex: Int,
     val eventName: String,

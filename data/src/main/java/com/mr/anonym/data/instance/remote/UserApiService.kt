@@ -1,6 +1,6 @@
 package com.mr.anonym.data.instance.remote
 
-import androidx.room.Delete
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.response.DecodeTokenResponse
 import com.mr.anonym.domain.response.DeleteUserResponse
@@ -19,7 +19,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface UserApiService {
+@Keep interface UserApiService {
 
     @POST("/login")
     suspend fun loginUser(@Body user: LoginRequest): Response<LoginResponse>

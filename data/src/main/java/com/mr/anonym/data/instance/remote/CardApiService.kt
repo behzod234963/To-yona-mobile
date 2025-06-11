@@ -1,5 +1,6 @@
 package com.mr.anonym.data.instance.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.UserModelItem
 import retrofit2.Response
@@ -10,7 +11,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-interface CardApiService {
+@Keep interface CardApiService {
 
     @POST("/card/add")
     suspend fun addCard(

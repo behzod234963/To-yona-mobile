@@ -1,12 +1,13 @@
 package com.mr.anonym.data.implementations.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.data.instance.remote.CardApiService
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.repository.remote.CardRepository
 import retrofit2.Response
 
-class CardRepositoryImpl(private val api: CardApiService): CardRepository {
+@Keep class CardRepositoryImpl(private val api: CardApiService): CardRepository {
     override suspend fun addCard(cardModel: CardModel): Response<CardModel> = api.addCard(
         cardModel
     )

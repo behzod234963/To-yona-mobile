@@ -1,9 +1,11 @@
 package com.mr.anonym.domain.repository.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.UserModelItem
 import retrofit2.Response
 
+@Keep
 interface CardRepository {
     suspend fun addCard(cardModel: CardModel): Response<CardModel>
     suspend fun getAllCard(): Response<List<CardModel>>

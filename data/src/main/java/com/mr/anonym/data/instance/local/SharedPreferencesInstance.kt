@@ -3,10 +3,12 @@ package com.mr.anonym.data.instance.local
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Base64
+import androidx.annotation.Keep
 import androidx.core.content.edit
 import com.mr.anonym.data.crypto.AeadManager.getAead
 
-class SharedPreferencesInstance( private val context: Context ) {
+@Keep
+class SharedPreferencesInstance(private val context: Context ) {
 
     private val sharedPreferences: SharedPreferences = context.getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
 

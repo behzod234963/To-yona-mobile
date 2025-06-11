@@ -1,11 +1,12 @@
 package com.mr.anonym.data.auth
 
+import androidx.annotation.Keep
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.data.instance.remote.UserApiService
 import com.mr.anonym.domain.response.RefreshTokenRequest
 import javax.inject.Provider
 
-class TokenManager(
+@Keep class TokenManager(
     private val sharedPreferences: SharedPreferencesInstance,
     private val userApiProvider: Provider<UserApiService>
 ) {

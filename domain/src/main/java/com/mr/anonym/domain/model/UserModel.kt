@@ -1,10 +1,12 @@
 package com.mr.anonym.domain.model
 
+import androidx.annotation.Keep
+
 data class UserModel(
 	val userModel: List<UserModelItem> = emptyList()
 )
 
-data class UserModelItem(
+@Keep data class UserModelItem(
 	val id: Int = -1,
 	val username: String = "",
 	val surname: String = "",

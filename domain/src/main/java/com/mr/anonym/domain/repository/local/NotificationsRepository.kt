@@ -1,9 +1,10 @@
 package com.mr.anonym.domain.repository.local
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.NotificationsModel
 import kotlinx.coroutines.flow.Flow
 
-interface NotificationsRepository {
+@Keep interface NotificationsRepository {
 
     suspend fun insertNotification(notification: NotificationsModel)
     fun getNotifications(): Flow<List<NotificationsModel>>

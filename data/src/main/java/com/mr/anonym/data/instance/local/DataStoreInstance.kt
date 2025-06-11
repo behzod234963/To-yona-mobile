@@ -1,6 +1,7 @@
 package com.mr.anonym.data.instance.local
 
 import android.content.Context
+import androidx.annotation.Keep
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -12,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("dataStore")
-class DataStoreInstance(private val context: Context) {
+@Keep class DataStoreInstance(private val context: Context) {
 
     suspend fun isPasswordForgotten(status: Boolean){
         val key = booleanPreferencesKey("ForgotPassword")

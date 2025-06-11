@@ -1,5 +1,6 @@
 package com.mr.anonym.data.instance.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
@@ -13,7 +14,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface PartyApiService {
+@Keep interface PartyApiService {
 
     @POST("/party/add")
     suspend fun addParty(

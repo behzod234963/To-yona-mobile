@@ -1,18 +1,20 @@
 package com.mr.anonym.domain.model
 
-data class FriendsModel(
+import androidx.annotation.Keep
+
+@Keep data class FriendsModel(
 	val addedByMe: List<AddedByMeItem> = emptyList(),
 	val addedMe: List<Any?>? = null
 )
 
-data class AddedByMeItem(
+@Keep data class AddedByMeItem(
 	val friendId: Int = -1,
 	val friend: Friend = Friend(),
 	val id: Int = -1,
 	val userId: Int = -1
 )
 
-data class Friend(
+@Keep data class Friend(
 	val createdAt: String = "",
 	val password: String = "",
 	val surname: String = "",

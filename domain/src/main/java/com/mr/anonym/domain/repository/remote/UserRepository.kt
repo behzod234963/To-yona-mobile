@@ -1,5 +1,6 @@
 package com.mr.anonym.domain.repository.remote
 
+import androidx.annotation.Keep
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.response.DecodeTokenResponse
 import com.mr.anonym.domain.response.DeleteUserResponse
@@ -10,7 +11,7 @@ import com.mr.anonym.domain.response.RefreshTokenResponse
 import retrofit2.Call
 import retrofit2.Response
 
-interface UserRepository {
+@Keep interface UserRepository {
 
     suspend fun loginUser(user: LoginRequest): Response<LoginResponse>
     suspend fun registerUser(user: UserModelItem): Response<UserModelItem>

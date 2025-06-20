@@ -44,7 +44,7 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.presentation.notifiications.notificationController
+import com.mr.anonym.toyonamobile.presentation.notifiications.notificationManager
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.managers.restartApp
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.components.LanguageBottomSheet
@@ -346,7 +346,7 @@ fun SettingsScreen(
                 }
             }
             if (isNotificationContentClicked.value) {
-                notificationController(context)
+                notificationManager(context)
                 isNotificationContentClicked.value = false
             }
             if (showThemeContent.value) {

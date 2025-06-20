@@ -43,7 +43,7 @@ import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.components.EnterScreenDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "ObsoleteSdkInt")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun NewPinScreen(
@@ -106,7 +106,16 @@ fun NewPinScreen(
                 else->{
                     sharedPreferences.saveNewPinState(false)
                     sharedPreferences.savePinCode(pinValue.value)
-                    isPinCodeSetCompleted.value = true
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                        isPinCodeSetCompleted.value = true
+                    }else{
+                        sharedPreferences.saveNewPinState(false)
+                        isPinCodeSetCompleted.value = false
+                        sharedPreferences.saveIsBiometricAuthOn(false)
+                        navController.navigate(ScreensRouter.MainScreen.route){
+                            popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
+                        }
+                    }
                 }
             }
         } else {

@@ -111,7 +111,7 @@ fun EnterScreen(
     val iconSize = remember { mutableIntStateOf(30) }
 
     val openSecurityContentState = dataStore.openSecurityContentState().collectAsState(false)
-    val isConnected = connector.networkStatus.collectAsState(false)
+    val isConnected = connector.networkStatus.collectAsState(true)
     val connectionAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_no_internet_globus_version)
     )
@@ -553,13 +553,15 @@ fun EnterScreen(
                             ),
                             shape = RoundedCornerShape(10.dp),
                             onClick = {
-                                if (isBiometricAuthOn) {
-                                    coroutineScope.launch {
-                                        dataStore.showBiometricAuthManually(true)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                                    if (isBiometricAuthOn) {
+                                        coroutineScope.launch {
+                                            dataStore.showBiometricAuthManually(true)
+                                        }
+                                        sharedPreferences.saveBiometricAuthState(true)
+                                    } else {
+                                        showBiometricSettings.value = true
                                     }
-                                    sharedPreferences.saveBiometricAuthState(true)
-                                } else {
-                                    showBiometricSettings.value = true
                                 }
                             }
                         ) {
@@ -568,12 +570,18 @@ fun EnterScreen(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Icon(
-                                    modifier = Modifier.padding(15.dp),
-                                    tint = secondaryColor,
-                                    painter = painterResource(R.drawable.ic_fingerprint),
-                                    contentDescription = "button fingerprint"
-                                )
+                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                                    Icon(
+                                        modifier = Modifier.padding(15.dp),
+                                        tint = secondaryColor,
+                                        painter = painterResource(R.drawable.ic_fingerprint),
+                                        contentDescription = "button fingerprint"
+                                    )
+                                }else{
+                                    Row {
+                                        Column (Modifier.size(70.dp)){  }
+                                    }
+                                }
                             }
                         }
                         if (showBiometricSettings.value) {

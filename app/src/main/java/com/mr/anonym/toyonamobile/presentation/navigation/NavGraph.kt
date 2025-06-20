@@ -55,6 +55,7 @@ fun NavGraph(
             isProfileSettingsState -> ScreensRouter.ProfileScreen.route
             newPinState -> ScreensRouter.NewPinScreen.route
             isThemeChanged -> ScreensRouter.MainScreen.route
+//            else -> ScreensRouter.MainScreen.route
             else -> ScreensRouter.EnterScreen.route
         }
     ) {

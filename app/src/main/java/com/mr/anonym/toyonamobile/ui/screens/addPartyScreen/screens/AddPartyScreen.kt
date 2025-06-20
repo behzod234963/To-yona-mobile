@@ -134,26 +134,11 @@ fun AddPartyScreen(
     val isOtherEventError = rememberSaveable { mutableStateOf(false) }
     val isDateReEntered = rememberSaveable { mutableStateOf(false) }
     if (arguments.eventID != -1 && selectedEventIndex.value == 4) isOtherClicked.value = true
-
-//    val showTimePicker = rememberSaveable { mutableStateOf(false) }
-//    val pickedHour = calendarInstance.get(android.icu.util.Calendar.HOUR_OF_DAY)
-//    val pickedMinute = calendarInstance.get(android.icu.util.Calendar.MINUTE)
     val isDateSet = rememberSaveable {
         mutableStateOf(
             arguments.eventID != -1
         )
     }
-//    val timePickerDialog = TimePickerDialog(
-//        context,
-//        { _: TimePicker, hourOfDay, minute ->
-//            isDateReEntered.value = true
-//            calendarInstance.set(Calendar.HOUR_OF_DAY, hourOfDay)
-//            calendarInstance.set(Calendar.MINUTE, minute)
-//            calendarInstance.set(Calendar.SECOND, 0)
-//            viewModel.onEvent(AddEventState.ChangeTime(if (minute == 0) "$hourOfDay:${0}0" else "$hourOfDay:$minute"))
-//            isDateSet.value = true
-//        }, pickedHour, pickedMinute, true
-//    )
 
     val showDatePicker = rememberSaveable { mutableStateOf(false) }
     val startDate = viewModel.startDate
@@ -179,10 +164,20 @@ fun AddPartyScreen(
     * 3-> Birthday
     * 4-> Other (when 4 was selected , index type will be select from textField value
     * */
-
+    viewModel.onEvent(
+        AddEventState.ChangeOtherField(
+            when (party.value.type) {
+                "0" -> ""
+                "1" -> stringResource(R.string.wedding)
+                "2" -> stringResource(R.string.sunnat_wedding)
+                "3" -> stringResource(R.string.birthday)
+                else -> party.value.type
+            }
+        )
+    )
     BackHandler {
-        navController.navigate(ScreensRouter.MainScreen.route){
-            popUpTo(ScreensRouter.AddPartyScreen.route + "/-1"){ inclusive = true }
+        navController.navigate(ScreensRouter.MainScreen.route) {
+            popUpTo(ScreensRouter.AddPartyScreen.route + "/-1") { inclusive = true }
         }
     }
     Scaffold(
@@ -195,8 +190,8 @@ fun AddPartyScreen(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
                 navigationIconClick = {
-                    navController.navigate(ScreensRouter.MainScreen.route){
-                        popUpTo(ScreensRouter.AddPartyScreen.route + "/-1"){ inclusive = true }
+                    navController.navigate(ScreensRouter.MainScreen.route) {
+                        popUpTo(ScreensRouter.AddPartyScreen.route + "/-1") { inclusive = true }
                     }
                 }
             ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
@@ -318,13 +313,6 @@ fun AddPartyScreen(
                 Spacer(Modifier.height(10.dp))
 //                Other field
                 if (isOtherClicked.value) {
-                    viewModel.onEvent(AddEventState.ChangeOtherField(when(party.value.type){
-                        "0"-> ""
-                        "1" -> stringResource(R.string.wedding)
-                        "2" -> stringResource(R.string.sunnat_wedding)
-                        "3" -> stringResource(R.string.birthday)
-                        else -> party.value.type
-                    }))
                     AddEventOtherField(
                         secondaryColor = secondaryColor,
                         tertiaryColor = tertiaryColor,
@@ -493,7 +481,7 @@ fun AddPartyScreen(
                         },
                         onAddCardClick = {
                             sharedPreferences.addCardFromAddEvent(true)
-                                sharedPreferences.partyIndex(arguments.eventID)
+                            sharedPreferences.partyIndex(arguments.eventID)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         },
                         cardModel = cardModel.value
@@ -526,7 +514,7 @@ fun AddPartyScreen(
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
                             sharedPreferences.addCardFromAddEvent(true)
-                                sharedPreferences.partyIndex(arguments.eventID)
+                            sharedPreferences.partyIndex(arguments.eventID)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         }
                     ) {
@@ -609,13 +597,13 @@ fun AddPartyScreen(
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever
                 )
-                if (isOldParty.value){
+                if (isOldParty.value) {
                     coroutineScope.launch {
                         delay(2000L)
                         isOldParty.value = false
                         isLoading.value = false
                     }
-                }else{
+                } else {
                     if (arguments.eventID == -1) {
                         coroutineScope.launch {
                             if (viewModel.isPartyAdded.value) {
@@ -623,7 +611,9 @@ fun AddPartyScreen(
                                 isLoading.value = false
                                 withContext(Dispatchers.Main) {
                                     navController.navigate(ScreensRouter.MainScreen.route) {
-                                        popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
+                                        popUpTo(ScreensRouter.AddPartyScreen.route) {
+                                            inclusive = true
+                                        }
                                         launchSingleTop = true
                                     }
                                 }
@@ -637,7 +627,9 @@ fun AddPartyScreen(
                                 isLoading.value = false
                                 withContext(Dispatchers.Main) {
                                     navController.navigate(ScreensRouter.MyEventsScreen.route) {
-                                        popUpTo(ScreensRouter.AddPartyScreen.route) { inclusive = true }
+                                        popUpTo(ScreensRouter.AddPartyScreen.route) {
+                                            inclusive = true
+                                        }
                                         launchSingleTop = true
                                     }
                                 }

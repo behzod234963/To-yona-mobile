@@ -25,6 +25,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.LocalPartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -98,6 +99,19 @@ fun MyPartiesScreen(
                     .padding(10.dp)
             ) {
                 items(parties.value) { model ->
+                    val localParty = LocalPartyModel(
+                        id = model.id,
+                        userId = model.userId,
+                        userName = model.userName,
+                        name = model.name,
+                        type = model.type,
+                        address = model.address,
+                        cardNumber = model.cardNumber,
+                        startTime = model.startTime,
+                        endTime = model.endTime,
+                        status = model.status,
+                        createdAt = model.createdAt
+                    )
                     MyPartiesItem(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
@@ -110,6 +124,7 @@ fun MyPartiesScreen(
                         onDeleteClick = {
                             isLoading.value = true
                             viewModel.deleteParty(model.id)
+                            viewModel.deleteLocalParty(localParty)
                         },
                         onCheckedChange = {
                             isLoading.value = true
@@ -125,6 +140,11 @@ fun MyPartiesScreen(
                                     status = it
                                 )
                             )
+                            if (model.status){
+                                viewModel.insertLocalParty(localParty)
+                            }else{
+                                viewModel.deleteLocalParty(localParty)
+                            }
                         }
                     )
                 }

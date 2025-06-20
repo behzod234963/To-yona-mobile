@@ -1,11 +1,13 @@
 package com.mr.anonym.data.paging
 
 import android.util.Log
+import androidx.annotation.Keep
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.domain.model.PartysItem
 
+@Keep
 class PartyPagingSource(
     private val api: PartyApiService
 ) : PagingSource<Int, PartysItem>(){
@@ -25,7 +27,6 @@ class PartyPagingSource(
             val partyList = responseBody?.partys?:emptyList()
             val nextKey = if (partyList.size < limit)null else page + 1
             val prevKey = if (page == 1) null else page-1
-
             LoadResult.Page(
                 data = partyList,
                 nextKey = nextKey,

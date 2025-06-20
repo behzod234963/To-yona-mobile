@@ -1,30 +1,53 @@
 package com.mr.anonym.toyonamobile.presentation.notifiications
 
-import android.app.Activity
+import android.Manifest
+import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.provider.Settings
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.net.toUri
-import dagger.hilt.android.internal.Contexts
+import android.content.pm.PackageManager
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import com.mr.anonym.toyonamobile.R
 
-fun notificationController(context: Context) {
+class NotificationController (
+    private val context: Context,
+    private val notificationManager: NotificationManager
+){
 
-    val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-        Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-            putExtra(Settings.EXTRA_APP_PACKAGE,context.packageName)
-        }
-    }else{
-        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = "package:${context.packageName}".toUri()
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun showNotification(
+        requestCode: Int,
+        title: String,
+        contentText: String
+    ){
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(
+                requestCode,
+                createNotification(
+                    title = title,
+                    contentText = contentText
+                ).build()
+            )
         }
     }
-    context.startActivity(intent)
+
+    private fun createNotification(
+        title: String,
+        contentText: String
+    ): NotificationCompat.Builder{
+
+        val notificationCriterion = NotificationCompat.Builder( context,"notification channel id" )
+            .setSmallIcon(R.drawable.ic_more)
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setAutoCancel(true)
+        return notificationCriterion
+    }
 }

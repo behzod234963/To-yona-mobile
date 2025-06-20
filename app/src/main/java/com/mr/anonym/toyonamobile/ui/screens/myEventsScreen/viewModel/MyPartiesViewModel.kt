@@ -7,8 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.LocalPartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
+import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPartiesViewModel @Inject constructor(
     sharedPrefs: SharedPreferencesInstance,
+    private val localUseCases: LocalUseCases,
     private val remoteUseCases: RemoteUseCases,
 ) : ViewModel(){
 
@@ -48,5 +51,11 @@ class MyPartiesViewModel @Inject constructor(
         remoteUseCases.deletePartyUseCase.execute(id).collect {
             _message.value = it
         }
+    }
+    fun insertLocalParty(localParty: LocalPartyModel) = viewModelScope.launch {
+        localUseCases.insertLocalParty.execute(localParty)
+    }
+    fun deleteLocalParty(localParty: LocalPartyModel) = viewModelScope.launch {
+        localUseCases.deleteLocalParty.execute(localParty)
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.mr.anonym.data.auth.AuthInterceptor
 import com.mr.anonym.data.auth.TokenAuthenticator
 import com.mr.anonym.data.auth.TokenManager
+import com.mr.anonym.data.implementations.local.LocalPartyRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.implementations.remote.CardRepositoryImpl
 import com.mr.anonym.data.implementations.remote.FriendsRepositoryImpl
@@ -12,12 +13,14 @@ import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.data.instance.local.room.LocalPartyDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
 import com.mr.anonym.data.instance.remote.CardApiService
 import com.mr.anonym.data.instance.remote.FriendsApiService
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.data.instance.remote.UserApiService
+import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
 import com.mr.anonym.domain.repository.remote.FriendsRepository
@@ -62,6 +65,15 @@ class DataModule {
     @Singleton
     fun provideNotificationRepository(notificationsDAO: NotificationsDAO): NotificationsRepository =
         NotificationsRepositoryImpl(notificationsDAO)
+
+    @Provides
+    @Singleton
+    fun provideLocalPartyDAO(roomInstance: RoomInstance): LocalPartyDAO = roomInstance.localPartyDAO
+
+    @Provides
+    @Singleton
+    fun provideLocalPartyRepository(dao: LocalPartyDAO): LocalPartyRepository =
+        LocalPartyRepositoryImpl(dao)
 
     @Provides
     @Singleton

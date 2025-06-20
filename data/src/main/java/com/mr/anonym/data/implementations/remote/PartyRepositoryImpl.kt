@@ -19,7 +19,11 @@ import retrofit2.Response
     override suspend fun updateParty(partyID: Int, partyModel: PartysItem): Response<Boolean> = partyApiService.updateParty(partyID,partyModel)
     override fun getAllParty(): Flow<PagingData<PartysItem>> {
         return Pager(
-            config = PagingConfig(20),
+            config = PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                enablePlaceholders = false
+            ),
             pagingSourceFactory = { PartyPagingSource(api = partyApiService) }
         ).flow
     }

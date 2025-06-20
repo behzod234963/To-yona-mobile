@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.di.module
 
+import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
 import com.mr.anonym.domain.repository.remote.FriendsRepository
@@ -11,6 +12,11 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsB
 import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
+import com.mr.anonym.domain.useCases.local.localPartyUseCase.ClearAllLocalPartyUseCase
+import com.mr.anonym.domain.useCases.local.localPartyUseCase.DeleteLocalPartyUseCase
+import com.mr.anonym.domain.useCases.local.localPartyUseCase.GetAllLocalPartyUseCase
+import com.mr.anonym.domain.useCases.local.localPartyUseCase.InsertAllLocalPartyUseCase
+import com.mr.anonym.domain.useCases.local.localPartyUseCase.InsertLocalPartyUseCase
 import com.mr.anonym.domain.useCases.remote.DecodeTokenUseCase
 import com.mr.anonym.domain.useCases.remote.user.GetUserByIdUseCase
 import com.mr.anonym.domain.useCases.remote.user.LoginUserUseCase
@@ -49,6 +55,7 @@ class DomainModule {
     @Singleton
     fun provideUseCases(
         notificationsRepository: NotificationsRepository,
+        localPartyRepository: LocalPartyRepository
     ): LocalUseCases =
         LocalUseCases(
             insertNotificationUseCase = InsertNotificationUseCase(notificationsRepository),
@@ -56,6 +63,11 @@ class DomainModule {
             getNotificationsByIDUseCase = GetNotificationsByIDUseCase(notificationsRepository),
             deleteNotificationUseCase = DeleteNotificationUseCase(notificationsRepository),
             clearNotificationsUseCase = ClearNotificationsUseCase(notificationsRepository),
+            insertAllParty = InsertAllLocalPartyUseCase(localPartyRepository),
+            getAllLocalParty = GetAllLocalPartyUseCase(localPartyRepository),
+            clearAllParty = ClearAllLocalPartyUseCase(localPartyRepository),
+            insertLocalParty = InsertLocalPartyUseCase(localPartyRepository),
+            deleteLocalParty = DeleteLocalPartyUseCase(localPartyRepository)
         )
 
     @Provides

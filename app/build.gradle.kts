@@ -67,8 +67,10 @@ dependencies {
 
     implementation(libs.daggerHilt)
     implementation(libs.daggerHilt.navigation.compose)
+    implementation(libs.androidx.hilt.work)
     kapt(libs.daggerHiltCompiler)
     kapt(libs.daggerHiltAndroidCompiler)
+    kapt(libs.daggerHiltWorkCompiler)
 
     implementation(libs.navigation)
     implementation(libs.kotlinCoroutines)
@@ -105,7 +107,7 @@ dependencies {
 
     implementation(libs.tink)
 
-//    implementation(libs.chuck)
-
-//    implementation(libs.iconsExtended)
+    implementation(libs.workManager)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.firebase.functions.ktx)
 }

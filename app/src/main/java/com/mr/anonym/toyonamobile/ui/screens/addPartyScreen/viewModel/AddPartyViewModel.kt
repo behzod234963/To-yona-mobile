@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,7 +22,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddPartyViewModel @Inject constructor(
-    context: Context,
     savedState: SavedStateHandle,
     sharedPreferences: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases
@@ -37,7 +37,7 @@ class AddPartyViewModel @Inject constructor(
     val cards: State<List<CardModel>> = _cards
     private val _card = mutableStateOf(CardModel())
     val card: State<CardModel> = _card
-    private val _cardValue = mutableStateOf(context.getString(R.string.empty))
+    private val _cardValue = mutableStateOf("")
     val cardValue: State<String> = _cardValue
     private val _startDate = mutableStateOf("")
     val startDate: State<String> = _startDate
@@ -47,7 +47,7 @@ class AddPartyViewModel @Inject constructor(
     val titleValue: State<String> = _titleValue
     private val _otherFieldValue = mutableStateOf( "" )
     val otherFieldValue: State<String> = _otherFieldValue
-    private val _selectedEventIndex = mutableIntStateOf(0)
+    private val _selectedEventIndex = mutableIntStateOf(1)
     val selectedEventIndex: State<Int> = _selectedEventIndex
     private val _address = mutableStateOf( "" )
     val address : State<String> = _address

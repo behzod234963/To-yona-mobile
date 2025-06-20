@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.viewModel
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +19,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
-    context: Context,
     savedState: SavedStateHandle,
     sharedPrefs: SharedPreferencesInstance,
     private val remoteUseCases: RemoteUseCases,
@@ -35,7 +33,7 @@ class DetailsViewModel @Inject constructor(
     val user: State<UserModelItem> = _user
     private val _cards = mutableStateOf(ListState().cards )
     val cards: State<List<CardModel>> = _cards
-    private val _senderCard = mutableStateOf(context.getString(R.string.you_have_not_active_card))
+    private val _senderCard = mutableStateOf("")
     val senderCard: State<String> = _senderCard
     private val _profileAvatar = mutableIntStateOf( R.drawable.ic_default_avatar )
     val profileAvatar: State<Int> = _profileAvatar

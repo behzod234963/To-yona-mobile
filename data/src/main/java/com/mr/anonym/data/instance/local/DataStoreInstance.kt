@@ -99,4 +99,17 @@ private val Context.dataStore : DataStore<Preferences> by preferencesDataStore("
             it[key]?:false
         }
     }
+
+    suspend fun isOnline(status: Boolean){
+        val key = booleanPreferencesKey("isOnline")
+        context.dataStore.edit {
+            it[key] = status
+        }
+    }
+    fun isOnlineState(): Flow<Boolean>{
+        val key = booleanPreferencesKey("isOnline")
+        return context.dataStore.data.map {
+            it[key]?:false
+        }
+    }
 }

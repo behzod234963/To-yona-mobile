@@ -20,15 +20,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
+import androidx.work.WorkManager
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
-import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.managers.BiometricAuthManager
 import com.mr.anonym.toyonamobile.presentation.managers.BiometricResult
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.managers.PermissionController
+import com.mr.anonym.toyonamobile.presentation.navigation.NavGraph
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.theme.ToyonaMobileTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -43,13 +44,18 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var localeConfig: LocaleConfigurations
-    @Inject lateinit var sharedPreferences: SharedPreferencesInstance
-    @Inject lateinit var dataStore: DataStoreInstance
-    @Inject lateinit var permissionController: PermissionController
+    @Inject
+    lateinit var sharedPreferences: SharedPreferencesInstance
+    @Inject
+    lateinit var dataStore: DataStoreInstance
+    @Inject
+    lateinit var permissionController: PermissionController
+    lateinit var workManager: WorkManager
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        workManager = WorkManager.getInstance(this)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             localeConfig.apply {
                 this@MainActivity.applySavedLanguage()
@@ -61,11 +67,11 @@ class MainActivity : AppCompatActivity() {
             val isDarkTheme = sharedPreferences.getDarkThemeState()
             ToyonaMobileTheme(
                 darkTheme =
-                when{
-                    isSystemTheme-> isSystemInDarkTheme()
-                    isDarkTheme-> true
-                    else-> false
-                },
+                    when {
+                        isSystemTheme -> isSystemInDarkTheme()
+                        isDarkTheme -> true
+                        else -> false
+                    },
                 dynamicColor = false
             ) {
                 val navController = rememberNavController()
@@ -73,8 +79,10 @@ class MainActivity : AppCompatActivity() {
                 val coroutineScope = rememberCoroutineScope()
                 val biometricAuthState = sharedPreferences.getBiometricAuthState()
                 val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
-                val showBiometricAuthState = dataStore.showBiometricAuthManuallyState().collectAsState(false)
-                val openSecurityContentState = dataStore.openSecurityContentState().collectAsState(false)
+                val showBiometricAuthState =
+                    dataStore.showBiometricAuthManuallyState().collectAsState(false)
+                val openSecurityContentState =
+                    dataStore.openSecurityContentState().collectAsState(false)
                 val isBiometricAuthSuccess = remember { mutableStateOf(false) }
                 val biometricResult by promptManager.promptResult.collectAsState(null)
                 val enrollLauncher = rememberLauncherForActivityResult(
@@ -101,14 +109,14 @@ class MainActivity : AppCompatActivity() {
                 LaunchedEffect(biometricResult) {
                     when (biometricResult) {
                         is BiometricResult.AuthenticationSuccess -> {
-                            if (!openSecurityContentState.value){
+                            if (!openSecurityContentState.value) {
                                 coroutineScope.launch {
                                     dataStore.showBiometricAuthManually(false)
                                 }
                                 isBiometricAuthSuccess.value = true
                                 sharedPreferences.saveBiometricAuthState(false)
                                 navController.navigate(ScreensRouter.MainScreen.route)
-                            }else{
+                            } else {
                                 coroutineScope.launch {
                                     dataStore.showBiometricAuthManually(false)
                                     dataStore.openSecurityContent(false)
@@ -118,6 +126,7 @@ class MainActivity : AppCompatActivity() {
                                 navController.navigate(ScreensRouter.SecurityScreen.route)
                             }
                         }
+
                         is BiometricResult.AuthenticationError -> {}
                         BiometricResult.AuthenticationFailed -> {}
                         BiometricResult.AuthenticationNotSet -> {
@@ -131,6 +140,7 @@ class MainActivity : AppCompatActivity() {
                                 enrollLauncher.launch(enrollIntent)
                             }
                         }
+
                         BiometricResult.FeatureUnavailable -> {}
                         BiometricResult.HardwareUnavailable -> {}
                         null -> {}
@@ -142,6 +152,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onStop() {
         super.onStop()
         CoroutineScope(Dispatchers.Default).launch {
@@ -149,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             dataStore.openSecurityContent(false)
             sharedPreferences.addCardFromDetails(false)
             sharedPreferences.addCardFromAddEvent(false)
+            dataStore.isOnline(false)
         }
         sharedPreferences.saveBiometricAuthState(true)
         sharedPreferences.addCardProcess(false)
@@ -161,6 +173,7 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Default).launch {
             dataStore.isPasswordForgotten(false)
             dataStore.openSecurityContent(false)
+            dataStore.isOnline(false)
             sharedPreferences.addCardFromDetails(false)
             sharedPreferences.addCardFromAddEvent(false)
         }

@@ -111,6 +111,12 @@ fun MainScreen(
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+    val systemEightrdColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray
+    val eightrdColor = when{
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> Color.Gray
+        else -> Color.LightGray
+    }
 
     val smallFontSize = remember { mutableIntStateOf(14) }
 
@@ -325,7 +331,7 @@ fun MainScreen(
 //                                                viewModel.closerParties
 //                                            LazyColumn{
                                                 if (!viewModel.isRefresh.value) {
-                                                    items(viewModel.closerParties.distinctBy { it.id }) { party ->
+                                                    items(viewModel.closerParties.distinctBy { it.id }.sortedByDescending { it.type }) { party ->
                                                         MainScreenItem(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,

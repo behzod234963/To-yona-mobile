@@ -28,7 +28,7 @@ class PartyPagingSource(
             val nextKey = if (partyList.size < limit)null else page + 1
             val prevKey = if (page == 1) null else page-1
             LoadResult.Page(
-                data = partyList,
+                data = partyList.sortedByDescending { it.type },
                 nextKey = nextKey,
                 prevKey = prevKey
             )

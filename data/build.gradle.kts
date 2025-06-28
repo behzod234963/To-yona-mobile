@@ -10,7 +10,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -62,4 +62,9 @@ dependencies {
     kapt(libs.daggerHiltAndroidCompiler)
 
     implementation(libs.tink)
+
+    debugImplementation(libs.chuckerInterceptorDebug){
+        exclude(group = "com.android.support", module =  "support-compat")
+    }
+    releaseImplementation(libs.chuckerInterceptorRelease)
 }

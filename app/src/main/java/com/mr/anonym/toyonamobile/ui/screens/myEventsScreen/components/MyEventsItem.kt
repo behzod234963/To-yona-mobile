@@ -64,6 +64,8 @@ fun MyPartiesItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
                     text = partyModel.name,
                     fontSize = 18.sp,
                     color = secondaryColor,

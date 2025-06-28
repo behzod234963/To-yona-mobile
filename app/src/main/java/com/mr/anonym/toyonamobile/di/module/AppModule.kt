@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.managers.PermissionController
-import com.mr.anonym.toyonamobile.presentation.notifiications.NotificationController
+import com.mr.anonym.toyonamobile.presentation.notifications.NotificationController
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

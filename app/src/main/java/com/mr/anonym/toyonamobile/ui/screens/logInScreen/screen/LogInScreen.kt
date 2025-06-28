@@ -32,11 +32,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,10 +52,9 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.response.LoginRequest
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
-import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.logInScreen.components.LoginTextFields
+import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
+import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.viewModel.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -83,16 +84,29 @@ fun LogInScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
+
         isDarkTheme -> Color.Black
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val secondaryColor = when {
         isSystemTheme -> systemSecondaryColor
         isDarkTheme -> Color.White
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
+    val systemEightrdColor = if (isSystemInDarkTheme()) Color.Gray else Color.LightGray
+    val eightrdColor = when{
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> Color.Gray
+        else -> Color.LightGray
+    }
 
     val containerPadding = rememberSaveable { mutableIntStateOf(10) }
     val isLoading = remember { mutableStateOf(false) }
@@ -104,13 +118,14 @@ fun LogInScreen(
         focusRequester.requestFocus()
     }
 
-    val phoneFieldValue = rememberSaveable { mutableStateOf("") }
+    val (phoneFieldValue, onPhoneFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val phoneFieldError = rememberSaveable { mutableStateOf(false) }
 
-    val passwordValue = rememberSaveable { mutableStateOf("") }
+    val (passwordFieldValue, onPasswordFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val passwordValueError = rememberSaveable { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
+    val isSnackbarShown = remember { mutableStateOf(false) }
     val isLoginSuccess = viewModel.isLoginSuccess
     Scaffold(
         containerColor = primaryColor,
@@ -158,24 +173,26 @@ fun LogInScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LoginTextFields(
+                    CustomTextField(
                         secondaryColor = secondaryColor,
-                        phoneFieldValue = phoneFieldValue.value,
-                        onPhoneValueChange = {
-                            phoneFieldValue.value = it.take(9)
-                            if (it.length < 10) phoneFieldError.value = !it.phoneChecker()
-                        },
-                        phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
-                        phoneFieldError = phoneFieldError.value,
-                        phoneFieldModifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
-                        passwordValue = passwordValue.value,
-                        onPasswordValueChange = {
-                            passwordValue.value = it
-                            passwordValueError.value = !it.passwordChecker()
-                        },
-                        passwordValueError = passwordValueError.value
+                        eightrdColor = eightrdColor,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        value = phoneFieldValue,
+                        onValueChange = onPhoneFieldValueChange,
+                        label = stringResource(R.string.enter_your_phone_number),
+                        focusRequester = focusRequester
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    CustomPasswordTextField(
+                        secondaryColor = secondaryColor,
+                        eightrdColor = eightrdColor,
+                        imeAction = ImeAction.Done,
+                        value = passwordFieldValue,
+                        onValueChange = onPasswordFieldValueChange,
+                        label = stringResource(R.string.password),
+                        icon = null,
+                        focusRequester = focusRequester
                     )
                     TextButton(
                         onClick = {
@@ -191,14 +208,14 @@ fun LogInScreen(
                     TextButton(
                         onClick = {
                             if (
-                                phoneFieldValue.value.isNotEmpty() &&
-                                phoneFieldValue.value.isNotBlank() &&
+                                phoneFieldValue.text.isNotEmpty() &&
+                                phoneFieldValue.text.isNotBlank() &&
                                 !phoneFieldError.value
                             ) {
                                 coroutineScope.launch {
                                     dataStore.isPasswordForgotten(true)
                                 }
-                                val result = "+998" + phoneFieldValue.value
+                                val result = "+998" + phoneFieldValue.text
                                 navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                     popUpTo(ScreensRouter.LoginScreen.route) { inclusive = true }
                                 }
@@ -233,16 +250,16 @@ fun LogInScreen(
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
                             if (
-                                phoneFieldValue.value.isNotEmpty() &&
-                                phoneFieldValue.value.isNotBlank() &&
+                                phoneFieldValue.text.isNotEmpty() &&
+                                phoneFieldValue.text.isNotBlank() &&
                                 !phoneFieldError.value &&
                                 !passwordValueError.value
                             ) {
                                 isLoading.value = true
                                 viewModel.loginUser(
                                     LoginRequest(
-                                        phonenumber = phoneFieldValue.value,
-                                        password = passwordValue.value
+                                        phonenumber = phoneFieldValue.text,
+                                        password = passwordFieldValue.text
                                     )
                                 )
                             } else {
@@ -277,24 +294,29 @@ fun LogInScreen(
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever
                 )
-                val result = "+998" + phoneFieldValue.value
-                if (
-                    isLoginSuccess.value
-                ) {
-                    when {
-                        isPinForgotten.value -> {
-                            sharedPreferences.saveNewPinState(true)
-                            navController.navigate(ScreensRouter.NewPinScreen.route) {
-                                popUpTo(ScreensRouter.LoginScreen.route) { inclusive = true }
+                val result = "+998" + phoneFieldValue.text
+                LaunchedEffect(isLoading.value) {
+                    delay(1500)
+                    if (
+                        isLoginSuccess.value
+                    ) {
+                        when {
+                            isPinForgotten.value -> {
+                                sharedPreferences.saveNewPinState(true)
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(ScreensRouter.NewPinScreen.route) {
+                                        popUpTo(ScreensRouter.LoginScreen.route) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        else -> {
-                            viewModel.decodeToken()
-                            coroutineScope.launch {
+
+                            else -> {
+                                viewModel.decodeToken()
                                 dataStore.isOldUser(true)
-                                delay(1500)
                                 isLoading.value = false
-                                withContext(Dispatchers.Main){
+                                withContext(Dispatchers.Main) {
                                     navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                         popUpTo(ScreensRouter.LoginScreen.route) {
                                             inclusive = true
@@ -303,19 +325,15 @@ fun LogInScreen(
                                 }
                             }
                         }
-                    }
-                } else {
-                    coroutineScope.launch {
-                        delay(2500)
-                        if (isLoading.value){
-                            delay(500)
+                    } else {
+                        if (!isSnackbarShown.value) {
+                            delay(2000)
                             snackbarHostState.showSnackbar(
                                 message = context.getString(R.string.user_is_not_found)
                             )
-                            isLoading.value = false
-                        }else{
-                            isLoading.value = false
+                            isSnackbarShown.value = true
                         }
+                        isLoading.value = false
                     }
                 }
             }

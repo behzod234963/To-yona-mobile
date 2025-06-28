@@ -168,4 +168,6 @@
     <string name="address">Manzil</string>
     <string name="no_connection">Internetga bog\'lanish mavjud emas</string>
     <string name="no_connection_instruction">Iltimos qurilmangizning internetga bog\'lanish sozlamalarini tekshiring</string>
+    <string name="waiting_notification">Bildirishnoma kutilmoqda…</string>
+    <string name="app_works_in_background">Ilova orqa fonda ishlamoqda</string>
 </resources>

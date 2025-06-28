@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.notifiications
+package com.mr.anonym.toyonamobile.presentation.notifications
 
 import android.content.Context
 import android.content.Intent

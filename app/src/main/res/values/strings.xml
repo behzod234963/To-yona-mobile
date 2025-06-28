@@ -167,4 +167,6 @@
     <string name="address">Address</string>
     <string name="no_connection">No connection</string>
     <string name="no_connection_instruction">Please check your device internet connections</string>
+    <string name="waiting_notification">Waiting notification…"</string>
+    <string name="app_works_in_background">App works in background</string>
 </resources>

@@ -1,10 +1,14 @@
 package com.mr.anonym.toyonamobile.presentation.workManager
 
-import android.app.PendingIntent
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.google.crypto.tink.shaded.protobuf.LazyStringArrayList.emptyList
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
@@ -15,24 +19,32 @@ import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.notifiications.NotificationReceiver
-import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATION_BROADCAST_REQUEST_CODE
+import com.mr.anonym.toyonamobile.presentation.notifications.NotificationController
+import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATIONS_REQUEST_CODE
+import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATION_ID
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
+import okhttp3.internal.notify
 
 @HiltWorker
 class PartyWorker @AssistedInject constructor(
     @Assisted private val appContext: Context,
     @Assisted workerParameters: WorkerParameters,
+//    private val notificationController: NotificationController,
+    private val notificationManager: NotificationManager,
     private val sharedPrefs: SharedPreferencesInstance,
     private val localUseCases: LocalUseCases,
     private val remoteUseCases: RemoteUseCases,
 ) : CoroutineWorker(appContext, workerParameters) {
 
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        return createForegroundInfo()
+    }
     override suspend fun doWork(): Result {
 
+        setForeground(createForegroundInfo())
         val id = sharedPrefs.getID()
         val remoteParties = mutableListOf<PartysItem>()
         delay(1000L)
@@ -75,22 +87,61 @@ class PartyWorker @AssistedInject constructor(
                     "4" -> appContext.getString(R.string.other)
                     else -> appContext.getString(R.string.other)
                 }
-                val intent = Intent(appContext, NotificationReceiver::class.java).let {
-                    it.putExtra("title", partyType)
-                    it.putExtra("contentText", model.userName)
-                }
-                val flag = PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-                val pendingIntent = PendingIntent.getBroadcast(
-                    appContext,
-                    NOTIFICATION_BROADCAST_REQUEST_CODE,
-                    intent,
-                    flag
+//                val intent = Intent(appContext, NotificationReceiver::class.java).let {
+//                    it.putExtra("title", partyType)
+//                    it.putExtra("contentText", model.userName)
+//                }
+//                val flag = PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+//                val pendingIntent = PendingIntent.getBroadcast(
+//                    appContext,
+//                    NOTIFICATION_BROADCAST_REQUEST_CODE,
+//                    intent,
+//                    flag
+//                )
+//                pendingIntent.send()
+                notificationManager.notify(
+                    model.id,
+                    createNotification(
+                        title = model.name,
+                        contentText = model.userName
+                    )
                 )
-                pendingIntent.send()
                 localUseCases.insertLocalParty.execute(model)
             }
         }
         delay(1000L)
         return Result.success()
+    }
+
+    fun createForegroundInfo(): ForegroundInfo {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            ForegroundInfo(
+                NOTIFICATION_ID,
+                createNotification(appContext.getString(R.string.waiting_notification),
+                    appContext.getString(
+                        R.string.app_works_in_background
+                    )),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        }else{
+            ForegroundInfo(
+                NOTIFICATION_ID,
+                createNotification(appContext.getString(R.string.waiting_notification),appContext.getString(
+                    R.string.app_works_in_background
+                ))
+            )
+        }
+    }
+    fun createNotification(title: String,contentText: String): Notification{
+
+        val notification = NotificationCompat.Builder(appContext, "notification channel id")
+            .setSmallIcon(R.drawable.ic_notifications)
+            .setContentTitle(title)
+            .setContentText(contentText)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setAutoCancel(true)
+            .build()
+        return notification
     }
 }

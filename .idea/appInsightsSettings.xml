@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.mr.anonym.toyonamobile" />
+                  <option name="mobileSdkAppId" value="1:200410491427:android:00041204c1230985265f96" />
+                  <option name="projectId" value="qbase-android" />
+                  <option name="projectNumber" value="200410491427" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

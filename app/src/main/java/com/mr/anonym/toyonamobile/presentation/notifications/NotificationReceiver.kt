@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.presentation.notifiications
+package com.mr.anonym.toyonamobile.presentation.notifications
 
 import android.Manifest
 import android.app.NotificationManager
@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.RequiresPermission
-import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATION_CONTROLLER_REQUEST_CODE
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,7 +25,6 @@ class NotificationReceiver: BroadcastReceiver() {
         val contentText = intent.getStringExtra("contentText")
 
         notificationController.showNotification(
-            NOTIFICATION_CONTROLLER_REQUEST_CODE,
             title = title?:"",
             contentText = contentText?:""
         )

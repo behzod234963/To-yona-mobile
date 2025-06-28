@@ -2,9 +2,11 @@ package com.mr.anonym.toyonamobile.di.module
 
 import android.content.Context
 import androidx.room.Room
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.mr.anonym.data.auth.AuthInterceptor
 import com.mr.anonym.data.auth.TokenAuthenticator
 import com.mr.anonym.data.auth.TokenManager
+import com.mr.anonym.data.implementations.local.LocalFriendsRepositoryImpl
 import com.mr.anonym.data.implementations.local.LocalPartyRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
 import com.mr.anonym.data.implementations.remote.CardRepositoryImpl
@@ -13,6 +15,7 @@ import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.data.instance.local.room.LocalFriendsDAO
 import com.mr.anonym.data.instance.local.room.LocalPartyDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
 import com.mr.anonym.data.instance.local.room.RoomInstance
@@ -20,6 +23,7 @@ import com.mr.anonym.data.instance.remote.CardApiService
 import com.mr.anonym.data.instance.remote.FriendsApiService
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.data.instance.remote.UserApiService
+import com.mr.anonym.domain.repository.local.LocalFriendsRepository
 import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
@@ -72,8 +76,17 @@ class DataModule {
 
     @Provides
     @Singleton
+    fun provideLocalFriendsDAO(roomInstance: RoomInstance): LocalFriendsDAO = roomInstance.localFriendsDAO
+
+    @Provides
+    @Singleton
     fun provideLocalPartyRepository(dao: LocalPartyDAO): LocalPartyRepository =
         LocalPartyRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideLocalFriendsRepository(dao: LocalFriendsDAO): LocalFriendsRepository =
+        LocalFriendsRepositoryImpl(dao)
 
     @Provides
     @Singleton
@@ -108,11 +121,13 @@ class DataModule {
     @Provides
     @Singleton
     fun provideOkHTTP(
+        @ApplicationContext context: Context,
         authInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
+//            .addInterceptor(loggingInterceptor)
+            .addInterceptor(ChuckerInterceptor(context))
             .addInterceptor(authInterceptor)
             .authenticator(tokenAuthenticator)
             .build()

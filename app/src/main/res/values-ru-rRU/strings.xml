@@ -168,4 +168,6 @@
     <string name="address">Адрес</string>
     <string name="no_connection">Отсутствует подключения к интернету</string>
     <string name="no_connection_instruction">Пожалуйста проверьте подключение к интернету вашего устройства</string>
+    <string name="waiting_notification">Ожидание уведомления…</string>
+    <string name="app_works_in_background">Приложение работает в фоновым режиме</string>
 </resources>

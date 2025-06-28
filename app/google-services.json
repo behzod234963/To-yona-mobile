@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "200410491427",
+    "project_id": "qbase-android",
+    "storage_bucket": "qbase-android.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200410491427:android:00041204c1230985265f96",
+        "android_client_info": {
+          "package_name": "com.mr.anonym.toyonamobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8Uty3Vxuzjk9t8qkSzBbxr23CbbcLUXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

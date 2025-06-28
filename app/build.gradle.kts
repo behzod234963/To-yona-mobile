@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -12,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mr.anonym.toyonamobile"
-        minSdk = 24
+        minSdk = 26
         //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
@@ -110,4 +111,11 @@ dependencies {
     implementation(libs.workManager)
     implementation(libs.androidx.hilt.common)
     implementation(libs.firebase.functions.ktx)
+
+    implementation(platform(libs.firebase.bom))
+
+    debugImplementation(libs.chuckerInterceptorDebug){
+        exclude(group = "com.android.support", module =  "support-compat")
+    }
+    releaseImplementation(libs.chuckerInterceptorRelease)
 }

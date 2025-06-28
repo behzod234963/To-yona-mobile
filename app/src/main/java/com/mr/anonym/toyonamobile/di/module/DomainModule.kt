@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.di.module
 
+import com.mr.anonym.domain.repository.local.LocalFriendsRepository
 import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
 import com.mr.anonym.domain.repository.remote.CardRepository
@@ -12,6 +13,9 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsB
 import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
+import com.mr.anonym.domain.useCases.local.localFriendsUseCase.DeleteLocalFriendUseCase
+import com.mr.anonym.domain.useCases.local.localFriendsUseCase.GetLocalFriendsUseCase
+import com.mr.anonym.domain.useCases.local.localFriendsUseCase.InsertLocalFriendUseCase
 import com.mr.anonym.domain.useCases.local.localPartyUseCase.ClearAllLocalPartyUseCase
 import com.mr.anonym.domain.useCases.local.localPartyUseCase.DeleteLocalPartyUseCase
 import com.mr.anonym.domain.useCases.local.localPartyUseCase.GetAllLocalPartyUseCase
@@ -55,7 +59,8 @@ class DomainModule {
     @Singleton
     fun provideUseCases(
         notificationsRepository: NotificationsRepository,
-        localPartyRepository: LocalPartyRepository
+        localPartyRepository: LocalPartyRepository,
+        localFriendRepository: LocalFriendsRepository
     ): LocalUseCases =
         LocalUseCases(
             insertNotificationUseCase = InsertNotificationUseCase(notificationsRepository),
@@ -67,7 +72,10 @@ class DomainModule {
             getAllLocalParty = GetAllLocalPartyUseCase(localPartyRepository),
             clearAllParty = ClearAllLocalPartyUseCase(localPartyRepository),
             insertLocalParty = InsertLocalPartyUseCase(localPartyRepository),
-            deleteLocalParty = DeleteLocalPartyUseCase(localPartyRepository)
+            deleteLocalParty = DeleteLocalPartyUseCase(localPartyRepository),
+            insertLocalFriend = InsertLocalFriendUseCase(localFriendRepository),
+            getLocalFriends = GetLocalFriendsUseCase(localFriendRepository),
+            deleteLocalFriend = DeleteLocalFriendUseCase(localFriendRepository)
         )
 
     @Provides

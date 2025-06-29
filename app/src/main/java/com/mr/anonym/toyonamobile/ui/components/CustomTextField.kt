@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -41,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,14 +52,15 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomTextField(
     secondaryColor: Color,
-    eightrdColor:Color,
+    eightrdColor: Color,
     keyboardType: KeyboardType,
     imeAction: ImeAction,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
-    focusRequester:FocusRequester
+    focusRequester: FocusRequester,
+    visualTransformation: VisualTransformation
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -67,12 +71,12 @@ fun CustomTextField(
 
     BasicTextField(
         modifier = Modifier
-            .focusRequester(focusRequester)
+            .fillMaxWidth()
             .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusChanged {
                 isFocused.value = it.isFocused
             }
-            .fillMaxWidth(),
+            .focusRequester(focusRequester),
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
@@ -84,13 +88,19 @@ fun CustomTextField(
         ),
         interactionSource = interactionSource,
         value = value,
-        onValueChange = { onValueChange(it) },
+        onValueChange = {
+            val digits = it.text.filter { char -> char.isDigit() }.take(9)
+            val updated = it.copy(text = digits)
+            onValueChange( updated )
+        },
         singleLine = true,
+        visualTransformation = visualTransformation,
         keyboardActions = KeyboardActions(
             onDone = { focusManager.clearFocus() },
             onNext = { focusManager.moveFocus(FocusDirection.Next) },
             onSearch = { focusManager.clearFocus() }
         ),
+        cursorBrush = SolidColor(secondaryColor),
         decorationBox = { innerTextField ->
             Box(
                 modifier = Modifier
@@ -124,7 +134,7 @@ fun CustomTextField(
                     ) {
                         val hasText = value.text.isNotEmpty()
                         val animPlaceholder: Dp by animateDpAsState(
-                            if (isFocused.value || hasText) 2.dp else 12.dp
+                            if (isFocused.value || hasText) 6.dp else 12.dp
                         )
                         val animPlaceholderFontSize: Int by animateIntAsState(
                             if (isFocused.value || hasText) 12 else 14
@@ -140,11 +150,12 @@ fun CustomTextField(
                             fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
                             overflow = TextOverflow.Ellipsis
                         )
+                        Spacer(Modifier.height(10.dp))
                         Box(
                             modifier = Modifier
-                                .padding(top = 21.dp)
+                                .padding(top = if (isFocused.value) 30.dp else 35.dp)
                                 .fillMaxWidth()
-                        ){
+                        ) {
                             innerTextField()
                         }
                     }

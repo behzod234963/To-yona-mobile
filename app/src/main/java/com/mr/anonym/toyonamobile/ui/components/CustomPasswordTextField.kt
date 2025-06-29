@@ -35,11 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -65,7 +65,6 @@ fun CustomPasswordTextField(
     onValueChange: (TextFieldValue) -> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
-    focusRequester: FocusRequester
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -76,7 +75,6 @@ fun CustomPasswordTextField(
     val isFocused = remember { mutableStateOf(false) }
     BasicTextField(
         modifier = Modifier
-            .focusRequester(focusRequester)
             .onFocusChanged {
                 isFocused.value = it.isFocused
             }
@@ -102,6 +100,7 @@ fun CustomPasswordTextField(
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold
         ),
+        cursorBrush = SolidColor(secondaryColor),
         decorationBox = { innerTextField ->
             Row (
                 modifier = Modifier
@@ -149,7 +148,7 @@ fun CustomPasswordTextField(
                     )
                     Box(
                         Modifier
-                            .padding(top = 21.dp)
+                            .padding(top = if (isFocused.value) 30.dp else 35.dp)
                             .fillMaxWidth()
                             .height(18.dp)
                     ) {
@@ -170,6 +169,7 @@ fun CustomPasswordTextField(
                             modifier = Modifier
                                 .size(25.dp),
                             painter = painterResource(id = R.drawable.ic_hide),
+                            tint = secondaryColor,
                             contentDescription = "Show Password"
                         )
                     }
@@ -182,6 +182,7 @@ fun CustomPasswordTextField(
                             modifier = Modifier
                                 .size(25.dp),
                             painter = painterResource(id = R.drawable.ic_show),
+                            tint = secondaryColor,
                             contentDescription = "Hide Password"
                         )
                     }

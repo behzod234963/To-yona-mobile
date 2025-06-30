@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,8 +53,12 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.response.LoginRequest
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.capitalizeChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.digitChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.lowercaseChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.symbolChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
 import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
@@ -94,19 +97,14 @@ fun LogInScreen(
         else -> Color.White
     }
     val systemSecondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme -> systemTertiaryColor
-        isDarkTheme -> Color.DarkGray
-        else -> Color.LightGray
-    }
     val secondaryColor = when {
         isSystemTheme -> systemSecondaryColor
         isDarkTheme -> Color.White
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
-    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val systemEightrdColor =
+        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
     val eightrdColor = when {
         isSystemTheme -> systemEightrdColor
         isDarkTheme -> MaterialTheme.colorScheme.background
@@ -122,7 +120,7 @@ fun LogInScreen(
 
     val phoneFieldValue = remember { mutableStateOf(TextFieldValue("")) }
     val phoneFieldError = rememberSaveable { mutableStateOf(false) }
-    val showPhoneErrorContent = remember { mutableStateOf( false ) }
+    val showPhoneErrorContent = remember { mutableStateOf(false) }
 
     val (passwordFieldValue, onPasswordFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val passwordValueError = rememberSaveable { mutableStateOf(false) }
@@ -191,15 +189,19 @@ fun LogInScreen(
                         },
                         label = stringResource(R.string.enter_your_phone_number),
                         focusRequester = focusRequester,
-                        visualTransformation = PhoneNumberVisualTransformation()
+                        visualTransformation = PhoneNumberVisualTransformation(),
+                        isPhoneField = true,
+                        secondValue = "",
+                        onSecondValueChange = {},
+                        icon = null,
                     )
-                    if (showPhoneErrorContent.value|| phoneFieldError.value){
-                        Row (
+                    if (showPhoneErrorContent.value) {
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 10.dp),
                             horizontalArrangement = Arrangement.Start
-                        ){
+                        ) {
                             Text(
                                 text = stringResource(R.string.phone_number_error),
                                 color = quaternaryColor,
@@ -220,20 +222,54 @@ fun LogInScreen(
                         },
                         label = stringResource(R.string.password)
                     )
-                    if (showPasswordErrorContent.value || passwordValueError.value){
-                        Row (
+                    if (showPasswordErrorContent.value){
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 10.dp),
-                            horizontalArrangement = Arrangement.Start
-                        ){
-                            Text(
-                                text = stringResource(R.string.phone_number_error),
-                                color = quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                .padding(start = 10.dp)
+                        ) {
+                            if (passwordFieldValue.text.length < 8){
+                                Text(
+                                    text = stringResource(R.string.minimum_8_symbols),
+                                    color = quaternaryColor,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            if (!passwordFieldValue.text.capitalizeChecker()){
+                                Text(
+                                    text = stringResource(R.string.at_least_one_capital_letter),
+                                    color = quaternaryColor,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            if (!passwordFieldValue.text.lowercaseChecker()){
+                                Text(
+                                    text = stringResource(R.string.at_least_one_lowercase_letter),
+                                    color = quaternaryColor,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            if (!passwordFieldValue.text.digitChecker()){
+                                Text(
+                                    text = stringResource(R.string.at_least_one_digit),
+                                    color = quaternaryColor,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            if (!passwordFieldValue.text.symbolChecker()){
+                                Text(
+                                    text = stringResource(R.string.at_least_one_special_character_from_the_set),
+                                    color = quaternaryColor,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
+                        if (!passwordValueError.value) showPasswordErrorContent.value = false
                     }
                     TextButton(
                         onClick = {
@@ -256,7 +292,7 @@ fun LogInScreen(
                                 coroutineScope.launch {
                                     dataStore.isPasswordForgotten(true)
                                 }
-                                val result = "+998" + phoneFieldValue.value
+                                val result = "+998" + phoneFieldValue.value.text
                                 navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                     popUpTo(ScreensRouter.LoginScreen.route) { inclusive = true }
                                 }
@@ -295,7 +331,7 @@ fun LogInScreen(
                                 phoneFieldValue.value.text.isNotBlank() &&
                                 !phoneFieldError.value
                             ) {
-                                if ( !passwordValueError.value ){
+                                if (!passwordValueError.value){
                                     isLoading.value = true
                                     viewModel.loginUser(
                                         LoginRequest(
@@ -305,7 +341,6 @@ fun LogInScreen(
                                     )
                                 }else{
                                     showPasswordErrorContent.value = true
-                                    passwordValueError.value = true
                                 }
                             } else {
                                 showPhoneErrorContent.value = true
@@ -336,7 +371,7 @@ fun LogInScreen(
                     restartOnPlay = true,
                     iterations = LottieConstants.IterateForever
                 )
-                val result = "+998" + phoneFieldValue.value
+                val result = "+998" + phoneFieldValue.value.text
                 LaunchedEffect(isLoading.value) {
                     delay(1500)
                     if (

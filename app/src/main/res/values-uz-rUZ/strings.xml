@@ -170,4 +170,10 @@
     <string name="no_connection_instruction">Iltimos qurilmangizning internetga bog\'lanish sozlamalarini tekshiring</string>
     <string name="waiting_notification">Bildirishnoma kutilmoqda…</string>
     <string name="app_works_in_background">Ilova orqa fonda ishlamoqda</string>
+    <string name="the_field_must_contains_next_steps">Parol quyidagilarni o\'z ichiga olishi lozim:</string>
+    <string name="minimum_8_symbols">* Minimum 8 belgi</string>
+    <string name="at_least_one_capital_letter">* Kamida bitta bosh harf</string>
+    <string name="at_least_one_lowercase_letter">* Kamida bitta kichik harf</string>
+    <string name="at_least_one_digit">* Kamida bitta raqam</string>
+    <string name="at_least_one_special_character_from_the_set"><![CDATA[* To\'plamdan kamida bitta maxsus belgi (@ . $ ! % * ? & #)]]></string>
 </resources>

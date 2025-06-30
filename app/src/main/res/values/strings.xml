@@ -169,4 +169,10 @@
     <string name="no_connection_instruction">Please check your device internet connections</string>
     <string name="waiting_notification">Waiting notification…"</string>
     <string name="app_works_in_background">App works in background</string>
+    <string name="the_field_must_contains_next_steps">The field must contains next steps:</string>
+    <string name="minimum_8_symbols">* Minimum 8 symbols</string>
+    <string name="at_least_one_capital_letter">* At least one capital letter from latin alphabet</string>
+    <string name="at_least_one_lowercase_letter">* At least one lowercase letter from latin alphabet</string>
+    <string name="at_least_one_digit">* At least one digit</string>
+    <string name="at_least_one_special_character_from_the_set"><![CDATA[* At least one special character from the set (@ . $ ! % * ? & #)]]></string>
 </resources>

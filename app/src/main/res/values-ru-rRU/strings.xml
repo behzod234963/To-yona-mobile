@@ -170,4 +170,10 @@
     <string name="no_connection_instruction">Пожалуйста проверьте подключение к интернету вашего устройства</string>
     <string name="waiting_notification">Ожидание уведомления…</string>
     <string name="app_works_in_background">Приложение работает в фоновым режиме</string>
+    <string name="the_field_must_contains_next_steps">Поля должен содержать следующие:</string>
+    <string name="minimum_8_symbols">* Минимум 8 символов</string>
+    <string name="at_least_one_capital_letter">* Хотя бы одна заглавная буква из латинского алфавита</string>
+    <string name="at_least_one_lowercase_letter">* Хотя бы одна строчная буква из латинского алфавита</string>
+    <string name="at_least_one_digit">* Хотя бы одна цифра</string>
+    <string name="at_least_one_special_character_from_the_set"><![CDATA[* Хотя бы один специальный символ из набора (@ . $ ! % * ? & #)]]></string>
 </resources>

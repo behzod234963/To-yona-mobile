@@ -7,6 +7,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,11 +36,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,11 +60,10 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.event.ProfileEvent
-import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
-import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
 import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForProfile
@@ -104,6 +110,12 @@ fun ProfileScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
+    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightrdColor = when {
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> MaterialTheme.colorScheme.background
+        else -> Color.LightGray
+    }
 
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
@@ -117,6 +129,7 @@ fun ProfileScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val focusRequester = remember { FocusRequester() }
 
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_loading)
@@ -129,6 +142,7 @@ fun ProfileScreen(
     LaunchedEffect(Unit) {
         delay(1500L)
         isLoading.value = false
+        focusRequester.requestFocus()
     }
     Scaffold(
         containerColor = primaryColor,
@@ -193,32 +207,69 @@ fun ProfileScreen(
                         .fillMaxHeight(0.6f)
                         .padding(horizontal = 10.dp),
                 ) {
-                    NameField(
+//                    NameField(
+//                        secondaryColor = secondaryColor,
+////                    Firstname field properties
+//                        nameValue = firstname.value,
+//                        onNameValueChange = {
+//                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
+//                            nameValueError.value = !it.nameChecker()
+//                        },
+//                        onNameValueEnabledTrailingIconClick = {
+//                            viewModel.onEvent(
+//                                ProfileEvent.ChangeFirstname(
+//                                    ""
+//                                )
+//                            )
+//                        },
+//                        nameValueError = nameValueError.value,
+//                        //                    Lastname field properties
+//                        surnameValue = lastname.value,
+//                        onSurnameValueChange = {
+//                            viewModel.onEvent(ProfileEvent.ChangeLastname(it))
+//                            lastnameValueError.value = !it.nameChecker()
+//                        },
+//                        surnameValueError = lastnameValueError.value,
+//                        onSurnameEnabledTrailingIconClick = {
+//                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
+//                        }
+//                    )
+//                    Firstname content
+                    CustomTextField(
                         secondaryColor = secondaryColor,
-//                    Firstname field properties
-                        nameValue = firstname.value,
-                        onNameValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
-                            nameValueError.value = !it.nameChecker()
+                        eightrdColor = eightrdColor,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        value = TextFieldValue(""),
+                        onValueChange = {
+                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it.text))
                         },
-                        onNameValueEnabledTrailingIconClick = {
-                            viewModel.onEvent(
-                                ProfileEvent.ChangeFirstname(
-                                    ""
-                                )
-                            )
+                        isPhoneField = false,
+                        secondValue = firstname.value,
+                        onSecondValueChange = {
+
                         },
-                        nameValueError = nameValueError.value,
-                        //                    Lastname field properties
-                        surnameValue = lastname.value,
-                        onSurnameValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeLastname(it))
-                            lastnameValueError.value = !it.nameChecker()
+                        label = stringResource(R.string.firstname),
+                        focusRequester = focusRequester,
+                        visualTransformation = VisualTransformation.None
+                    )
+                    Spacer(Modifier.height(10.dp))
+//                    Lastname content
+                    CustomTextField(
+                        secondaryColor = secondaryColor,
+                        eightrdColor = eightrdColor,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                        value = TextFieldValue(""),
+                        onValueChange = {},
+                        isPhoneField = false,
+                        secondValue = lastname.value,
+                        onSecondValueChange = {
+                            viewModel.onEvent(ProfileEvent.ChangeLastname(it.text))
                         },
-                        surnameValueError = lastnameValueError.value,
-                        onSurnameEnabledTrailingIconClick = {
-                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
-                        }
+                        label = stringResource(R.string.lastname),
+                        focusRequester = focusRequester,
+                        visualTransformation = VisualTransformation.None
                     )
                 }
                 Column(

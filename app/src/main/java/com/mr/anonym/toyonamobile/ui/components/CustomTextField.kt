@@ -53,10 +53,13 @@ import androidx.compose.ui.unit.sp
 fun CustomTextField(
     secondaryColor: Color,
     eightrdColor: Color,
+    isPhoneField: Boolean,
     keyboardType: KeyboardType,
     imeAction: ImeAction,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
+    secondValue: String,
+    onSecondValueChange:(TextFieldValue)-> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
     focusRequester: FocusRequester,
@@ -87,11 +90,15 @@ fun CustomTextField(
             imeAction = imeAction
         ),
         interactionSource = interactionSource,
-        value = value,
+        value = if (isPhoneField) value else TextFieldValue(secondValue),
         onValueChange = {
-            val digits = it.text.filter { char -> char.isDigit() }.take(9)
-            val updated = it.copy(text = digits)
-            onValueChange( updated )
+            if (isPhoneField){
+                val digits = it.text.filter { char -> char.isDigit() }.take(9)
+                val updated = it.copy(text = digits)
+                onValueChange( updated )
+            }else{
+                onSecondValueChange.invoke((it))
+            }
         },
         singleLine = true,
         visualTransformation = visualTransformation,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -28,15 +30,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -51,10 +54,16 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
+import com.mr.anonym.toyonamobile.presentation.extensions.capitalizeChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.digitChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.lowercaseChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
+import com.mr.anonym.toyonamobile.presentation.extensions.symbolChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.screens.registrationScreen.components.RegistrationTextFields
+import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
+import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
+import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -91,13 +100,15 @@ fun RegistrationScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme -> systemTertiaryColor
-        isDarkTheme -> Color.DarkGray
+    val quaternaryColor = Color.Red
+    val fiverdColor = Color.Green
+    val systemEightrdColor =
+        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightrdColor = when {
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> MaterialTheme.colorScheme.background
         else -> Color.LightGray
     }
-    val quaternaryColor = Color.Red
 
     val containerPadding = remember { mutableIntStateOf(10) }
     val isLoading = remember { mutableStateOf(false) }
@@ -106,20 +117,19 @@ fun RegistrationScreen(
     )
 
     val phoneFieldError = remember { mutableStateOf(false) }
-    val phoneFieldValue = rememberSaveable { mutableStateOf("") }
+    val phoneFieldValue = remember { mutableStateOf(TextFieldValue("")) }
+    val showPhoneErrorContent = remember { mutableStateOf(false) }
 
-    val passwordValue = rememberSaveable { mutableStateOf("") }
+    val (passwordFieldValue, onPasswordFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val passwordValueError = remember { mutableStateOf(false) }
 
-    val confirmValue = rememberSaveable { mutableStateOf("") }
+    val (confirmValue, onConfirmFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val confirmValueError = remember { mutableStateOf(false) }
 
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequester = remember { FocusRequester() }
-
-    val phoneNumber = ""
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -176,33 +186,135 @@ fun RegistrationScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    RegistrationTextFields(
+                    CustomTextField(
                         secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
-                        phoneFieldModifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
-                        phoneFieldError = phoneFieldError.value,
-                        isPhoneFieldEnabled = !isPasswordForgotten.value,
-                        phoneFieldValue = if (isPasswordForgotten.value) phoneNumber else phoneFieldValue.value,
-                        phoneFieldTrailingFunction = { phoneFieldValue.value = "" },
-                        onPhoneValueChange = {
-                            phoneFieldValue.value = it.take(9)
-//                        if (it.isEmpty()) phoneFieldValue.value = "+998"
-                            if (it.length < 10) phoneFieldError.value = !it.phoneChecker()
+                        eightrdColor = eightrdColor,
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Next,
+                        value = phoneFieldValue.value,
+                        onValueChange = {
+                            phoneFieldValue.value = it
+                            phoneFieldError.value = !it.text.phoneChecker()
                         },
-                        passwordValue = passwordValue.value,
-                        onPasswordValueChange = {
-                            passwordValue.value = it
-                            passwordValueError.value = !it.passwordChecker()
-                        },
-                        passwordValueError = passwordValueError.value,
-                        confirmPasswordValue = confirmValue.value,
-                        onConfirmPasswordValueChange = {
-                            confirmValue.value = it
-                        },
-                        confirmPasswordValueError = confirmValueError.value
+                        label = stringResource(R.string.enter_your_phone_number),
+                        focusRequester = focusRequester,
+                        visualTransformation = PhoneNumberVisualTransformation(),
+                        isPhoneField = true,
+                        secondValue = "",
+                        onSecondValueChange = {},
+                        icon = null,
                     )
+                    if (showPhoneErrorContent.value) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(
+                                text = stringResource(R.string.phone_number_error),
+                                color = quaternaryColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        if ( !phoneFieldError.value ) showPhoneErrorContent.value = false
+                    }
+                    Spacer(Modifier.height(10.dp))
+//                    Password content
+                    CustomPasswordTextField(
+                        secondaryColor = secondaryColor,
+                        eightrdColor = eightrdColor,
+                        imeAction = ImeAction.Done,
+                        value = passwordFieldValue,
+                        onValueChange = {
+                            onPasswordFieldValueChange.invoke(it)
+                            passwordValueError.value = !it.text.passwordChecker()
+                        },
+                        label = stringResource(R.string.password)
+                    )
+                    Spacer(Modifier.height(10.dp))
+//                    Confirm password content
+                    CustomPasswordTextField(
+                        secondaryColor = secondaryColor,
+                        eightrdColor = eightrdColor,
+                        imeAction = ImeAction.Done,
+                        value = confirmValue,
+                        onValueChange = {
+                            onConfirmFieldValueChange.invoke(it)
+                            confirmValueError.value = !it.text.passwordChecker()
+                        },
+                        label = stringResource(R.string.confirm_new_password)
+                    )
+                    if (passwordFieldValue.text != confirmValue.text){
+                        Text(
+                            text = stringResource(R.string.passwords_does_not_matches),
+                            color = quaternaryColor,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+//                    Password instruction
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = stringResource(R.string.the_field_must_contains_next_steps),
+                            color = if (
+                                passwordFieldValue.text.length >= 8 &&
+                                passwordFieldValue.text.capitalizeChecker() &&
+                                passwordFieldValue.text.lowercaseChecker() &&
+                                passwordFieldValue.text.digitChecker() &&
+                                passwordFieldValue.text.symbolChecker()
+                            ) {
+                                fiverdColor
+                            } else {
+                                quaternaryColor
+                            },
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = stringResource(R.string.minimum_8_symbols),
+                                color = if (passwordFieldValue.text.length < 8) quaternaryColor else fiverdColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = stringResource(R.string.at_least_one_capital_letter),
+                                color = if (passwordFieldValue.text.capitalizeChecker()) fiverdColor else quaternaryColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = stringResource(R.string.at_least_one_lowercase_letter),
+                                color = if (passwordFieldValue.text.lowercaseChecker()) fiverdColor else quaternaryColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = stringResource(R.string.at_least_one_digit),
+                                color = if (passwordFieldValue.text.digitChecker()) fiverdColor else quaternaryColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = stringResource(R.string.at_least_one_special_character_from_the_set),
+                                color = if (passwordFieldValue.text.symbolChecker()) fiverdColor else quaternaryColor,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
                     if (!isPasswordForgotten.value) {
                         TextButton(
                             onClick = { navController.navigateUp() }
@@ -234,33 +346,36 @@ fun RegistrationScreen(
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
                             when {
-                                phoneFieldValue.value.isNotEmpty() &&
-                                        phoneFieldValue.value.isNotBlank() &&
-                                        !phoneFieldError.value &&
-                                        !passwordValueError.value &&
-                                        !isPasswordForgotten.value -> {
-                                    if (confirmValue.value == passwordValue.value) {
-                                        isLoading.value = true
-                                        viewModel.signUpUser(
-                                            user = UserModelItem(
-                                                username = "",
-                                                surname = "",
-                                                phonenumber = phoneFieldValue.value,
-                                                password = confirmValue.value
+                                !isPasswordForgotten.value &&
+                                !passwordValueError.value -> {
+                                    if (
+                                        phoneFieldValue.value.text.isNotEmpty() &&
+                                        phoneFieldValue.value.text.isNotBlank() &&
+                                        !phoneFieldError.value
+                                    ) {
+                                        if (confirmValue.text == passwordFieldValue.text) {
+                                            isLoading.value = true
+                                            viewModel.signUpUser(
+                                                user = UserModelItem(
+                                                    username = "",
+                                                    surname = "",
+                                                    phonenumber = phoneFieldValue.value.text,
+                                                    password = confirmValue.text
+                                                )
                                             )
-                                        )
-                                    } else {
-                                        confirmValueError.value = true
+                                        }
+                                    }else{
+                                        showPhoneErrorContent.value = true
                                     }
                                 }
 
                                 isPasswordForgotten.value &&
                                         !passwordValueError.value -> {
-                                    if (confirmValue.value == passwordValue.value) {
+                                    if (confirmValue.text == passwordFieldValue.text) {
                                         coroutineScope.launch {
                                             dataStore.isPasswordForgotten(false)
                                             dataStore.isOldUser(true)
-                                            sharedPreferences.savePhoneNumber("+998${phoneFieldValue}")
+                                            sharedPreferences.savePhoneNumber("+998${phoneFieldValue.value.text}")
                                         }
                                         sharedPreferences.saveIsLoggedIn(true)
                                         sharedPreferences.saveIsProfileSettingsState(true)
@@ -310,9 +425,9 @@ fun RegistrationScreen(
                 coroutineScope.launch {
                     delay(1500)
                     if (viewModel.user.value.id != -1) {
-                        sharedPreferences.savePhoneNumber(phoneFieldValue.value)
-                        sharedPreferences.savePassword(confirmValue.value)
-                        val result = "+998" + phoneFieldValue.value
+                        sharedPreferences.savePhoneNumber(phoneFieldValue.value.text)
+                        sharedPreferences.savePassword(confirmValue.text)
+                        val result = "+998" + phoneFieldValue.value.text
                         withContext(Dispatchers.Main) {
                             navController.navigate(ScreensRouter.NumberCheckScreen.route + "/$result") {
                                 popUpTo(ScreensRouter.RegistrationScreen.route) {

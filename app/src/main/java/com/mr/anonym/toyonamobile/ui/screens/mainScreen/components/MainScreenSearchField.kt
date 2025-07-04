@@ -25,8 +25,8 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun MainScreenSearchField(
     modifier: Modifier,
-    primaryColor:Color,
     secondaryColor:Color,
+    eightrdColor:Color,
     tertiaryColor: Color,
     value: String,
     onValueChange:(String)-> Unit,
@@ -39,19 +39,22 @@ fun MainScreenSearchField(
     OutlinedTextField(
         modifier = modifier,
         value = value,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = primaryColor,
-            unfocusedContainerColor = primaryColor
-        ),
         onValueChange = { onValueChange(it) },
         keyboardActions = KeyboardActions {
             keyboardController?.hide()
             onSearch()
         },
-        label = {
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = eightrdColor,
+            focusedContainerColor = eightrdColor,
+            unfocusedBorderColor = eightrdColor,
+            focusedBorderColor = eightrdColor,
+            unfocusedLabelColor = tertiaryColor,
+            focusedLabelColor = eightrdColor,
+        ),
+        placeholder = {
             Text(
                 text = stringResource(R.string.search_from_contacts),
-                color = tertiaryColor
             )
         },
         leadingIcon = {

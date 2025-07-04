@@ -32,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -116,7 +115,6 @@ fun LogInScreen(
     val loadingAnimation = rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
-    val focusRequester = remember { FocusRequester() }
 
     val phoneFieldValue = remember { mutableStateOf(TextFieldValue("")) }
     val phoneFieldError = rememberSaveable { mutableStateOf(false) }
@@ -129,10 +127,6 @@ fun LogInScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val isSnackbarShown = remember { mutableStateOf(false) }
     val isLoginSuccess = viewModel.isLoginSuccess
-    LaunchedEffect(Unit) {
-        delay(300L)
-        focusRequester.requestFocus()
-    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -188,12 +182,7 @@ fun LogInScreen(
                             phoneFieldError.value = !it.text.phoneChecker()
                         },
                         label = stringResource(R.string.enter_your_phone_number),
-                        focusRequester = focusRequester,
                         visualTransformation = PhoneNumberVisualTransformation(),
-                        isPhoneField = true,
-                        secondValue = "",
-                        onSecondValueChange = {},
-                        icon = null,
                     )
                     if (showPhoneErrorContent.value) {
                         Row(

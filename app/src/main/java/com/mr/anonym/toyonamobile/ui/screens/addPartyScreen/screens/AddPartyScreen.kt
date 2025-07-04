@@ -27,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -57,7 +58,7 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventFAB
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventOtherField
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventOtherField
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
@@ -117,6 +118,12 @@ fun AddPartyScreen(
         isSystemTheme -> systemSevenrdColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
+    }
+    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightrdColor = when {
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> MaterialTheme.colorScheme.background
+        else -> Color.LightGray
     }
 
     val isCardError = rememberSaveable { mutableStateOf(true) }
@@ -289,15 +296,14 @@ fun AddPartyScreen(
                 AddEventOtherField(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
+                    eightrdColor = eightrdColor,
                     isEventError = isTitleError.value,
-                    value = titleValue.value,
                     isTitle = true,
+                    value = titleValue.value,
                     onValueChange = {
                         viewModel.onEvent(AddEventState.ChangeTitle(it))
                     },
-                    isValueConfirmed = false,
-                    onConfirmClick = { },
-                    onEditClick = { }
+                    isValueConfirmed = false
                 )
 //                Event
                 PartyTypeButtons(
@@ -316,29 +322,14 @@ fun AddPartyScreen(
                     AddEventOtherField(
                         secondaryColor = secondaryColor,
                         tertiaryColor = tertiaryColor,
+                        eightrdColor = eightrdColor,
                         isEventError = isOtherEventError.value,
+                        isTitle = false,
                         value = otherEventValue.value,
                         onValueChange = {
                             viewModel.onEvent(AddEventState.ChangeOtherField(it))
                         },
-                        isValueConfirmed = isValueConfirmed.value,
-                        onConfirmClick = {
-                            if (
-                                otherEventValue.value.isNotEmpty() &&
-                                otherEventValue.value.isNotBlank()
-                            ) {
-                                isValueConfirmed.value = true
-                                isOtherEventError.value = false
-                            } else {
-                                isValueConfirmed.value = false
-                                isOtherEventError.value = true
-                            }
-                        },
-                        onEditClick = {
-                            isOtherEventError.value = false
-                            isValueConfirmed.value = false
-                        },
-                        isTitle = false
+                        isValueConfirmed = isValueConfirmed.value
                     )
                     Spacer(Modifier.height(10.dp))
                 }
@@ -422,13 +413,14 @@ fun AddPartyScreen(
                         }
                     }
                 }
+                Spacer(Modifier.height(10.dp))
 //                Address
                 AddPartyAddressField(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
-                    value = address.value,
-                    onValueChange = { viewModel.onEvent(AddEventState.ChangeAddressField(it)) }
-                )
+                    eightrdColor = eightrdColor,
+                    value = address.value
+                ) { viewModel.onEvent(AddEventState.ChangeAddressField(it)) }
 //                Date picker
                 if (showDatePicker.value) {
                     AddEventSetDate(

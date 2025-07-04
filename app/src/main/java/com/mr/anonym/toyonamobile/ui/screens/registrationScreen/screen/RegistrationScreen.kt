@@ -24,7 +24,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -129,11 +127,6 @@ fun RegistrationScreen(
     val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
     val snackbarHostState = remember { SnackbarHostState() }
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor,
@@ -197,12 +190,7 @@ fun RegistrationScreen(
                             phoneFieldError.value = !it.text.phoneChecker()
                         },
                         label = stringResource(R.string.enter_your_phone_number),
-                        focusRequester = focusRequester,
                         visualTransformation = PhoneNumberVisualTransformation(),
-                        isPhoneField = true,
-                        secondValue = "",
-                        onSecondValueChange = {},
-                        icon = null,
                     )
                     if (showPhoneErrorContent.value) {
                         Row(

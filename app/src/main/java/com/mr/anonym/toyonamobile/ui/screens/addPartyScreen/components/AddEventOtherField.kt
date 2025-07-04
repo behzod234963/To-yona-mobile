@@ -1,4 +1,4 @@
-package com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components
+package com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,13 +22,12 @@ import com.mr.anonym.toyonamobile.R
 fun AddEventOtherField(
     secondaryColor: Color,
     tertiaryColor: Color,
+    eightrdColor:Color,
     isEventError: Boolean,
     isTitle: Boolean,
     value: String,
     onValueChange: (String) -> Unit,
     isValueConfirmed: Boolean,
-    onConfirmClick: () -> Unit,
-    onEditClick: () -> Unit,
 ) {
 
     OutlinedTextField(
@@ -41,7 +41,7 @@ fun AddEventOtherField(
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold
         ),
-        label = {
+        placeholder = {
             Text(
                 text = if (isTitle) stringResource(R.string.title) else stringResource(R.string.enter_the_event),
                 color = tertiaryColor,
@@ -49,6 +49,14 @@ fun AddEventOtherField(
                 fontWeight = FontWeight.SemiBold
             )
         },
+        colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = eightrdColor,
+            focusedContainerColor = eightrdColor,
+            unfocusedBorderColor = eightrdColor,
+            focusedBorderColor = eightrdColor,
+            unfocusedLabelColor = tertiaryColor,
+            focusedLabelColor = eightrdColor,
+        ),
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Edit,

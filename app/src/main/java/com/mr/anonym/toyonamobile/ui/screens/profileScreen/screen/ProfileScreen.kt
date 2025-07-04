@@ -7,7 +7,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,10 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,10 +55,11 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.event.ProfileEvent
+import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
+import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
 import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForProfile
@@ -110,7 +106,8 @@ fun ProfileScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val systemEightrdColor =
+        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
     val eightrdColor = when {
         isSystemTheme -> systemEightrdColor
         isDarkTheme -> MaterialTheme.colorScheme.background
@@ -138,7 +135,7 @@ fun ProfileScreen(
     val avatar = viewModel.profileAvatar
     val avatarIndex = viewModel.avatarIndex
     val isSendResponse = remember { mutableStateOf(false) }
-    val isLoading = remember { mutableStateOf( true ) }
+    val isLoading = remember { mutableStateOf(true) }
     LaunchedEffect(Unit) {
         delay(1500L)
         isLoading.value = false
@@ -164,9 +161,9 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
             ) {
-                if (isLoading.value){
+                if (isLoading.value) {
                     ShimmerEffectForProfile()
-                }else{
+                } else {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -207,69 +204,35 @@ fun ProfileScreen(
                         .fillMaxHeight(0.6f)
                         .padding(horizontal = 10.dp),
                 ) {
-//                    NameField(
-//                        secondaryColor = secondaryColor,
-////                    Firstname field properties
-//                        nameValue = firstname.value,
-//                        onNameValueChange = {
-//                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
-//                            nameValueError.value = !it.nameChecker()
-//                        },
-//                        onNameValueEnabledTrailingIconClick = {
-//                            viewModel.onEvent(
-//                                ProfileEvent.ChangeFirstname(
-//                                    ""
-//                                )
-//                            )
-//                        },
-//                        nameValueError = nameValueError.value,
-//                        //                    Lastname field properties
-//                        surnameValue = lastname.value,
-//                        onSurnameValueChange = {
-//                            viewModel.onEvent(ProfileEvent.ChangeLastname(it))
-//                            lastnameValueError.value = !it.nameChecker()
-//                        },
-//                        surnameValueError = lastnameValueError.value,
-//                        onSurnameEnabledTrailingIconClick = {
-//                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
-//                        }
-//                    )
-//                    Firstname content
-                    CustomTextField(
+                    NameField(
                         secondaryColor = secondaryColor,
+                        tertiaryColor = tertiaryColor,
                         eightrdColor = eightrdColor,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                        value = TextFieldValue(""),
-                        onValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it.text))
+//                    Firstname field properties
+                        nameValue = firstname.value,
+                        onNameValueChange = {
+                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
+                            nameValueError.value = !it.nameChecker()
                         },
-                        isPhoneField = false,
-                        secondValue = firstname.value,
-                        onSecondValueChange = {
-
+                        onNameValueEnabledTrailingIconClick = {
+                            viewModel.onEvent(
+                                ProfileEvent.ChangeFirstname(
+                                    ""
+                                )
+                            )
                         },
-                        label = stringResource(R.string.firstname),
-                        focusRequester = focusRequester,
-                        visualTransformation = VisualTransformation.None
-                    )
-                    Spacer(Modifier.height(10.dp))
-//                    Lastname content
-                    CustomTextField(
-                        secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next,
-                        value = TextFieldValue(""),
-                        onValueChange = {},
-                        isPhoneField = false,
-                        secondValue = lastname.value,
-                        onSecondValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeLastname(it.text))
+                        //                    Lastname field properties
+                        nameValueError = nameValueError.value,
+                        surnameValue = lastname.value,
+                        onSurnameValueChange = {
+                            viewModel.onEvent(ProfileEvent.ChangeLastname(it))
+                            lastnameValueError.value = !it.nameChecker()
                         },
-                        label = stringResource(R.string.lastname),
-                        focusRequester = focusRequester,
-                        visualTransformation = VisualTransformation.None
+                        surnameValueError = lastnameValueError.value,
+                        focusedRequester = focusRequester,
+                        onSurnameEnabledTrailingIconClick = {
+                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
+                        },
                     )
                 }
                 Column(
@@ -383,6 +346,7 @@ fun ProfileScreen(
                             }
                         }
                     }
+
                     editProfileProcess -> {
                         coroutineScope.launch {
                             delay(1500)
@@ -396,8 +360,8 @@ fun ProfileScreen(
                                     password = user.value.password
                                 )
                             )
-                            withContext(Dispatchers.Main){
-                                navController.navigate(ScreensRouter.SettingsScreen.route){
+                            withContext(Dispatchers.Main) {
+                                navController.navigate(ScreensRouter.SettingsScreen.route) {
                                     popUpTo(ScreensRouter.ProfileScreen.route) {
                                         inclusive = true
                                     }
@@ -405,6 +369,7 @@ fun ProfileScreen(
                             }
                         }
                     }
+
                     else -> {
                         coroutineScope.launch {
                             viewModel.updateUser(
@@ -429,7 +394,7 @@ fun ProfileScreen(
                         }
                         Log.d(
                             "UtilsLogging",
-                            "ProfileScreen: $phoneNumber"
+                            "ProfileScreen: ${phoneNumber.value}"
                         )
                     }
                 }

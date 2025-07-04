@@ -121,13 +121,13 @@ fun MainScreen(
 
     val smallFontSize = remember { mutableIntStateOf(14) }
 
-    val profileAvatar = viewModel.profileAvatar
-
     val searchValue = rememberSaveable { mutableStateOf("") }
     val showContacts = rememberSaveable { mutableStateOf(false) }
 
     val partyModel = remember { mutableStateOf(PartysItem()) }
 
+    val profileAvatar = viewModel.profileAvatar
+    val user = viewModel.user
     val partyList = viewModel.parties.collectAsLazyPagingItems()
     val userList = viewModel.users
 
@@ -140,8 +140,6 @@ fun MainScreen(
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
-
-    val user = viewModel.user
 
     val selectedTabIndex = remember { mutableIntStateOf(0) }
     val tabs = listOf(
@@ -283,19 +281,18 @@ fun MainScreen(
                             .fillMaxWidth()
                             .padding(horizontal = 10.dp, vertical = 5.dp)
                             .clickable { showContacts.value = true },
-                        primaryColor = primaryColor,
                         secondaryColor = secondaryColor,
+                        eightrdColor = eightrdColor,
                         tertiaryColor = tertiaryColor,
                         value = searchValue.value,
                         onValueChange = {
                             showContacts.value = true
                             if (it.isEmpty() || it.isBlank()) showContacts.value = false
                             searchValue.value = it
-                        },
-                        onSearch = {
-                            viewModel.searchUser(searchValue.value)
                         }
-                    )
+                    ) {
+                        viewModel.searchUser(searchValue.value)
+                    }
                     if (showContacts.value) {
                         LazyColumn(
                             modifier = Modifier

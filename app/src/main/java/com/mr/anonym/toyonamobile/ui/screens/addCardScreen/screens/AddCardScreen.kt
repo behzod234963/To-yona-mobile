@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -85,12 +86,24 @@ fun AddCardScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val quaternaryColor = Color.Red
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         isSystemTheme -> systemSevenrdColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
+    }
+    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightrdColor = when {
+        isSystemTheme -> systemEightrdColor
+        isDarkTheme -> MaterialTheme.colorScheme.background
+        else -> Color.LightGray
     }
 
     val isScanned = rememberSaveable { mutableStateOf(false) }
@@ -137,6 +150,8 @@ fun AddCardScreen(
 //            Add card field
             CardFields(
                 secondaryColor = secondaryColor,
+                tertiaryColor = tertiaryColor,
+                eightrdColor = eightrdColor,
                 cardValue = cardNumberValue.value,
                 isScanned = isScanned.value,
                 columnModifier = Modifier

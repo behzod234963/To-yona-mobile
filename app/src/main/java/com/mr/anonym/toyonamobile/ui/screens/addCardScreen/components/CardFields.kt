@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,6 +35,8 @@ import com.mr.anonym.toyonamobile.presentation.utils.cardNumberFormatter
 @Composable
 fun CardFields(
     secondaryColor: Color,
+    tertiaryColor: Color,
+    eightrdColor:Color,
     cardValue: String,
     isScanned : Boolean,
     columnModifier:Modifier,
@@ -64,7 +67,7 @@ fun CardFields(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             ),
-            label = {
+            placeholder = {
                 Text(
                     text = stringResource(string.card_number)
                 )
@@ -87,11 +90,14 @@ fun CardFields(
                     )
                 }
             },
-            placeholder = {
-                Text(
-                    text = "0000 0000 0000 0000"
-                )
-            },
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = eightrdColor,
+                focusedContainerColor = eightrdColor,
+                unfocusedBorderColor = eightrdColor,
+                focusedBorderColor = eightrdColor,
+                unfocusedLabelColor = tertiaryColor,
+                focusedLabelColor = eightrdColor,
+            ),
             isError = cardFieldError,
             visualTransformation = if (isScanned) VisualTransformation.None else VisualTransformation{
                 cardNumberFormatter(it)
@@ -112,6 +118,14 @@ fun CardFields(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             ),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = eightrdColor,
+                focusedContainerColor = eightrdColor,
+                unfocusedBorderColor = eightrdColor,
+                focusedBorderColor = eightrdColor,
+                unfocusedLabelColor = tertiaryColor,
+                focusedLabelColor = eightrdColor,
+            ),
             isError = cardDateError,
             keyboardOptions = cardFieldKeyboardOptions,
             singleLine = true,
@@ -128,25 +142,4 @@ fun CardFields(
 
         Spacer(Modifier.height(10.dp))
     }
-}
-
-@Preview
-@Composable
-private fun PreviewCardFields() {
-    CardFields(
-        secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-        cardValue = "0000111122223333",
-        isScanned = true,
-        columnModifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
-            .padding(16.dp),
-        onCardValueChange = { },
-        cardFieldError = true,
-        cardFieldTrailingClick = { },
-        cardDateValue = "",
-        onCardDateValueChange = { },
-        cardDateError = true,
-    )
 }

@@ -29,8 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -53,16 +51,12 @@ import androidx.compose.ui.unit.sp
 fun CustomTextField(
     secondaryColor: Color,
     eightrdColor: Color,
-    isPhoneField: Boolean,
     keyboardType: KeyboardType,
     imeAction: ImeAction,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
-    secondValue: String,
-    onSecondValueChange:(TextFieldValue)-> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
-    focusRequester: FocusRequester,
     visualTransformation: VisualTransformation
 ) {
 
@@ -78,8 +72,7 @@ fun CustomTextField(
             .bringIntoViewRequester(bringIntoViewRequester)
             .onFocusChanged {
                 isFocused.value = it.isFocused
-            }
-            .focusRequester(focusRequester),
+            },
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
@@ -90,15 +83,11 @@ fun CustomTextField(
             imeAction = imeAction
         ),
         interactionSource = interactionSource,
-        value = if (isPhoneField) value else TextFieldValue(secondValue),
+        value = value,
         onValueChange = {
-            if (isPhoneField){
-                val digits = it.text.filter { char -> char.isDigit() }.take(9)
-                val updated = it.copy(text = digits)
-                onValueChange( updated )
-            }else{
-                onSecondValueChange.invoke((it))
-            }
+            val digits = it.text.filter { char -> char.isDigit() }.take(9)
+            val updated = it.copy(text = digits)
+            onValueChange(updated)
         },
         singleLine = true,
         visualTransformation = visualTransformation,
@@ -139,12 +128,12 @@ fun CustomTextField(
                                 end = 15.dp
                             )
                     ) {
-                        val hasText = value.text.isNotEmpty()
+                        val hasText = isFocused.value || value.text.isNotEmpty()
                         val animPlaceholder: Dp by animateDpAsState(
-                            if (isFocused.value || hasText) 6.dp else 12.dp
+                            if (hasText) 6.dp else 12.dp
                         )
                         val animPlaceholderFontSize: Int by animateIntAsState(
-                            if (isFocused.value || hasText) 12 else 14
+                            if (hasText) 12 else 14
                         )
                         Text(
                             modifier = Modifier

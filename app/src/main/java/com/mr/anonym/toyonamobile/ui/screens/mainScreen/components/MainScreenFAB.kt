@@ -1,18 +1,17 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.mr.anonym.toyonamobile.R
 
 @Composable
 fun MainScreenFAB(
-    secondaryColor: Color,
     quaternaryColor:Color,
     onFabClick:()-> Unit
 ) {
@@ -25,7 +24,7 @@ fun MainScreenFAB(
         onClick = { onFabClick() }
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
+            painter = painterResource(R.drawable.ic_add),
             tint = Color.White,
             contentDescription = "new index button"
         )

@@ -25,6 +25,7 @@ class NotificationReceiver: BroadcastReceiver() {
         val contentText = intent.getStringExtra("contentText")
 
         notificationController.showNotification(
+            modelID = 0,
             title = title?:"",
             contentText = contentText?:""
         )

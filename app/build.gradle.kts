@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
+    alias(libs.plugins.kspPlugin)
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
 }
@@ -37,15 +37,27 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
     buildFeatures {
         compose = true
+    }
+    ksp {
+        arg("option_name", "option_value")
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+}
+kotlin{
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
 dependencies {
+
+    implementation(project(":domain"))
+    implementation(project(":data"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -63,15 +75,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(project(":domain"))
-    implementation(project(":data"))
 
     implementation(libs.daggerHilt)
     implementation(libs.daggerHilt.navigation.compose)
     implementation(libs.androidx.hilt.work)
-    kapt(libs.daggerHiltCompiler)
-    kapt(libs.daggerHiltAndroidCompiler)
-    kapt(libs.daggerHiltWorkCompiler)
+    ksp(libs.daggerHiltCompiler)
+//    kapt(libs.daggerHiltCompiler)
+//    kapt(libs.daggerHiltAndroidCompiler)
+//    kapt(libs.daggerHiltWorkCompiler)
 
     implementation(libs.navigation)
     implementation(libs.kotlinCoroutines)
@@ -86,7 +97,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.roomSqlite)
     implementation(libs.roomCoroutinesSupport)
-    kapt(libs.roomCompiler)
+    ksp(libs.roomCompiler)
+//    kapt(libs.roomCompiler)
 
     implementation(libs.cardIOscanner)
 
@@ -118,4 +130,6 @@ dependencies {
         exclude(group = "com.android.support", module =  "support-compat")
     }
     releaseImplementation(libs.chuckerInterceptorRelease)
+
+    implementation(libs.firebaseMessaging)
 }

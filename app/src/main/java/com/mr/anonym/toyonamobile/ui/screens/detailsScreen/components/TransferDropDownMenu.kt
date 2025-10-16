@@ -1,13 +1,12 @@
 package com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.AddCircle
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -44,7 +43,7 @@ fun TransferDropDownMenu(
                 onClick = { onAddCardClick() },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.TwoTone.AddCircle,
+                        painter = painterResource(R.drawable.ic_add_circle),
                         tint = secondaryColor,
                         contentDescription = ""
                     )
@@ -80,7 +79,7 @@ fun TransferDropDownMenu(
                 onClick = { onAddCardClick() },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.TwoTone.AddCircle,
+                        painter = painterResource(R.drawable.ic_add_circle),
                         tint = secondaryColor,
                         contentDescription = ""
                     )

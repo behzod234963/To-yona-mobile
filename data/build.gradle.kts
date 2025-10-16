@@ -1,7 +1,8 @@
 plugins {
+//    alias(libs.plugins.android.application)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.kspPlugin)
     id("com.google.dagger.hilt.android")
 }
 
@@ -13,7 +14,7 @@ android {
         minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+//        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -29,13 +30,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
+    ksp {
+        arg("option_name", "option_value")
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
+}
+kotlin{
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
     }
 }
 
 dependencies {
 
+    implementation(project(":domain"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -43,11 +54,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":domain"))
     implementation(libs.androidx.dataStore)
     implementation(libs.androidx.room.common)
     implementation(libs.roomCoroutinesSupport)
-    kapt(libs.roomCompiler)
+    ksp(libs.roomCompiler)
+//    kapt(libs.roomCompiler)
     implementation(libs.gsonConverter)
     implementation(libs.retrofit2)
     implementation(libs.okHttp)
@@ -58,8 +69,9 @@ dependencies {
 
     implementation(libs.daggerHilt)
     implementation(libs.daggerHilt.navigation.compose)
-    kapt(libs.daggerHiltCompiler)
-    kapt(libs.daggerHiltAndroidCompiler)
+    ksp(libs.daggerHiltCompiler)
+//    kapt(libs.daggerHiltCompiler)
+//    kapt(libs.daggerHiltAndroidCompiler)
 
     implementation(libs.tink)
 

@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -17,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -59,7 +57,7 @@ fun MainScreenSearchField(
         },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                painter = painterResource(R.drawable.ic_search),
                 tint = secondaryColor,
                 contentDescription = "icon search"
             )
@@ -69,7 +67,7 @@ fun MainScreenSearchField(
                 onClick = { onSearch() }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    painter = painterResource(R.drawable.ic_arrow_forward),
                     tint = secondaryColor,
                     contentDescription = ""
                 )

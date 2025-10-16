@@ -1,42 +1,64 @@
 [versions]
-agp = "8.12.0-alpha08"
-firebaseBom = "33.16.0"
-kotlin = "2.2.0"
-coreKtx = "1.16.0"
+agp = "8.13.0"
+firebaseBom = "34.4.0"
+googleServices = "4.4.4"
+kotlin = "2.2.20"
+coreKtx = "1.17.0"
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.9.1"
-activityCompose = "1.10.1"
-composeBom = "2025.06.01"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+lifecycleRuntimeKtx = "2.9.4"
+activityCompose = "1.11.0"
+composeBom = "2025.10.00"
 appcompat = "1.7.1"
-material = "1.12.0"
-chuckerInterceptorVersion = "3.5.2"
+material = "1.13.0"
+chuckerInterceptorVersion = "4.2.0"
 
-daggerHiltVersion = "2.56.2"
-daggerHiltNavigationComposeVersion = "1.2.0"
-navigationVersion = "2.9.0"
+daggerHiltVersion = "2.57.2"
+daggerHiltNavigationComposeVersion = "1.3.0"
+
+navigationVersion = "2.9.5"
+
 coroutinesVersion = "1.10.2"
-lifecycleVersion = "2.9.1"
+
+lifecycleVersion = "2.9.4"
+
 dataStoreVersion = "1.1.7"
+
 biometricAuthVersion = "1.1.0"
-roomVersion = "2.7.2"
+
+roomVersion = "2.8.2"
+
 cardIOscannerVersion = "5.5.1"
+
 pullToRefreshVersion = "0.36.0"
-lottieVersion = "6.6.7"
+
+lottieVersion = "6.6.10"
+
 systemUiControllerVersion = "0.36.0"
+
 retrofit2Version = "3.0.0"
-okHttpVersion = "4.12.0"
+
+okHttpVersion = "5.2.1"
+
 paging3Version = "3.3.6"
+
 tinkVersion = "1.18.0"
-workManagerVersion = "2.10.2"
-hiltCommonVersion = "1.2.0"
+
+workManagerVersion = "2.10.5"
+hiltCommonVersion = "1.3.0"
+hiltWork = "1.3.0"
+
 firebaseFunctionsKtx = "21.2.1"
-hiltWork = "1.2.0"
+firebaseMessagingVersion = "25.0.1"
+
+kspVersion = "2.2.20-2.0.2"
+#kspVersion = "2.1.21-2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -53,48 +75,83 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+# Dagger Hilt
 daggerHilt = { group = "com.google.dagger" , name = "hilt-android" , version.ref = "daggerHiltVersion" }
 daggerHilt-navigation-compose = { group = "androidx.hilt" ,name  = "hilt-navigation-compose" , version.ref = "daggerHiltNavigationComposeVersion"}
 daggerHiltAndroidCompiler = { group = "com.google.dagger" , name = "hilt-android-compiler" , version.ref = "daggerHiltVersion" }
-daggerHiltCompiler = {group = "com.google.dagger",name = "hilt-compiler",version.ref = "daggerHiltVersion"}
+daggerHiltCompiler = { group = "com.google.dagger" , name = "hilt-compiler" , version.ref = "daggerHiltVersion" }
 daggerHiltWorkCompiler = { group = "androidx.hilt" , name = "hilt-compiler" , version.ref = "hiltWork" }
+
+# Navigation
 navigation = { group = "androidx.navigation" , name = "navigation-compose" , version.ref = "navigationVersion" }
+
+# Coroutines & lifecycle
 kotlinCoroutines = { group = "org.jetbrains.kotlinx" , name = "kotlinx-coroutines-android" , version.ref = "coroutinesVersion" }
 viewModel = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-ktx" , version.ref = "lifecycleVersion" }
 viewModelForCompose = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-compose" , version.ref = "lifecycleVersion" }
 lifecycleCompose = { group = "androidx.lifecycle" , name = "lifecycle-runtime-compose" , version.ref = "lifecycleVersion" }
 savedState = { group = "androidx.lifecycle" , name = "lifecycle-viewmodel-savedstate" , version.ref = "lifecycleVersion" }
+
+# DataStore
 androidx-dataStore = { group = "androidx.datastore" , name  = "datastore-preferences" , version.ref = "dataStoreVersion" }
+
+# Biometric Auth
 biometricAuth = { group = "androidx.biometric" , name = "biometric" , version.ref = "biometricAuthVersion" }
+
+# Room SQLite
 roomSqlite = { group = "androidx.room" , name = "room-runtime" , version.ref = "roomVersion" }
 roomCoroutinesSupport = { group = "androidx.room" , name = "room-ktx" , version.ref = "roomVersion" }
 roomCompiler = { group = "androidx.room" , name = "room-compiler" , version.ref = "roomVersion" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomVersion" }
+
+# Card IO scanner
 #noinspection Aligned16KB
 cardIOscanner = { group = "io.card" , name = "android-sdk" , version.ref = "cardIOscannerVersion" }
+
+# PullToRefresh
 pullToRefresh = { group = "com.google.accompanist" , name = "accompanist-swiperefresh" , version.ref = "pullToRefreshVersion" }
+
+# Lottie animations
 lottieanimations = {group = "com.airbnb.android",name = "lottie-compose",version.ref = "lottieVersion"}
+
+# SystemUiController
 systemUiController = { group = "com.google.accompanist" , name = "accompanist-systemuicontroller" , version.ref = "systemUiControllerVersion" }
+
+# Retrofit & OkHttp
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2Version" }
 gsonConverter = { group = "com.squareup.retrofit2" , name = "converter-gson", version.ref = "retrofit2Version" }
 okHttp = { group = "com.squareup.okhttp3" , name = "okhttp" , version.ref = "okHttpVersion"}
 okHttpBom = { group = "com.squareup.okhttp3" , name = "okhttp-bom" , version.ref = "okHttpVersion"}
 okHttpLoggingInterceptor = { group = "com.squareup.okhttp3" , name = "logging-interceptor" , version.ref = "okHttpVersion"}
+
+# Paging 3
 paging3 = { group = "androidx.paging" , name = "paging-runtime" , version.ref = "paging3Version" }
 paging3JetpackCompose = { group = "androidx.paging" , name = "paging-compose" , version.ref = "paging3Version" }
+
+# Tink (Encryption)
 tink = { group = "com.google.crypto.tink" , name  = "tink-android" , version.ref = "tinkVersion" }
+
+# Work manager
 workManager = { group = "androidx.work" , name  = "work-runtime-ktx" , version.ref = "workManagerVersion" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommonVersion" }
-firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
 androidx-hilt-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltWork" }
+
+# Firebase functions
+firebase-functions-ktx = { group = "com.google.firebase", name = "firebase-functions-ktx", version.ref = "firebaseFunctionsKtx" }
+firebaseMessaging = { group = "com.google.firebase" , name = "firebase-messaging" , version.ref = "firebaseMessagingVersion" }
+
+# Chucker interceptor
 chuckerInterceptorDebug = { group = "com.github.chuckerteam.chucker" , name = "library" , version.ref = "chuckerInterceptorVersion"}
 chuckerInterceptorRelease = { group = "com.github.chuckerteam.chucker" , name = "library-no-op" , version.ref = "chuckerInterceptorVersion"}
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
+android-application = { id = "com.android.application" , version.ref = "agp" }
+android-library = { id = "com.android.library" , version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "agp" }
+#kotlin-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose" , version.ref = "kotlin" }
 
+hiltAppPlugin = { id = "kotlin-kapt" }
+daggerHiltAppPlugin = { id = "com.google.dagger.hilt.android" }
 daggerHiltPlugin = { id = "com.google.dagger.hilt.android" , version.ref = "daggerHiltVersion" }
-
+kspPlugin = { id = "com.google.devtools.ksp" , version.ref = "kspVersion" }

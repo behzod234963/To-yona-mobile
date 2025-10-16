@@ -4,6 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.android.library) apply false
+
     alias(libs.plugins.daggerHiltPlugin) apply false
-    id("com.google.gms.google-services") version "4.4.2" apply false
+    alias(libs.plugins.kspPlugin) apply false
+    id("com.google.gms.google-services") version "4.4.4" apply false
+}
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath(libs.google.services)
+    }
 }

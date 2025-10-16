@@ -248,10 +248,8 @@ fun MainScreen(
                 contentColor = primaryColor,
                 floatingActionButton = {
                     MainScreenFAB(
-                        secondaryColor = secondaryColor,
-                        quaternaryColor = quaternaryColor,
-                        onFabClick = { navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") }
-                    )
+                        quaternaryColor = quaternaryColor
+                    ) { navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") }
                 },
                 topBar = {
                     MainScreenTopBar(
@@ -351,7 +349,6 @@ fun MainScreen(
                                                 }
 //                                            }
                                         }
-
                                         1 -> {
                                             if (isRefresh.value){
                                                 items(20){

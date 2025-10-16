@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -34,8 +32,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransforma
 @Composable
 fun RegistrationTextFields(
     secondaryColor: Color,
-    tertiaryColor: Color,
-    phoneFieldModifier: Modifier,
+    modifier: Modifier,
     phoneFieldError: Boolean,
     isPhoneFieldEnabled: Boolean,
     phoneFieldValue: String,
@@ -68,7 +65,7 @@ fun RegistrationTextFields(
     OutlinedTextField(
         value = phoneFieldValue,
         onValueChange = { onPhoneValueChange(it) },
-        modifier = phoneFieldModifier,
+        modifier = modifier,
         enabled = isPhoneFieldEnabled,
         visualTransformation = PhoneNumberVisualTransformation(),
         textStyle = TextStyle(
@@ -83,7 +80,7 @@ fun RegistrationTextFields(
                     }
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        painter = painterResource(R.drawable.ic_close),
                         tint = secondaryColor,
                         contentDescription = "null"
                     )

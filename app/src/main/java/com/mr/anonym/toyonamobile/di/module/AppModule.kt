@@ -3,8 +3,8 @@ package com.mr.anonym.toyonamobile.di.module
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.mr.anonym.toyonamobile.presentation.firebase.FirebaseMessagingServiceManager
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.managers.PermissionController
 import com.mr.anonym.toyonamobile.presentation.notifications.NotificationController
@@ -29,7 +29,6 @@ class AppModule {
     fun providePermissionController(@ApplicationContext context: Context): PermissionController =
         PermissionController(context)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     @Provides
     fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager{
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -46,4 +45,9 @@ class AppModule {
     @Singleton
     fun provideNotificationController(@ApplicationContext context: Context,notificationManager: NotificationManager): NotificationController =
         NotificationController(context, notificationManager)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseMessagingServiceManager(): FirebaseMessagingService =
+        FirebaseMessagingServiceManager()
 }

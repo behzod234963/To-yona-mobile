@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventCardField
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventCardField
 
 @Composable
 fun AddEventCardItem(

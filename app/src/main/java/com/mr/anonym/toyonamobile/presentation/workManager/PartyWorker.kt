@@ -19,14 +19,11 @@ import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.notifications.NotificationController
-import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATIONS_REQUEST_CODE
 import com.mr.anonym.toyonamobile.presentation.utils.NOTIFICATION_ID
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
-import okhttp3.internal.notify
 
 @HiltWorker
 class PartyWorker @AssistedInject constructor(

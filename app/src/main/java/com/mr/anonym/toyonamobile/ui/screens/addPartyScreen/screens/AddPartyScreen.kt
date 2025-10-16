@@ -19,8 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -42,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,11 +56,11 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventFAB
-import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventOtherField
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventFAB
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventOtherField
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddPartyAddressField
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.PartyTypeButtons
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.viewModel.AddPartyViewModel
@@ -205,82 +204,80 @@ fun AddPartyScreen(
         },
         floatingActionButton = {
             AddEventFAB(
-                secondaryColor = secondaryColor,
-                quaternaryColor = quaternaryColor,
-                onFabClick = {
-                    viewModel.getUserById()
-                    val endDateResult =
-                        if (!endDate.value.contains("2025")) "" else {
-                            " , ${endDate.value}"
+                quaternaryColor = quaternaryColor
+            ) {
+                viewModel.getUserById()
+                val endDateResult =
+                    if (!endDate.value.contains("2025")) "" else {
+                        " , ${endDate.value}"
+                    }
+                if (arguments.eventID == -1) {
+                    if (
+                        selectedEventIndex.value > 0 &&
+                        isDateSet.value &&
+                        !isCardError.value
+                    ) {
+                        isLoading.value = true
+                        val eventType = when (selectedEventIndex.value) {
+                            0 -> "0"
+                            1 -> "1"
+                            2 -> "2"
+                            3 -> "3"
+                            4 -> otherEventValue.value
+                            else -> ""
                         }
-                    if (arguments.eventID == -1) {
-                        if (
-                            selectedEventIndex.value > 0 &&
-                            isDateSet.value &&
-                            !isCardError.value
-                        ) {
-                            isLoading.value = true
-                            val eventType = when (selectedEventIndex.value) {
-                                0 -> "0"
-                                1 -> "1"
-                                2 -> "2"
-                                3 -> "3"
-                                4 -> otherEventValue.value
-                                else -> ""
-                            }
-                            viewModel.addParty(
-                                partyModel = PartysItem(
-                                    name = titleValue.value,
-                                    type = eventType,
-                                    address = address.value,
-                                    cardNumber = cardValue.value,
-                                    startTime = startDate.value,
-                                    endTime = endDateResult,
-                                    status = true
-                                )
+                        viewModel.addParty(
+                            partyModel = PartysItem(
+                                name = titleValue.value,
+                                type = eventType,
+                                address = address.value,
+                                cardNumber = cardValue.value,
+                                startTime = startDate.value,
+                                endTime = endDateResult,
+                                status = true
                             )
-                        } else {
-                            coroutineScope.launch {
-                                scaffoldState.showSnackbar(
-                                    context.getString(R.string.please_check_validate_places)
-                                )
-                            }
-                        }
+                        )
                     } else {
-                        if (
-                            !isCardError.value
-                        ) {
-                            val eventType = when (selectedEventIndex.value) {
-                                0 -> "0"
-                                1 -> "1"
-                                2 -> "2"
-                                3 -> "3"
-                                4 -> otherEventValue.value
-                                else -> ""
-                            }
-                            isLoading.value = true
-                            viewModel.updateParty(
-                                partyID = arguments.eventID,
-                                partyModel = PartysItem(
-                                    name = titleValue.value,
-                                    type = eventType,
-                                    address = address.value,
-                                    cardNumber = cardValue.value,
-                                    startTime = startDate.value,
-                                    endTime = endDateResult,
-                                    status = true
-                                )
+                        coroutineScope.launch {
+                            scaffoldState.showSnackbar(
+                                context.getString(R.string.please_check_validate_places)
                             )
-                        } else {
-                            coroutineScope.launch {
-                                scaffoldState.showSnackbar(
-                                    context.getString(R.string.please_check_validate_places)
-                                )
-                            }
+                        }
+                    }
+                } else {
+                    if (
+                        !isCardError.value
+                    ) {
+                        val eventType = when (selectedEventIndex.value) {
+                            0 -> "0"
+                            1 -> "1"
+                            2 -> "2"
+                            3 -> "3"
+                            4 -> otherEventValue.value
+                            else -> ""
+                        }
+                        isLoading.value = true
+                        viewModel.updateParty(
+                            partyID = arguments.eventID,
+                            partyModel = PartysItem(
+                                name = titleValue.value,
+                                type = eventType,
+                                address = address.value,
+                                cardNumber = cardValue.value,
+                                startTime = startDate.value,
+                                endTime = endDateResult,
+                                status = true
+                            )
+                        )
+                    } else {
+                        coroutineScope.launch {
+                            scaffoldState.showSnackbar(
+                                context.getString(R.string.please_check_validate_places)
+                            )
                         }
                     }
                 }
-            )
+            }
         },
         snackbarHost = { SnackbarHost(scaffoldState) }
     ) { paddingValues ->
@@ -514,7 +511,7 @@ fun AddPartyScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = Icons.TwoTone.AddCircle,
+                                painter = painterResource(R.drawable.ic_add_circle),
                                 tint = secondaryColor,
                                 contentDescription = ""
                             )
@@ -560,7 +557,7 @@ fun AddPartyScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = Icons.TwoTone.AddCircle,
+                                painter = painterResource(R.drawable.ic_add_circle),
                                 tint = secondaryColor,
                                 contentDescription = ""
                             )

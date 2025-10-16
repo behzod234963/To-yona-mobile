@@ -1,8 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.supportScreen.components
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,7 +37,7 @@ fun SupportTopBar(
                 onClick = { onNavigationClick() }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    painter = painterResource(R.drawable.ic_back),
                     tint = secondaryColor,
                     contentDescription = ""
                 )

@@ -11,7 +11,7 @@
     <string name="safe_and_fast_payments">Safe and fast payments</string>
     <string name="just_and_trust">Just and trust</string>
     <string name="log_in">Log in</string>
-    <string name="login_instruction">Log in you need to enter phone and password</string>
+    <string name="login_instruction">To log in, enter your phone number and password.</string>
     <string name="the_place_must_not_be_empty">The place must not be empty</string>
     <string name="phone_number_error">Phone number error</string>
     <string name="continue_">Continue</string>
@@ -175,4 +175,6 @@
     <string name="at_least_one_lowercase_letter">* At least one lowercase letter from latin alphabet</string>
     <string name="at_least_one_digit">* At least one digit</string>
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* At least one special character from the set (@ . $ ! % * ? & #)]]></string>
+    <string name="welcome">Welcome!</string>
+    <string name="language_instruction">Choose a language that is convenient for you</string>
 </resources>

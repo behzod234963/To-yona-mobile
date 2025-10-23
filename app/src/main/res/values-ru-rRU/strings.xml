@@ -12,7 +12,7 @@
     <string name="safe_and_fast_payments">Быстрые и безопасные переводы</string>
     <string name="just_and_trust">Простота и надёжность</string>
     <string name="log_in">Вход в систему</string>
-    <string name="login_instruction">Для входа в систему вам нужно ввести номер телефона и пароль</string>
+    <string name="login_instruction">Для входа в систему введите номер телефона и пароль.</string>
     <string name="the_place_must_not_be_empty">Поля не должно быть пустым</string>
     <string name="phone_number_error">Ошибка при вводе данных</string>
     <string name="continue_">Продолжить</string>
@@ -176,4 +176,6 @@
     <string name="at_least_one_lowercase_letter">* Хотя бы одна строчная буква из латинского алфавита</string>
     <string name="at_least_one_digit">* Хотя бы одна цифра</string>
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* Хотя бы один специальный символ из набора (@ . $ ! % * ? & #)]]></string>
+    <string name="welcome">Добро пожаловать!</string>
+    <string name="language_instruction">Выберите язык, удобный для себя</string>
 </resources>

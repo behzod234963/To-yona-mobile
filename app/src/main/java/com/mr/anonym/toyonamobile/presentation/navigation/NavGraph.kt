@@ -32,6 +32,7 @@ import com.mr.anonym.toyonamobile.ui.screens.securityScreen.screens.SecurityScre
 import com.mr.anonym.toyonamobile.ui.screens.settingsScreen.screen.SettingsScreen
 import com.mr.anonym.toyonamobile.ui.screens.supportScreen.screen.SupportScreen
 import com.mr.anonym.toyonamobile.ui.screens.walletScreen.screen.WalletScreen
+import com.mr.anonym.toyonamobile.ui.screens.welcomeScreen.screen.WelcomeScreen
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -46,19 +47,24 @@ fun NavGraph(
     val isLoggedIn = sharedPreferences.getIsLoggedIn()
     val isProfileSettingsState = sharedPreferences.getIsProfileSettingsState()
     val isThemeChanged = sharedPreferences.isThemeChangedState()
+    val isLanguageSelected = sharedPreferences.languageState()
 
     NavHost(
         navController = navController,
-        startDestination = when {
-            isFirstTime -> ScreensRouter.OnboardingScreen.route
-            !isLoggedIn -> ScreensRouter.LoginScreen.route
-            isProfileSettingsState -> ScreensRouter.ProfileScreen.route
-            newPinState -> ScreensRouter.NewPinScreen.route
-            isThemeChanged -> ScreensRouter.MainScreen.route
-//            else -> ScreensRouter.MainScreen.route
-            else -> ScreensRouter.EnterScreen.route
-        }
+        startDestination = ScreensRouter.MainScreen.route
+//            when {
+//                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
+//                isFirstTime -> ScreensRouter.OnboardingScreen.route
+//                !isLoggedIn -> ScreensRouter.LoginScreen.route
+//                isProfileSettingsState -> ScreensRouter.ProfileScreen.route
+//                newPinState -> ScreensRouter.NewPinScreen.route
+//                isThemeChanged -> ScreensRouter.MainScreen.route
+//                else -> ScreensRouter.EnterScreen.route
+//            }
     ) {
+        composable(ScreensRouter.WelcomeScreen.route) {
+            WelcomeScreen(navController)
+        }
         composable(ScreensRouter.OnboardingScreen.route) {
             OnboardingScreen(navController = navController)
         }
@@ -115,8 +121,8 @@ fun NavGraph(
                     defaultValue = -1
                 }
             )
-        ) { entry->
-            val userID = entry.arguments?.getInt("userID")?:-1
+        ) { entry ->
+            val userID = entry.arguments?.getInt("userID") ?: -1
             DetailsScreen(
                 navController = navController,
                 arguments = Arguments(

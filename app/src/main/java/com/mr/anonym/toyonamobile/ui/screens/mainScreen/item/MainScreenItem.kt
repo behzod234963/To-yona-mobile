@@ -26,12 +26,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
+import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
 
 @Composable
 fun MainScreenItem(
@@ -151,4 +154,20 @@ fun MainScreenItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewMainScreenItem() {
+    MainScreenItem(
+        primaryColor = Color.White,
+        secondaryColor = Color.Black,
+        tertiaryColor = Color.LightGray,
+        sevenrdColor = Color.White,
+        smallFontSize = 14,
+        partyModel = PartysItem(),
+        userModel = UserModelItem(),
+        showContacts = false,
+        onItemClick = {  }
+    )
 }

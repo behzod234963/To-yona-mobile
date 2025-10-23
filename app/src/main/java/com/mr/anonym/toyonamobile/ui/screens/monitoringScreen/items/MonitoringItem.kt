@@ -27,17 +27,17 @@ fun MonitoringItem(
     secondaryColor: Color,
     quaternaryColor: Color,
     fiverdColor: Color,
-    sevenrdColor: Color,
+    nineColor: Color,
     model: MonitoringModel,
     onClick:()-> Unit
 ) {
 
     Card (
         modifier = Modifier
-            .padding(5.dp),
+            .padding(vertical = 5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = sevenrdColor,
-            contentColor = sevenrdColor
+            containerColor = nineColor,
+            contentColor = nineColor
         ),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation( 7.dp ),
@@ -82,7 +82,7 @@ private fun PreviewMonitoringModel() {
         secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
         quaternaryColor = Color.Red,
         fiverdColor = Color.Green,
-        sevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
+        nineColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
         model = MonitoringModel(
             id = 1,
             eventName = "Wedding",

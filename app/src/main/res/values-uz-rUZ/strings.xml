@@ -12,7 +12,7 @@
     <string name="safe_and_fast_payments">Xavfsiz va tezkor o\'tkazmalar</string>
     <string name="just_and_trust">Oddiylik va ishonchlilik</string>
     <string name="log_in">Tizimga kirish</string>
-    <string name="login_instruction">Tizimga kirish uchun telefon raqam va parolni kiriting</string>
+    <string name="login_instruction">Tizimga kirish uchun telefon raqamingiz va parolingizni kiriting.</string>
     <string name="the_place_must_not_be_empty">Ism sharifingiz kiritilatigan joy bo\'sh bo\'lmasligi kerak</string>
     <string name="phone_number_error">Ma\'lumot kiritishda xatolik</string>
     <string name="continue_">Davom etish</string>
@@ -176,4 +176,6 @@
     <string name="at_least_one_lowercase_letter">* Kamida bitta kichik harf</string>
     <string name="at_least_one_digit">* Kamida bitta raqam</string>
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* To\'plamdan kamida bitta maxsus belgi (@ . $ ! % * ? & #)]]></string>
+    <string name="welcome">Hush kelibsiz!</string>
+    <string name="language_instruction">O\'zingiz uchun qulay tilni tanlang</string>
 </resources>

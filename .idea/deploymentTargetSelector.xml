@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-06-25T13:56:37.010106200Z">
+        <DropdownSelection timestamp="2025-10-21T10:31:18.495161300Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Behzod\.android\avd\Pixel_API_25.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Behzod\.android\avd\Pixel_7_Pro_33.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -20,6 +20,15 @@
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="domain">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewOnBoardingScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewLoginScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewNCHS">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

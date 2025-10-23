@@ -1,11 +1,13 @@
 package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,7 +27,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,9 +41,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -52,12 +54,8 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.response.LoginRequest
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.extensions.capitalizeChecker
-import com.mr.anonym.toyonamobile.presentation.extensions.digitChecker
-import com.mr.anonym.toyonamobile.presentation.extensions.lowercaseChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
-import com.mr.anonym.toyonamobile.presentation.extensions.symbolChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
 import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
@@ -75,17 +73,19 @@ fun LogInScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
+//    Context
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val activityContext = LocalActivity.current
 
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
     val isPinForgotten = dataStore.isPinForgottenState().collectAsState(false)
-
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
+//    Colors
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -102,15 +102,19 @@ fun LogInScreen(
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
-    val systemEightrdColor =
-        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
-    val eightrdColor = when {
-        isSystemTheme -> systemEightrdColor
-        isDarkTheme -> MaterialTheme.colorScheme.background
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when {
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
 
-    val containerPadding = rememberSaveable { mutableIntStateOf(10) }
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.anim_loading)
@@ -122,28 +126,34 @@ fun LogInScreen(
 
     val (passwordFieldValue, onPasswordFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val passwordValueError = rememberSaveable { mutableStateOf(false) }
-    val showPasswordErrorContent = remember { mutableStateOf( false ) }
+    val showPasswordErrorContent = remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val isSnackbarShown = remember { mutableStateOf(false) }
     val isLoginSuccess = viewModel.isLoginSuccess
+
+    BackHandler {
+        activityContext?.finish()
+    }
     Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         if (!isLoading.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .padding(10.dp),
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.20f)
-                        .padding(containerPadding.intValue.dp),
-                    verticalArrangement = Arrangement.Top,
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                        .padding(15.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(Modifier.height(10.dp))
@@ -163,17 +173,19 @@ fun LogInScreen(
                         fontSize = 16.sp,
                     )
                 }
+                Spacer(Modifier.height(10.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.60f)
-                        .padding(containerPadding.intValue.dp),
+                        .wrapContentHeight()
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CustomTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
                         value = phoneFieldValue.value,
@@ -184,25 +196,10 @@ fun LogInScreen(
                         label = stringResource(R.string.enter_your_phone_number),
                         visualTransformation = PhoneNumberVisualTransformation(),
                     )
-                    if (showPhoneErrorContent.value) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Text(
-                                text = stringResource(R.string.phone_number_error),
-                                color = quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
                     Spacer(Modifier.height(10.dp))
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = passwordFieldValue,
                         onValueChange = {
@@ -211,55 +208,48 @@ fun LogInScreen(
                         },
                         label = stringResource(R.string.password)
                     )
-                    if (showPasswordErrorContent.value){
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp)
-                        ) {
-                            if (passwordFieldValue.text.length < 8){
-                                Text(
-                                    text = stringResource(R.string.minimum_8_symbols),
-                                    color = quaternaryColor,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                            if (!passwordFieldValue.text.capitalizeChecker()){
-                                Text(
-                                    text = stringResource(R.string.at_least_one_capital_letter),
-                                    color = quaternaryColor,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                            if (!passwordFieldValue.text.lowercaseChecker()){
-                                Text(
-                                    text = stringResource(R.string.at_least_one_lowercase_letter),
-                                    color = quaternaryColor,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                            if (!passwordFieldValue.text.digitChecker()){
-                                Text(
-                                    text = stringResource(R.string.at_least_one_digit),
-                                    color = quaternaryColor,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                            if (!passwordFieldValue.text.symbolChecker()){
-                                Text(
-                                    text = stringResource(R.string.at_least_one_special_character_from_the_set),
-                                    color = quaternaryColor,
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+                    Spacer(Modifier.height(10.dp))
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(horizontal = 10.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = quaternaryColor
+                        ),
+                        shape = RoundedCornerShape(15.dp),
+                        onClick = {
+                            if (
+                                phoneFieldValue.value.text.isNotEmpty() &&
+                                phoneFieldValue.value.text.isNotBlank() &&
+                                !phoneFieldError.value
+                            ) {
+                                if (!passwordValueError.value) {
+                                    isLoading.value = true
+                                    viewModel.loginUser(
+                                        LoginRequest(
+                                            phonenumber = phoneFieldValue.value.text,
+                                            password = passwordFieldValue.text
+                                        )
+                                    )
+                                } else {
+                                    showPasswordErrorContent.value = true
+                                }
+                            } else {
+                                showPhoneErrorContent.value = true
+                                phoneFieldError.value = true
                             }
                         }
-                        if (!passwordValueError.value) showPasswordErrorContent.value = false
+                    ) {
+                        Text(
+                            text = stringResource(R.string.continue_),
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
+                    Spacer(Modifier.height(10.dp))
+                    //                    Create account
                     TextButton(
                         onClick = {
                             navController.navigate(ScreensRouter.RegistrationScreen.route)
@@ -267,10 +257,11 @@ fun LogInScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.i_have_no_account),
-                            color = Color.Blue,
+                            color = tertiaryColor,
                             fontSize = 16.sp
                         )
                     }
+//                    Forgot password
                     TextButton(
                         onClick = {
                             if (
@@ -292,56 +283,8 @@ fun LogInScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.forgot_password),
-                            color = Color.Blue,
+                            color = tertiaryColor,
                             fontSize = 16.sp
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.70f)
-                        .padding(horizontal = 15.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-//                API needs for post mobile number
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = quaternaryColor
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        onClick = {
-                            if (
-                                phoneFieldValue.value.text.isNotEmpty() &&
-                                phoneFieldValue.value.text.isNotBlank() &&
-                                !phoneFieldError.value
-                            ) {
-                                if (!passwordValueError.value){
-                                    isLoading.value = true
-                                    viewModel.loginUser(
-                                        LoginRequest(
-                                            phonenumber = phoneFieldValue.value.text,
-                                            password = passwordFieldValue.text
-                                        )
-                                    )
-                                }else{
-                                    showPasswordErrorContent.value = true
-                                }
-                            } else {
-                                showPhoneErrorContent.value = true
-                                phoneFieldError.value = true
-                            }
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.continue_),
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -405,4 +348,13 @@ fun LogInScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewLoginScreen() {
+    LogInScreen(
+        navController = NavController(LocalContext.current),
+        viewModel = hiltViewModel()
+    )
 }

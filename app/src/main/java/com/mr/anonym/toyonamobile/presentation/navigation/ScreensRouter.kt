@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.presentation.navigation
 
 sealed class ScreensRouter (val route:String){
+    data object WelcomeScreen:ScreensRouter("WelcomeScreen")
     data object OnboardingScreen:ScreensRouter("OnboardingScreen")
     data object RegistrationScreen:ScreensRouter("RegistrationScreen")
     data object NumberCheckScreen:ScreensRouter("NumberCheckScreen")

@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,13 +33,13 @@ fun MainScreenTabRow(
 
     val selectedTab = remember { mutableIntStateOf( 0 ) }
 
-    TabRow(
-        modifier = Modifier
-            .padding(vertical = 10.dp),
+    SecondaryTabRow(
         selectedTabIndex = selectedTab.intValue,
-        indicator = { tabPosition:List<TabPosition> ->
+        Modifier
+            .padding(vertical = 10.dp),
+        TabRowDefaults.primaryContainerColor, TabRowDefaults.primaryContentColor, {
             val modifier = Modifier
-                .tabIndicatorOffset( tabPosition[selectedTab.intValue])
+                .tabIndicatorOffset( selectedTabIndex = selectedTab.intValue)
             Box(
                 modifier = modifier
                     .fillMaxWidth()
@@ -49,30 +49,30 @@ fun MainScreenTabRow(
                         shape = RoundedCornerShape( topStart = 16.dp , topEnd = 16.dp )
                     )
             )
-        }
-    ) {
-        tabs.forEachIndexed { index, string ->
-            Tab(
-                selected = selectedTab.intValue == index,
-                onClick = { selectedTab.intValue = index }
-            ) {
-                Row (
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(45.dp)
-                        .background(primaryColor),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = string,
-                        color = secondaryColor,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
+        },
+        @Composable { HorizontalDivider() }, {
+            tabs.forEachIndexed { index, string ->
+                Tab(
+                    selected = selectedTab.intValue == index,
+                    onClick = { selectedTab.intValue = index }
+                ) {
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(45.dp)
+                            .background(primaryColor),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Text(
+                            text = string,
+                            color = secondaryColor,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
-        }
-    }
+        })
     content(selectedTab.intValue)
 }

@@ -3,10 +3,12 @@ package com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,13 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,7 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -99,19 +101,12 @@ fun ProfileScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme -> systemTertiaryColor
-        isDarkTheme -> Color.DarkGray
-        else -> Color.LightGray
-    }
     val quaternaryColor = Color.Red
-    val systemEightrdColor =
-        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
-    val eightrdColor = when {
-        isSystemTheme -> systemEightrdColor
-        isDarkTheme -> MaterialTheme.colorScheme.background
-        else -> Color.LightGray
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
     }
 
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
@@ -167,7 +162,10 @@ fun ProfileScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(0.3f),
+                            .wrapContentHeight()
+                            .padding(10.dp)
+                            .background(color = nineColor, shape = RoundedCornerShape(15.dp))
+                            .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -184,6 +182,7 @@ fun ProfileScreen(
                                 contentDescription = "man"
                             )
                         }
+                        Spacer(Modifier.height(10.dp))
                         Text(
                             text = "${firstname.value} ${lastname.value}",
                             color = secondaryColor,
@@ -197,87 +196,80 @@ fun ProfileScreen(
                             fontSize = 16.sp
                         )
                     }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.6f)
-                        .padding(horizontal = 10.dp),
-                ) {
-                    NameField(
-                        secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
-                        eightrdColor = eightrdColor,
-//                    Firstname field properties
-                        nameValue = firstname.value,
-                        onNameValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
-                            nameValueError.value = !it.nameChecker()
-                        },
-                        onNameValueEnabledTrailingIconClick = {
-                            viewModel.onEvent(
-                                ProfileEvent.ChangeFirstname(
-                                    ""
-                                )
-                            )
-                        },
-                        //                    Lastname field properties
-                        nameValueError = nameValueError.value,
-                        surnameValue = lastname.value,
-                        onSurnameValueChange = {
-                            viewModel.onEvent(ProfileEvent.ChangeLastname(it))
-                            lastnameValueError.value = !it.nameChecker()
-                        },
-                        surnameValueError = lastnameValueError.value,
-                        focusedRequester = focusRequester,
-                        onSurnameEnabledTrailingIconClick = {
-                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
-                        },
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.99f)
-                        .padding(horizontal = 10.dp),
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Button(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = quaternaryColor,
-                            contentColor = quaternaryColor,
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        onClick = {
-                            if (
-                                !nameValueError.value &&
-                                !lastnameValueError.value
-                            ) {
-                                isSendResponse.value = true
-                            } else {
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = context.getString(R.string.please_check_validate_places)
+                            .fillMaxHeight(0.6f)
+                            .padding(horizontal = 10.dp),
+                    ) {
+                        NameField(
+                            secondaryColor = secondaryColor,
+                            tertiaryColor = nineColor,
+                            eightrdColor = nineColor,
+//                    Firstname field properties
+                            nameValue = firstname.value,
+                            onNameValueChange = {
+                                viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
+                                nameValueError.value = !it.nameChecker()
+                            },
+                            onNameValueEnabledTrailingIconClick = {
+                                viewModel.onEvent(
+                                    ProfileEvent.ChangeFirstname(
+                                        ""
                                     )
+                                )
+                            },
+                            //                    Lastname field properties
+                            nameValueError = nameValueError.value,
+                            surnameValue = lastname.value,
+                            onSurnameValueChange = {
+                                viewModel.onEvent(ProfileEvent.ChangeLastname(it))
+                                lastnameValueError.value = !it.nameChecker()
+                            },
+                            surnameValueError = lastnameValueError.value,
+                            focusedRequester = focusRequester,
+                            onSurnameEnabledTrailingIconClick = {
+                                viewModel.onEvent(ProfileEvent.ChangeLastname(""))
+                            },
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(50.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = quaternaryColor,
+                                contentColor = quaternaryColor,
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            onClick = {
+                                if (
+                                    !nameValueError.value &&
+                                    !lastnameValueError.value
+                                ) {
+                                    isSendResponse.value = true
+                                } else {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = context.getString(R.string.please_check_validate_places)
+                                        )
+                                    }
                                 }
                             }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.continue_),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.continue_),
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
                     }
                 }
                 if (showAvatarContent.value) {
                     AvatarContent(
                         secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
+                        tertiaryColor = nineColor,
                         state = bottomSheetState,
                         onDismissRequest = {
                             showAvatarContent.value = false

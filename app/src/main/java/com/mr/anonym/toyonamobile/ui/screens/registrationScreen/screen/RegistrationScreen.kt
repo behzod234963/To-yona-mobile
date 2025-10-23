@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -25,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -42,7 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -74,15 +74,20 @@ fun RegistrationScreen(
     viewModel: RegistrationViewModel = hiltViewModel()
 ) {
 
+//    Context
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+//    Object
     val dataStore = DataStoreInstance(context)
     val sharedPreferences = SharedPreferencesInstance(context)
 
+//    Boolean
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
+    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
 
+//    Color
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -98,38 +103,44 @@ fun RegistrationScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val systemEightrdColor =
-        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
-    val eightrdColor = when {
-        isSystemTheme -> systemEightrdColor
-        isDarkTheme -> MaterialTheme.colorScheme.background
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
+    val quaternaryColor = Color.Red
+    val fiverdColor = Color.Green
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
 
-    val containerPadding = remember { mutableIntStateOf(10) }
+//    State
     val isLoading = remember { mutableStateOf(false) }
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
+    val snackbarHostState = remember { SnackbarHostState() }
 
+//    Phone field
     val phoneFieldError = remember { mutableStateOf(false) }
     val phoneFieldValue = remember { mutableStateOf(TextFieldValue("")) }
     val showPhoneErrorContent = remember { mutableStateOf(false) }
 
+//    Password field
     val (passwordFieldValue, onPasswordFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val passwordValueError = remember { mutableStateOf(false) }
 
+//    Confirm password field
     val (confirmValue, onConfirmFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val confirmValueError = remember { mutableStateOf(false) }
 
-    val isPasswordForgotten = dataStore.isPasswordForgottenState().collectAsState(false)
-
-    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         modifier = Modifier
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -138,14 +149,15 @@ fun RegistrationScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .padding(10.dp),
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.20f)
-                        .padding(containerPadding.intValue.dp),
-                    verticalArrangement = Arrangement.Top,
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp)),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(Modifier.height(10.dp))
@@ -171,17 +183,19 @@ fun RegistrationScreen(
                         fontSize = 16.sp,
                     )
                 }
+                Spacer(Modifier.height(10.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.80f)
-                        .padding(containerPadding.intValue.dp),
+                        .wrapContentHeight()
+                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CustomTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
                         value = phoneFieldValue.value,
@@ -212,7 +226,7 @@ fun RegistrationScreen(
 //                    Password content
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = passwordFieldValue,
                         onValueChange = {
@@ -225,7 +239,7 @@ fun RegistrationScreen(
 //                    Confirm password content
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = confirmValue,
                         onValueChange = {
@@ -242,88 +256,7 @@ fun RegistrationScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-//                    Password instruction
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 10.dp),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            text = stringResource(R.string.the_field_must_contains_next_steps),
-                            color = if (
-                                passwordFieldValue.text.length >= 8 &&
-                                passwordFieldValue.text.capitalizeChecker() &&
-                                passwordFieldValue.text.lowercaseChecker() &&
-                                passwordFieldValue.text.digitChecker() &&
-                                passwordFieldValue.text.symbolChecker()
-                            ) {
-                                fiverdColor
-                            } else {
-                                quaternaryColor
-                            },
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 10.dp),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = stringResource(R.string.minimum_8_symbols),
-                                color = if (passwordFieldValue.text.length < 8) quaternaryColor else fiverdColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = stringResource(R.string.at_least_one_capital_letter),
-                                color = if (passwordFieldValue.text.capitalizeChecker()) fiverdColor else quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = stringResource(R.string.at_least_one_lowercase_letter),
-                                color = if (passwordFieldValue.text.lowercaseChecker()) fiverdColor else quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = stringResource(R.string.at_least_one_digit),
-                                color = if (passwordFieldValue.text.digitChecker()) fiverdColor else quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                text = stringResource(R.string.at_least_one_special_character_from_the_set),
-                                color = if (passwordFieldValue.text.symbolChecker()) fiverdColor else quaternaryColor,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
-                    if (!isPasswordForgotten.value) {
-                        TextButton(
-                            onClick = { navController.navigateUp() }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.i_have_an_account),
-                                color = Color.Blue,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.60f)
-                        .padding(horizontal = 15.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-//                API needs for post mobile number
+                    Spacer(Modifier.height(10.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -335,7 +268,7 @@ fun RegistrationScreen(
                         onClick = {
                             when {
                                 !isPasswordForgotten.value &&
-                                !passwordValueError.value -> {
+                                        !passwordValueError.value -> {
                                     if (
                                         phoneFieldValue.value.text.isNotEmpty() &&
                                         phoneFieldValue.value.text.isNotBlank() &&
@@ -391,6 +324,87 @@ fun RegistrationScreen(
                             text = stringResource(R.string.continue_),
                             color = Color.White,
                             fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    if (!isPasswordForgotten.value) {
+                        TextButton(
+                            onClick = { navController.navigateUp() }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.i_have_an_account),
+                                color = tertiaryColor,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+//                Password instruction
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp)
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = stringResource(R.string.the_field_must_contains_next_steps),
+                            color = if (
+                                passwordFieldValue.text.length >= 8 &&
+                                passwordFieldValue.text.capitalizeChecker() &&
+                                passwordFieldValue.text.lowercaseChecker() &&
+                                passwordFieldValue.text.digitChecker() &&
+                                passwordFieldValue.text.symbolChecker()
+                            ) {
+                                fiverdColor
+                            } else {
+                                quaternaryColor
+                            },
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = stringResource(R.string.minimum_8_symbols),
+                            color = if (passwordFieldValue.text.length < 8) quaternaryColor else fiverdColor,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(R.string.at_least_one_capital_letter),
+                            color = if (passwordFieldValue.text.capitalizeChecker()) fiverdColor else quaternaryColor,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(R.string.at_least_one_lowercase_letter),
+                            color = if (passwordFieldValue.text.lowercaseChecker()) fiverdColor else quaternaryColor,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(R.string.at_least_one_digit),
+                            color = if (passwordFieldValue.text.digitChecker()) fiverdColor else quaternaryColor,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = stringResource(R.string.at_least_one_special_character_from_the_set),
+                            color = if (passwordFieldValue.text.symbolChecker()) fiverdColor else quaternaryColor,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }

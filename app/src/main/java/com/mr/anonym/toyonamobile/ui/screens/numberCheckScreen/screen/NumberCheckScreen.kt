@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -40,10 +42,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -70,15 +73,19 @@ fun NumberCheckScreen(
     navController: NavController,
     viewModel: NumberCheckViewModel = hiltViewModel()
 ) {
+//    Context
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+//    Object
     val sharedPreferences = SharedPreferencesInstance(context)
     val dataStore = DataStoreInstance(context)
 
+//    Boolean
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
+//    Color
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -95,8 +102,14 @@ fun NumberCheckScreen(
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
 
-    val containerPadding = remember { mutableIntStateOf(10) }
+//    State
     val snackbarHostState = remember { SnackbarHostState() }
 
     val otpValue = remember { mutableStateOf("") }
@@ -137,8 +150,8 @@ fun NumberCheckScreen(
     }
 
     Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         modifier = Modifier
             .imePadding(),
         snackbarHost = { SnackbarHost(snackbarHostState) }
@@ -147,20 +160,23 @@ fun NumberCheckScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .padding(10.dp),
             ) {
+//                Instruction
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.3f)
-                        .padding(containerPadding.intValue.dp),
-                    verticalArrangement = Arrangement.Bottom,
+                        .fillMaxHeight(0.25f)
+                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = stringResource(R.string.log_in),
                         color = secondaryColor,
-                        fontSize = 22.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(10.dp))
@@ -171,16 +187,21 @@ fun NumberCheckScreen(
                             arguments.number.phoneNumberTransformation()
                         ),
                         color = secondaryColor,
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(10.dp))
                 }
+                Spacer(Modifier.height(10.dp))
 //            OTP field
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.35f)
+                        .wrapContentHeight()
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp)
                 ) {
+                    Spacer(Modifier.height(20.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -269,84 +290,12 @@ fun NumberCheckScreen(
                             }
                         )
                     }
-                    Spacer(Modifier.height(10.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        TextButton(
-                            onClick = { navController.navigateUp() }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.change_number),
-                                color = Color.Blue,
-                                fontSize = 16.sp
-                            )
-                        }
-                        IconButton(
-                            onClick = { navController.navigateUp() }
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(20.dp),
-                                painter = painterResource(R.drawable.ic_edit),
-                                tint = secondaryColor,
-                                contentDescription = "change number"
-                            )
-                        }
-                    }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(20.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.send_again),
-                            color = secondaryColor,
-                            fontSize = 16.sp
-                        )
-                        Spacer(Modifier.width(10.dp))
-                        if (!isRunning.value && timeLeft.intValue == 0) {
-                            IconButton(
-                                onClick = {
-                                    isRunning.value = true
-                                    timeLeft.intValue = 40
-                                    otpValue.value = ""
-                                }
-                            ) {
-                                Icon(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .padding(top = 2.dp),
-                                    painter = painterResource(R.drawable.ic_refresh),
-                                    tint = secondaryColor,
-                                    contentDescription = "null"
-                                )
-                            }
-                        } else {
-                            Text(
-                                text = timeLeft.intValue.toString(),
-                                color = secondaryColor,
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.85f)
-                        .padding(horizontal = 15.dp),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                    Spacer(Modifier.height(30.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp),
+                            .height(50.dp)
+                            .padding(horizontal = 35.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = quaternaryColor
                         ),
@@ -432,6 +381,76 @@ fun NumberCheckScreen(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        TextButton(
+                            onClick = {
+                                navController.navigate(ScreensRouter.LoginScreen.route){
+                                    popUpTo(ScreensRouter.NumberCheckScreen.route + "/${arguments.number}")
+                                }
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.change_number),
+                                color = Color.Blue,
+                                fontSize = 16.sp
+                            )
+                        }
+                        IconButton(
+                            onClick = { navController.navigateUp() }
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(20.dp),
+                                painter = painterResource(R.drawable.ic_edit),
+                                tint = secondaryColor,
+                                contentDescription = "change number"
+                            )
+                        }
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(20.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.send_again),
+                            color = secondaryColor,
+                            fontSize = 16.sp
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        if (!isRunning.value && timeLeft.intValue == 0) {
+                            IconButton(
+                                onClick = {
+                                    isRunning.value = true
+                                    timeLeft.intValue = 40
+                                    otpValue.value = ""
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(top = 2.dp),
+                                    painter = painterResource(R.drawable.ic_refresh),
+                                    tint = secondaryColor,
+                                    contentDescription = "null"
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = timeLeft.intValue.toString(),
+                                color = secondaryColor,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
                 }
             }
         } else {
@@ -590,4 +609,15 @@ fun NumberCheckScreen(
             }
         }
     }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview
+@Composable
+private fun PreviewNCHS() {
+    NumberCheckScreen(
+        arguments = Arguments(number = "973570498"),
+        navController = NavController(LocalContext.current),
+        viewModel = hiltViewModel()
+    )
 }

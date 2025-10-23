@@ -220,4 +220,9 @@ class SharedPreferencesInstance(private val context: Context ) {
     fun getDetailIndex(): Int{
         return sharedPreferences.getInt("detailIndex",-1)
     }
+
+    fun isLanguageSelected(state: Boolean){
+        sharedPreferences.edit { putBoolean("LanguageState",state) }
+    }
+    fun languageState(): Boolean = sharedPreferences.getBoolean("LanguageState",false)
 }

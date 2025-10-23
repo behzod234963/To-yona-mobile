@@ -29,9 +29,9 @@ import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.MonitoringModel
 import com.mr.anonym.toyonamobile.R
-import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.managers.pdfGenerator
 import com.mr.anonym.toyonamobile.presentation.managers.shareTransfer
+import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringBottomSheet
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringScrollableTabRow
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringTopBar
@@ -85,11 +85,11 @@ fun MonitoringScreen(
     }
     val quaternaryColor = Color.Red
     val fiverdColor = Color.Green
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
-        isDarkTheme -> Color.Unspecified
-        else -> Color.White
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
     }
 
     val selectedTabIndex = rememberSaveable { mutableIntStateOf(monthIndex) }
@@ -201,7 +201,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -216,7 +216,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -231,7 +231,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -246,7 +246,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -262,7 +262,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -277,7 +277,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -292,7 +292,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -307,7 +307,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -322,7 +322,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -337,7 +337,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -352,7 +352,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item
@@ -367,7 +367,7 @@ fun MonitoringScreen(
                                         secondaryColor = secondaryColor,
                                         quaternaryColor = quaternaryColor,
                                         fiverdColor = fiverdColor,
-                                        sevenrdColor = sevenrdColor,
+                                        nineColor = nineColor,
                                         model = item,
                                         onClick = {
                                             monitoringModel.value = item

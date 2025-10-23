@@ -78,8 +78,8 @@ fun NewPinScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
+    val fiveColor = Color.Green
+    val sixColor = Color.Blue
 
     val changePinProcessState = sharedPreferences.changePinProcessState()
 
@@ -132,7 +132,7 @@ fun NewPinScreen(
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
                 quaternaryColor = quaternaryColor,
-                sixrdColor = sixrdColor,
+                sixrdColor = sixColor,
                 title = stringResource(R.string.allow_fingerprint),
                 confirmButton = {
                     sharedPreferences.saveNewPinState(false)
@@ -168,7 +168,7 @@ fun NewPinScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.2f),
+                    .fillMaxHeight(0.3f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
@@ -208,7 +208,7 @@ fun NewPinScreen(
                                 }
 
                                 pinValue.value.isNotEmpty() && !pinValueError.value -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -228,7 +228,7 @@ fun NewPinScreen(
                                 }
 
                                 pinValue.value.length > 1 && !pinValueError.value -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -248,7 +248,7 @@ fun NewPinScreen(
                                 }
 
                                 pinValue.value.length > 2 && !pinValueError.value -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -268,7 +268,7 @@ fun NewPinScreen(
                                 }
 
                                 pinValue.value.length > 3 && !pinValueError.value -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -300,7 +300,7 @@ fun NewPinScreen(
                                 }
 
                                 confirmPinValue.value.isNotEmpty() -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -321,7 +321,7 @@ fun NewPinScreen(
                                 }
 
                                 confirmPinValue.value.length > 1 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -341,7 +341,7 @@ fun NewPinScreen(
                                 }
 
                                 confirmPinValue.value.length > 2 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -361,7 +361,7 @@ fun NewPinScreen(
                                 }
 
                                 confirmPinValue.value.length > 3 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {

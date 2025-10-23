@@ -93,15 +93,14 @@ fun EnterScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
+    val fiveColor = Color.Green
+    val sixColor = Color.Blue
+    val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenColor = when {
+        isSystemTheme -> systemSevenColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
-
 
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val showBiometricSettings = remember { mutableStateOf(false) }
@@ -150,7 +149,7 @@ fun EnterScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.2f),
+                        .fillMaxHeight(0.3f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Bottom
                 ) {
@@ -160,7 +159,7 @@ fun EnterScreen(
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold
                     )
-                    Spacer(Modifier.height(30.dp))
+                    Spacer(Modifier.height(20.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -180,7 +179,7 @@ fun EnterScreen(
                                 }
 
                                 pinValue.value.isNotEmpty() -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -200,7 +199,7 @@ fun EnterScreen(
                                 }
 
                                 pinValue.value.length > 1 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -220,7 +219,7 @@ fun EnterScreen(
                                 }
 
                                 pinValue.value.length > 2 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -240,7 +239,7 @@ fun EnterScreen(
                                 }
 
                                 pinValue.value.length > 3 -> {
-                                    fiverdColor
+                                    fiveColor
                                 }
 
                                 else -> {
@@ -553,15 +552,13 @@ fun EnterScreen(
                             ),
                             shape = RoundedCornerShape(10.dp),
                             onClick = {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                                    if (isBiometricAuthOn) {
-                                        coroutineScope.launch {
-                                            dataStore.showBiometricAuthManually(true)
-                                        }
-                                        sharedPreferences.saveBiometricAuthState(true)
-                                    } else {
-                                        showBiometricSettings.value = true
+                                if (isBiometricAuthOn) {
+                                    coroutineScope.launch {
+                                        dataStore.showBiometricAuthManually(true)
                                     }
+                                    sharedPreferences.saveBiometricAuthState(true)
+                                } else {
+                                    showBiometricSettings.value = true
                                 }
                             }
                         ) {
@@ -570,18 +567,12 @@ fun EnterScreen(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
-                                    Icon(
-                                        modifier = Modifier.padding(15.dp),
-                                        tint = secondaryColor,
-                                        painter = painterResource(R.drawable.ic_fingerprint),
-                                        contentDescription = "button fingerprint"
-                                    )
-                                }else{
-                                    Row {
-                                        Column (Modifier.size(70.dp)){  }
-                                    }
-                                }
+                                Icon(
+                                    modifier = Modifier.padding(15.dp),
+                                    tint = secondaryColor,
+                                    painter = painterResource(R.drawable.ic_fingerprint),
+                                    contentDescription = "button fingerprint"
+                                )
                             }
                         }
                         if (showBiometricSettings.value) {
@@ -589,7 +580,7 @@ fun EnterScreen(
                                 secondaryColor = secondaryColor,
                                 tertiaryColor = tertiaryColor,
                                 quaternaryColor = quaternaryColor,
-                                sixrdColor = sixrdColor,
+                                sixrdColor = sixColor,
                                 title = stringResource(R.string.allow_fingerprint),
                                 confirmButton = {
                                     sharedPreferences.saveIsBiometricAuthOn(true)
@@ -687,7 +678,7 @@ fun EnterScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.forgot_pin_code),
-                                color = sixrdColor,
+                                color = tertiaryColor,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -712,8 +703,8 @@ fun EnterScreen(
                     modifier = Modifier
                         .width(300.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = sevenrdColor,
-                        contentColor = sevenrdColor
+                        containerColor = sevenColor,
+                        contentColor = sevenColor
                     ),
                     shape = RoundedCornerShape(10.dp),
                     elevation = CardDefaults.cardElevation(7.dp)

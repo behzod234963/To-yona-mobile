@@ -3,6 +3,7 @@ package com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -69,19 +71,24 @@ fun MainScreen(
     navController: NavController,
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
-
+//    Context
     val context = LocalContext.current
     val activityContext = LocalActivity.current
+    val coroutineScope = rememberCoroutineScope()
 
+//    Object
     val sharedPreferences = SharedPreferencesInstance(context)
     val permissionController = PermissionController(context)
     val dataStore = DataStoreInstance(context)
-    val coroutineScope = rememberCoroutineScope()
+
+//    State
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+//    Boolean
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
+//    Colors
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -104,19 +111,33 @@ fun MainScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
+    val fiveColor = Color.Green
+    val sixColor = Color.Blue
+    val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenColor = when {
+        isSystemTheme -> systemSevenColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
-    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
-    val eightrdColor = when {
-        isSystemTheme -> systemEightrdColor
+    val systemEightColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightColor = when {
+        isSystemTheme -> systemEightColor
         isDarkTheme -> MaterialTheme.colorScheme.background
         else -> Color.LightGray
+    }
+    val componentColor = Color(67, 123, 205, 255)
+    val errorContentColor = Color.Red
+    val systemItemsColor = if (isSystemInDarkTheme()) Color(16, 15, 15, 255) else Color.White
+    val itemsColor = when {
+        isSystemTheme -> systemItemsColor
+        isDarkTheme -> Color(16, 15, 15, 255)
+        else -> Color.White
+    }
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
     }
 
     val smallFontSize = remember { mutableIntStateOf(14) }
@@ -270,17 +291,18 @@ fun MainScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues),
+                        .padding(paddingValues)
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MainScreenSearchField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 10.dp, vertical = 5.dp)
+                            .padding( vertical = 5.dp)
                             .clickable { showContacts.value = true },
                         secondaryColor = secondaryColor,
-                        eightrdColor = eightrdColor,
+                        eightrdColor = nineColor,
                         tertiaryColor = tertiaryColor,
                         value = searchValue.value,
                         onValueChange = {
@@ -302,7 +324,7 @@ fun MainScreen(
                                     primaryColor = primaryColor,
                                     secondaryColor = secondaryColor,
                                     tertiaryColor = tertiaryColor,
-                                    sevenrdColor = sevenrdColor,
+                                    sevenrdColor = sevenColor,
                                     smallFontSize = smallFontSize.intValue,
                                     partyModel = partyModel.value,
                                     userModel = userModel,
@@ -321,6 +343,7 @@ fun MainScreen(
                                 LazyColumn(
                                     modifier = Modifier
                                         .fillMaxSize()
+                                        .background(color = nineColor, shape = RoundedCornerShape(10.dp))
                                 ) {
                                     when (selectedTabIndex.intValue) {
                                         0 -> {
@@ -332,7 +355,7 @@ fun MainScreen(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
-                                                            sevenrdColor = sevenrdColor,
+                                                            sevenrdColor = sevenColor,
                                                             smallFontSize = smallFontSize.intValue,
                                                             partyModel = party,
                                                             userModel = user.value,
@@ -366,7 +389,7 @@ fun MainScreen(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
-                                                            sevenrdColor = sevenrdColor,
+                                                            sevenrdColor = sevenColor,
                                                             smallFontSize = smallFontSize.intValue,
                                                             partyModel = model,
                                                             userModel = user.value,

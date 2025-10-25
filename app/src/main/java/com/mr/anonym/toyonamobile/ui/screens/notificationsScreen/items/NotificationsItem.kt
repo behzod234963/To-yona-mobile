@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,18 +23,16 @@ import com.mr.anonym.domain.model.NotificationsModel
 
 @Composable
 fun NotificationsItem(
-    tertiaryColor: Color,
+    nineColor: Color,
     secondaryColor: Color,
     notification: NotificationsModel
 ) {
 
     Card(
-        modifier = Modifier
-            .padding(5.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            containerColor = tertiaryColor,
-            contentColor = tertiaryColor
+            containerColor = nineColor,
+            contentColor = nineColor
         )
     ) {
         Column (
@@ -71,13 +68,14 @@ fun NotificationsItem(
             )
         }
     }
+    Spacer(Modifier.height(10.dp))
 }
 
 @Preview
 @Composable
 private fun PreviewNotificationsItem() {
     NotificationsItem(
-        tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
+        nineColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
         secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
         notification = NotificationsModel(
             id = 1,

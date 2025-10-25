@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -103,6 +105,8 @@ fun WelcomeScreen(
     val isRussianButtonPressed by russianButtonInteractionSource.collectIsPressedAsState()
     val russianButtonScale by animateFloatAsState( if ( isRussianButtonPressed ) 0.90f else 0.95f )
 
+    val iosFont = FontFamily(Font(R.font.ios_font))
+
     BackHandler {
         sharedPreferences.isLanguageSelected(false)
         activityContext?.finish()
@@ -138,14 +142,16 @@ fun WelcomeScreen(
                     text = stringResource(R.string.welcome),
                     fontSize = 22.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = iosFont
                 )
                 Spacer(Modifier.height(15.dp))
                 Text(
                     text = stringResource(R.string.language_instruction),
                     fontSize = 16.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = iosFont
                 )
             }
             Column(
@@ -191,7 +197,8 @@ fun WelcomeScreen(
                                 text = stringResource(R.string.o_zbekcha),
                                 color = secondaryColor,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                         Icon(
@@ -238,7 +245,8 @@ fun WelcomeScreen(
                                 text = stringResource(R.string.russian),
                                 color = secondaryColor,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                         Icon(

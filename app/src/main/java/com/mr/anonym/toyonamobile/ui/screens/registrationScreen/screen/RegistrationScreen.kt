@@ -34,11 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,8 +113,7 @@ fun RegistrationScreen(
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
-    val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
+    val fiveColor = Color(101, 163, 119, 255)
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
     val nineColor = when{
         isSystemTheme -> systemNineColor
@@ -137,6 +140,8 @@ fun RegistrationScreen(
 //    Confirm password field
     val (confirmValue, onConfirmFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val confirmValueError = remember { mutableStateOf(false) }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     Scaffold(
         containerColor = nineColor,
@@ -169,7 +174,8 @@ fun RegistrationScreen(
                         },
                         color = secondaryColor,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold
+//                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
@@ -181,6 +187,7 @@ fun RegistrationScreen(
                         },
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = iosFont
                     )
                 }
                 Spacer(Modifier.height(10.dp))
@@ -195,7 +202,7 @@ fun RegistrationScreen(
                 ) {
                     CustomTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
                         value = phoneFieldValue.value,
@@ -205,6 +212,7 @@ fun RegistrationScreen(
                         },
                         label = stringResource(R.string.enter_your_phone_number),
                         visualTransformation = PhoneNumberVisualTransformation(),
+                        fontFamily = iosFont
                     )
                     if (showPhoneErrorContent.value) {
                         Row(
@@ -215,7 +223,7 @@ fun RegistrationScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.phone_number_error),
-                                color = quaternaryColor,
+                                color = fiveColor,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -226,34 +234,37 @@ fun RegistrationScreen(
 //                    Password content
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = passwordFieldValue,
                         onValueChange = {
                             onPasswordFieldValueChange.invoke(it)
                             passwordValueError.value = !it.text.passwordChecker()
                         },
-                        label = stringResource(R.string.password)
+                        label = stringResource(R.string.password),
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
 //                    Confirm password content
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = confirmValue,
                         onValueChange = {
                             onConfirmFieldValueChange.invoke(it)
                             confirmValueError.value = !it.text.passwordChecker()
                         },
-                        label = stringResource(R.string.confirm_new_password)
+                        label = stringResource(R.string.confirm_new_password),
+                        fontFamily = iosFont
                     )
                     if (passwordFieldValue.text != confirmValue.text){
                         Text(
                             text = stringResource(R.string.passwords_does_not_matches),
-                            color = quaternaryColor,
+                            color = fiveColor,
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
                     Spacer(Modifier.height(10.dp))
@@ -262,7 +273,7 @@ fun RegistrationScreen(
                             .fillMaxWidth()
                             .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = quaternaryColor
+                            containerColor = fiveColor
                         ),
                         shape = RoundedCornerShape(10.dp),
                         onClick = {
@@ -324,7 +335,8 @@ fun RegistrationScreen(
                             text = stringResource(R.string.continue_),
                             color = Color.White,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
                     if (!isPasswordForgotten.value) {
@@ -334,7 +346,8 @@ fun RegistrationScreen(
                             Text(
                                 text = stringResource(R.string.i_have_an_account),
                                 color = tertiaryColor,
-                                fontSize = 16.sp
+                                fontSize = 16.sp,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -356,19 +369,23 @@ fun RegistrationScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.the_field_must_contains_next_steps),
-                            color = if (
-                                passwordFieldValue.text.length >= 8 &&
-                                passwordFieldValue.text.capitalizeChecker() &&
-                                passwordFieldValue.text.lowercaseChecker() &&
-                                passwordFieldValue.text.digitChecker() &&
-                                passwordFieldValue.text.symbolChecker()
-                            ) {
-                                fiverdColor
-                            } else {
-                                quaternaryColor
-                            },
+                            color = fiveColor,
+                            style = TextStyle(
+                                textDecoration = if (
+                                    passwordFieldValue.text.length >= 8 &&
+                                    passwordFieldValue.text.capitalizeChecker() &&
+                                    passwordFieldValue.text.lowercaseChecker() &&
+                                    passwordFieldValue.text.digitChecker() &&
+                                    passwordFieldValue.text.symbolChecker()
+                                ){
+                                    TextDecoration.LineThrough
+                                }else{
+                                    TextDecoration.None
+                                }
+                            ),
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
                     Column(
@@ -379,33 +396,68 @@ fun RegistrationScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.minimum_8_symbols),
-                            color = if (passwordFieldValue.text.length < 8) quaternaryColor else fiverdColor,
+                            color =   fiveColor,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            style = TextStyle(
+                                textDecoration = if (passwordFieldValue.text.length < 8)
+                                    TextDecoration.None
+                                else
+                                    TextDecoration.LineThrough
+                            ),
+                            fontFamily = iosFont
                         )
                         Text(
                             text = stringResource(R.string.at_least_one_capital_letter),
-                            color = if (passwordFieldValue.text.capitalizeChecker()) fiverdColor else quaternaryColor,
+                            color =  fiveColor,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            style = TextStyle(
+                                textDecoration = if (passwordFieldValue.text.capitalizeChecker())
+                                    TextDecoration.LineThrough
+                                else
+                                    TextDecoration.None
+                            ),
+                            fontFamily = iosFont
                         )
                         Text(
                             text = stringResource(R.string.at_least_one_lowercase_letter),
-                            color = if (passwordFieldValue.text.lowercaseChecker()) fiverdColor else quaternaryColor,
+                            color = fiveColor,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            style = TextStyle(
+                                textDecoration = if (passwordFieldValue.text.lowercaseChecker())
+                                    TextDecoration.LineThrough
+                                else
+                                    TextDecoration.None
+                            ),
+                            fontFamily = iosFont
                         )
                         Text(
                             text = stringResource(R.string.at_least_one_digit),
-                            color = if (passwordFieldValue.text.digitChecker()) fiverdColor else quaternaryColor,
+                            color = fiveColor,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            style = TextStyle(
+                                textDecoration = if (passwordFieldValue.text.digitChecker())
+                                    TextDecoration.LineThrough
+                                else
+                                    TextDecoration.None
+                            ),
+                            fontFamily = iosFont
                         )
                         Text(
                             text = stringResource(R.string.at_least_one_special_character_from_the_set),
-                            color = if (passwordFieldValue.text.symbolChecker()) fiverdColor else quaternaryColor,
+                            color =  fiveColor,
                             fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            style = TextStyle(
+                                textDecoration = if (passwordFieldValue.text.symbolChecker())
+                                    TextDecoration.LineThrough
+                                else
+                                    TextDecoration.None
+                            ),
+                            fontFamily = iosFont
                         )
                     }
                 }

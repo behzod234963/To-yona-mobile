@@ -51,16 +51,16 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = ScreensRouter.MainScreen.route
-//            when {
-//                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
-//                isFirstTime -> ScreensRouter.OnboardingScreen.route
-//                !isLoggedIn -> ScreensRouter.LoginScreen.route
-//                isProfileSettingsState -> ScreensRouter.ProfileScreen.route
-//                newPinState -> ScreensRouter.NewPinScreen.route
-//                isThemeChanged -> ScreensRouter.MainScreen.route
-//                else -> ScreensRouter.EnterScreen.route
-//            }
+        startDestination =
+            when {
+                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
+                isFirstTime -> ScreensRouter.OnboardingScreen.route
+                !isLoggedIn -> ScreensRouter.LoginScreen.route
+                isProfileSettingsState -> ScreensRouter.ProfileScreen.route
+                newPinState -> ScreensRouter.NewPinScreen.route
+                isThemeChanged -> ScreensRouter.MainScreen.route
+                else -> ScreensRouter.EnterScreen.route
+            }
     ) {
         composable(ScreensRouter.WelcomeScreen.route) {
             WelcomeScreen(navController)

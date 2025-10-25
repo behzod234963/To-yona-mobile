@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +49,8 @@ fun OnBoardingPager(
     secondaryColor: Color,
     tertiaryColor:Color,
     quaternaryColor:Color,
-    onFinish:()-> Unit
+    onFinish:()-> Unit,
+    fontFamily: FontFamily
 ) {
 
     val context = LocalContext.current
@@ -129,7 +131,8 @@ fun OnBoardingPager(
                         text = if (currentLocale.contains("русский") && page == 0 ) stringResource(R.string.be_line) else descriptions[page] ,
                         color = secondaryColor,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 if (page == 0) {
@@ -143,7 +146,8 @@ fun OnBoardingPager(
                             text = if (currentLocale.contains("русский")) stringResource(R.string.happiness_days_of_your_friends) else stringResource(R.string.be_line) ,
                             color = secondaryColor,
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                 }

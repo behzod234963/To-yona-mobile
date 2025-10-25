@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.NotificationsModel
@@ -24,13 +25,17 @@ fun NotificationsScreen(
     navController: NavController
 ) {
 
+//    Context
     val context = LocalContext.current
 
+//    Object
     val sharedPreferences = SharedPreferencesInstance(context)
 
+//    Boolean
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
+//    Colors
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {
@@ -45,13 +50,14 @@ fun NotificationsScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
-    val tertiaryColor = when {
-        isSystemTheme -> systemTertiaryColor
-        isDarkTheme -> Color.DarkGray
-        else -> Color.LightGray
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
     }
 
+//    List
     val notifications = listOf(
         NotificationsModel(
             id = 1,
@@ -67,6 +73,7 @@ fun NotificationsScreen(
         )
     )
 
+//    UI
     Scaffold(
         topBar = {
             NotificationsTopBar(
@@ -84,11 +91,12 @@ fun NotificationsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(10.dp)
         ) {
             items(notifications){notification->
                 NotificationsItem(
                     secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
+                    nineColor = nineColor,
                     notification = notification
                 )
             }

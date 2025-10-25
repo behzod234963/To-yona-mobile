@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,14 +51,15 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomTextField(
     secondaryColor: Color,
-    eightrdColor: Color,
+    eightColor: Color,
     keyboardType: KeyboardType,
     imeAction: ImeAction,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
-    visualTransformation: VisualTransformation
+    visualTransformation: VisualTransformation,
+    fontFamily: FontFamily
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -76,7 +78,8 @@ fun CustomTextField(
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamily
         ),
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType,
@@ -101,7 +104,7 @@ fun CustomTextField(
             Box(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-                    .background(eightrdColor)
+                    .background(eightColor)
                     .height(62.dp)
             ) {
                 Row(
@@ -143,7 +146,7 @@ fun CustomTextField(
                             text = label,
                             color = secondaryColor,
                             fontSize = animPlaceholderFontSize.sp,
-                            fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
+                            fontFamily = fontFamily,
                             overflow = TextOverflow.Ellipsis
                         )
                         Spacer(Modifier.height(10.dp))

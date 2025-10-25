@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -58,12 +59,13 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun CustomPasswordTextField(
     secondaryColor: Color,
-    eightrdColor: Color,
+    eightColor: Color,
     imeAction: ImeAction,
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     label: String,
     @DrawableRes icon: Int? = null,
+    fontFamily : FontFamily
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -97,14 +99,15 @@ fun CustomPasswordTextField(
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamily
         ),
         cursorBrush = SolidColor(secondaryColor),
         decorationBox = { innerTextField ->
             Row (
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-                    .background(eightrdColor)
+                    .background(eightColor)
                     .height(62.dp)
             ){
                 icon?.let {
@@ -142,7 +145,7 @@ fun CustomPasswordTextField(
                         text = label,
                         color = secondaryColor,
                         fontSize = animPlaceholderFontSize.sp,
-                        fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
+                        fontFamily = fontFamily,
                         overflow = TextOverflow.Ellipsis
                     )
                     Box(

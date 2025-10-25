@@ -18,10 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.onBoardingScreen.components.OnBoardingPager
@@ -70,7 +73,7 @@ fun OnboardingScreen(
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
-    val quaternaryColor = Color.Red
+    val fiveColor = Color(101, 163, 119, 255)
 
 //    State
     val primaryLocale = remember { mutableStateOf(Locale.getDefault().language) }
@@ -94,6 +97,9 @@ fun OnboardingScreen(
         initialPage = 0,
         pageCount = { 3 }
     )
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
+
     BackHandler(
         enabled = true
     ) {
@@ -106,7 +112,7 @@ fun OnboardingScreen(
         topBar = {
             OnBoardingTopBar(
                 primaryColor = primaryColor,
-                quaternaryColor = quaternaryColor
+                quaternaryColor = fiveColor
             ) {
                 sharedPreferences.saveFirstTimeState(false)
                 navController.navigate(ScreensRouter.LoginScreen.route) {
@@ -124,19 +130,20 @@ fun OnboardingScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OnBoardingPager(
+                state = pagerState,
                 onPageState = {
                     page.intValue = it
                 },
                 secondaryColor = secondaryColor,
-                state = pagerState,
                 tertiaryColor = tertiaryColor,
-                quaternaryColor = quaternaryColor,
+                quaternaryColor = fiveColor,
+                fontFamily = iosFont,
                 onFinish = {
                     sharedPreferences.saveFirstTimeState(false)
                     navController.navigate(ScreensRouter.LoginScreen.route) {
                         popUpTo(ScreensRouter.OnboardingScreen.route) { inclusive = true }
                     }
-                }
+                },
             )
         }
     }

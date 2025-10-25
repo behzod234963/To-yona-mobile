@@ -80,15 +80,19 @@ fun AddPartyScreen(
     viewModel: AddPartyViewModel = hiltViewModel()
 ) {
 
+//    Context
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+//    Object
 //    val calendarInstance = Calendar.getInstance()
     val sharedPreferences = SharedPreferencesInstance(context)
+
 
     val isDarkTheme = sharedPreferences.getDarkThemeState()
     val isSystemTheme = sharedPreferences.getSystemThemeState()
 
+//    Color
     val systemPrimaryColor = if (isSystemInDarkTheme()) Color.Black else Color.White
     val primaryColor = when {
         isSystemTheme -> {

@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -101,7 +103,7 @@ fun LogInScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val quaternaryColor = Color.Red
+    val fiveColor = Color(101, 163, 119, 255)
     val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
     val tertiaryColor = when {
         isSystemTheme -> systemTertiaryColor
@@ -131,6 +133,7 @@ fun LogInScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val isSnackbarShown = remember { mutableStateOf(false) }
     val isLoginSuccess = viewModel.isLoginSuccess
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     BackHandler {
         activityContext?.finish()
@@ -161,6 +164,7 @@ fun LogInScreen(
                         text = stringResource(R.string.log_in),
                         color = secondaryColor,
                         fontSize = 22.sp,
+                        fontFamily = iosFont,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(10.dp))
@@ -171,6 +175,7 @@ fun LogInScreen(
                         text = stringResource(R.string.login_instruction),
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = iosFont
                     )
                 }
                 Spacer(Modifier.height(10.dp))
@@ -185,7 +190,7 @@ fun LogInScreen(
                 ) {
                     CustomTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
                         value = phoneFieldValue.value,
@@ -195,27 +200,28 @@ fun LogInScreen(
                         },
                         label = stringResource(R.string.enter_your_phone_number),
                         visualTransformation = PhoneNumberVisualTransformation(),
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
                     CustomPasswordTextField(
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         imeAction = ImeAction.Done,
                         value = passwordFieldValue,
                         onValueChange = {
                             onPasswordFieldValueChange.invoke(it)
                             passwordValueError.value = !it.text.passwordChecker()
                         },
-                        label = stringResource(R.string.password)
+                        label = stringResource(R.string.password),
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(horizontal = 10.dp),
+                            .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = quaternaryColor
+                            containerColor = fiveColor
                         ),
                         shape = RoundedCornerShape(15.dp),
                         onClick = {
@@ -245,7 +251,8 @@ fun LogInScreen(
                             text = stringResource(R.string.continue_),
                             color = Color.White,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
                     Spacer(Modifier.height(10.dp))
@@ -258,7 +265,9 @@ fun LogInScreen(
                         Text(
                             text = stringResource(R.string.i_have_no_account),
                             color = tertiaryColor,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
+                            fontFamily = iosFont,
+                            fontWeight = FontWeight.SemiBold,
                         )
                     }
 //                    Forgot password
@@ -284,7 +293,8 @@ fun LogInScreen(
                         Text(
                             text = stringResource(R.string.forgot_password),
                             color = tertiaryColor,
-                            fontSize = 16.sp
+                            fontSize = 16.sp,
+                            fontFamily = iosFont
                         )
                     }
                 }

@@ -111,7 +111,7 @@ fun MainScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiveColor = Color.Green
+    val fiveColor = Color(101, 163, 119, 255)
     val sixColor = Color.Blue
     val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenColor = when {

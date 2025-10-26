@@ -4,12 +4,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -20,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +32,9 @@ fun EnterScreenDialog(
     secondaryColor: Color,
     tertiaryColor: Color,
     quaternaryColor: Color,
-    sixrdColor:Color,
+    sixColor:Color,
     title: String,
+    fontFamily: FontFamily,
     confirmButton:()-> Unit,
     dismissButton:()-> Unit,
     onDismissRequest:()-> Unit
@@ -64,7 +63,8 @@ fun EnterScreenDialog(
                     color = secondaryColor,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily
                 )
             }
         },
@@ -74,9 +74,10 @@ fun EnterScreenDialog(
             ) {
                 Text(
                     text = stringResource(R.string.Confirm),
-                    color = sixrdColor,
+                    color = sixColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
         },
@@ -88,7 +89,8 @@ fun EnterScreenDialog(
                     text = stringResource(R.string.Later),
                     color = quaternaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
         },
@@ -107,9 +109,10 @@ private fun PreviewEnterScreenDialog() {
         secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
         tertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray,
         quaternaryColor = Color.Red,
-        sixrdColor = Color.Blue,
+        sixColor = Color.Blue,
         title = "Barmoq izi orqali kirish yoqilsinmi?",
         confirmButton = {},
-        dismissButton = {}
+        dismissButton = {},
+        fontFamily = FontFamily(Font(R.font.ios_font))
     ) {}
 }

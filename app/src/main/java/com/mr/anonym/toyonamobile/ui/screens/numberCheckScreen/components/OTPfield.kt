@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -23,8 +25,10 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun OTPField(
-    secondaryColor: Color,
+    textColor: Color,
+    borderColor:Color,
     value: String,
+    fontFamily: FontFamily,
     onSend:()->Unit,
     onValueChange: (String) -> Unit
 ) {
@@ -38,15 +42,18 @@ fun OTPField(
     BasicTextField(
         value = value,
         onValueChange = { onValueChange(it) },
-        cursorBrush = SolidColor(secondaryColor),
+        cursorBrush = SolidColor(textColor),
         keyboardOptions = keyboardOptions,
+        textStyle = TextStyle(
+            fontFamily = fontFamily
+        ),
         keyboardActions = KeyboardActions{
             onSend()
             keyboardController?.hide()
         }
     ) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             repeat(5) { index ->
                 val number = when {
@@ -58,7 +65,7 @@ fun OTPField(
                         .size(50.dp)
                         .border(
                             width = 1.dp,
-                            color = secondaryColor,
+                            color = borderColor,
                             shape = RoundedCornerShape(10.dp)
                         ),
                     verticalArrangement = Arrangement.Center,
@@ -66,8 +73,9 @@ fun OTPField(
                 ) {
                     Text(
                         text = number.toString(),
-                        color = secondaryColor,
-                        fontSize = 16.sp
+                        color = textColor,
+                        fontSize = 16.sp,
+                        fontFamily = fontFamily
                     )
                 }
             }

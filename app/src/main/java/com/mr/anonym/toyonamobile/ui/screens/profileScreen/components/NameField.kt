@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
@@ -23,7 +24,8 @@ import com.mr.anonym.toyonamobile.R
 fun NameField(
     secondaryColor: Color,
     tertiaryColor: Color,
-    eightrdColor: Color,
+    eightColor: Color,
+    fontFamily: FontFamily,
     focusedRequester: FocusRequester,
 //    Name field properties
     nameValue: String,
@@ -45,16 +47,17 @@ fun NameField(
             .fillMaxWidth()
             .focusRequester(focusedRequester),
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = eightrdColor,
-            focusedContainerColor = eightrdColor,
-            unfocusedBorderColor = eightrdColor,
-            focusedBorderColor = eightrdColor,
+            unfocusedContainerColor = eightColor,
+            focusedContainerColor = eightColor,
+            unfocusedBorderColor = eightColor,
+            focusedBorderColor = eightColor,
             unfocusedLabelColor = tertiaryColor,
-            focusedLabelColor = eightrdColor,
+            focusedLabelColor = eightColor,
         ),
         textStyle = TextStyle(
             color = secondaryColor,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            fontFamily = fontFamily
         ),
         trailingIcon = {
             IconButton(
@@ -72,14 +75,16 @@ fun NameField(
         supportingText = {
             if (nameValueError) {
                 Text(
-                    text = stringResource(R.string.phone_number_error)
+                    text = stringResource(R.string.phone_number_error),
+                    fontFamily = fontFamily
                 )
             }
         },
         placeholder = {
             Text(
                 text = stringResource(R.string.firstname),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                fontFamily = fontFamily
             )
         },
         isError = nameValueError,
@@ -94,15 +99,16 @@ fun NameField(
             .fillMaxWidth(),
         textStyle = TextStyle(
             color = secondaryColor,
-            fontSize = 16.sp
+            fontSize = 16.sp,
+            fontFamily = fontFamily
         ),
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = eightrdColor,
-            focusedContainerColor = eightrdColor,
-            unfocusedBorderColor = eightrdColor,
-            focusedBorderColor = eightrdColor,
+            unfocusedContainerColor = eightColor,
+            focusedContainerColor = eightColor,
+            unfocusedBorderColor = eightColor,
+            focusedBorderColor = eightColor,
             unfocusedLabelColor = tertiaryColor,
-            focusedLabelColor = eightrdColor,
+            focusedLabelColor = eightColor,
         ),
         trailingIcon = {
             IconButton(
@@ -120,7 +126,8 @@ fun NameField(
         supportingText = {
             if (surnameValueError) {
                 Text(
-                    text = stringResource(R.string.phone_number_error)
+                    text = stringResource(R.string.phone_number_error),
+                    fontFamily = fontFamily
                 )
             }
         },
@@ -128,7 +135,7 @@ fun NameField(
             Text(
                 text = stringResource(R.string.lastname),
                 fontSize = 16.sp,
-//                color = secondaryColor
+                fontFamily = fontFamily
             )
         },
         isError = surnameValueError,

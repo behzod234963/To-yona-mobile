@@ -112,7 +112,7 @@ fun OnboardingScreen(
         topBar = {
             OnBoardingTopBar(
                 primaryColor = primaryColor,
-                quaternaryColor = fiveColor
+                fiveColor = fiveColor
             ) {
                 sharedPreferences.saveFirstTimeState(false)
                 navController.navigate(ScreensRouter.LoginScreen.route) {
@@ -136,7 +136,7 @@ fun OnboardingScreen(
                 },
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
-                quaternaryColor = fiveColor,
+                fiveColor = fiveColor,
                 fontFamily = iosFont,
                 onFinish = {
                     sharedPreferences.saveFirstTimeState(false)

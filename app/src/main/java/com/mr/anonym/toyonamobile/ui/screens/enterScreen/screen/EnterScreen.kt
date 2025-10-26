@@ -36,6 +36,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,7 +78,6 @@ fun EnterScreen(
         isSystemTheme -> {
             systemPrimaryColor
         }
-
         isDarkTheme -> Color.Black
         else -> Color.White
     }
@@ -93,7 +94,7 @@ fun EnterScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiveColor = Color.Green
+    val fiveColor = Color(101, 163, 119, 255)
     val sixColor = Color.Blue
     val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenColor = when {
@@ -101,6 +102,8 @@ fun EnterScreen(
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val isBiometricAuthOn = sharedPreferences.getIsBiometricAuthOn()
     val showBiometricSettings = remember { mutableStateOf(false) }
@@ -136,6 +139,7 @@ fun EnterScreen(
             }
         }
     }
+
     Scaffold(
         containerColor = primaryColor,
         contentColor = primaryColor
@@ -157,7 +161,8 @@ fun EnterScreen(
                         text = stringResource(R.string.enter_your_pin_code),
                         color = secondaryColor,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(20.dp))
                     Row(
@@ -292,7 +297,8 @@ fun EnterScreen(
                                     text = "1",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -323,7 +329,8 @@ fun EnterScreen(
                                     text = "2",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -349,7 +356,8 @@ fun EnterScreen(
                                     text = "3",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -386,7 +394,8 @@ fun EnterScreen(
                                     text = "4",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -412,7 +421,8 @@ fun EnterScreen(
                                     text = "5",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -438,7 +448,8 @@ fun EnterScreen(
                                     text = "6",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -475,7 +486,8 @@ fun EnterScreen(
                                     text = "7",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -501,7 +513,8 @@ fun EnterScreen(
                                     text = "8",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -527,7 +540,8 @@ fun EnterScreen(
                                     text = "9",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -580,8 +594,9 @@ fun EnterScreen(
                                 secondaryColor = secondaryColor,
                                 tertiaryColor = tertiaryColor,
                                 quaternaryColor = quaternaryColor,
-                                sixrdColor = sixColor,
+                                sixColor = sixColor,
                                 title = stringResource(R.string.allow_fingerprint),
+                                fontFamily = iosFont,
                                 confirmButton = {
                                     sharedPreferences.saveIsBiometricAuthOn(true)
                                     showBiometricSettings.value = false
@@ -594,17 +609,16 @@ fun EnterScreen(
                                     }
                                     sharedPreferences.saveIsBiometricAuthOn(false)
                                     showBiometricSettings.value = false
-                                },
-                                onDismissRequest = {
-                                    coroutineScope.launch {
-                                        dataStore.showBiometricAuthManually(
-                                            false
-                                        )
-                                    }
-                                    sharedPreferences.saveIsBiometricAuthOn(false)
-                                    showBiometricSettings.value = false
                                 }
-                            )
+                            ) {
+                                coroutineScope.launch {
+                                    dataStore.showBiometricAuthManually(
+                                        false
+                                    )
+                                }
+                                sharedPreferences.saveIsBiometricAuthOn(false)
+                                showBiometricSettings.value = false
+                            }
                         }
 //                    0
                         Card(
@@ -633,7 +647,8 @@ fun EnterScreen(
                                     text = "0",
                                     color = secondaryColor,
                                     fontSize = 25.sp,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
                                 )
                             }
                         }
@@ -680,7 +695,8 @@ fun EnterScreen(
                                 text = stringResource(R.string.forgot_pin_code),
                                 color = tertiaryColor,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -719,7 +735,8 @@ fun EnterScreen(
                             color = quaternaryColor,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            fontFamily = iosFont
                         )
                         Spacer(Modifier.height(10.dp))
                         Text(
@@ -727,7 +744,8 @@ fun EnterScreen(
                             color = secondaryColor,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            fontFamily = iosFont
                         )
                     }
                 }

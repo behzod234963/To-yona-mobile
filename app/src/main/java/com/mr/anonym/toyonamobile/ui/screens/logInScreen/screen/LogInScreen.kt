@@ -3,7 +3,10 @@ package com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -27,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,7 +45,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -60,6 +61,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.passwordChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
+import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
 import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
 import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.viewModel.LoginViewModel
@@ -133,6 +135,11 @@ fun LogInScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val isSnackbarShown = remember { mutableStateOf(false) }
     val isLoginSuccess = viewModel.isLoginSuccess
+
+    val buttonInteractionSource = remember { MutableInteractionSource() }
+    val isButtonContinuePressed by buttonInteractionSource.collectIsPressedAsState()
+    val buttonContinueScale by animateFloatAsState( if (isButtonContinuePressed) 0.95f else 1f )
+
     val iosFont = FontFamily(Font(R.font.ios_font))
 
     BackHandler {
@@ -215,15 +222,11 @@ fun LogInScreen(
                         label = stringResource(R.string.password),
                         fontFamily = iosFont
                     )
-                    Spacer(Modifier.height(10.dp))
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = fiveColor
-                        ),
-                        shape = RoundedCornerShape(15.dp),
+                    Spacer(Modifier.height(20.dp))
+                    ButtonPressableEffect(
+                        buttonColor = fiveColor,
+                        interactionSource = buttonInteractionSource,
+                        scale = buttonContinueScale,
                         onClick = {
                             if (
                                 phoneFieldValue.value.text.isNotEmpty() &&
@@ -358,13 +361,4 @@ fun LogInScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewLoginScreen() {
-    LogInScreen(
-        navController = NavController(LocalContext.current),
-        viewModel = hiltViewModel()
-    )
 }

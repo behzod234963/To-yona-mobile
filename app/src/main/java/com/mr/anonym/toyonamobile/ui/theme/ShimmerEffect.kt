@@ -104,27 +104,10 @@ fun ShimmerEffectForProfile() {
         Spacer(Modifier.height(50.dp))
         Box(
             modifier = Modifier
-                .size(70.dp)
-                .clip(CircleShape)
+                .fillMaxWidth()
+                .height(170.dp)
+                .clip(RoundedCornerShape(15.dp))
                 .background(brush)
-        )
-        Spacer(Modifier.height(30.dp))
-        Box(
-            modifier = Modifier
-                .height(25.dp)
-                .width(400.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(brush)
-                .padding(horizontal = 10.dp)
-        )
-        Spacer(Modifier.height(7.dp))
-        Box(
-            modifier = Modifier
-                .height(23.5.dp)
-                .width(400.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(brush)
-                .padding(horizontal = 10.dp, vertical = 5.dp)
         )
         Spacer(Modifier.height(20.dp))
         Box(

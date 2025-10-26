@@ -1,7 +1,10 @@
 package com.mr.anonym.toyonamobile.ui.screens.registrationScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,8 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +66,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.symbolChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
+import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
 import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
 import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import kotlinx.coroutines.Dispatchers
@@ -141,6 +144,10 @@ fun RegistrationScreen(
     val (confirmValue, onConfirmFieldValueChange) = remember { mutableStateOf(TextFieldValue()) }
     val confirmValueError = remember { mutableStateOf(false) }
 
+    val buttonContinueInteractionSource = remember { MutableInteractionSource() }
+    val isButtonContinuePressed by buttonContinueInteractionSource.collectIsPressedAsState()
+    val buttonContinueScale by animateFloatAsState( if (isButtonContinuePressed) 0.95f else 1f )
+
     val iosFont = FontFamily(Font(R.font.ios_font))
 
     Scaffold(
@@ -156,7 +163,7 @@ fun RegistrationScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(10.dp),
-            ) {
+            ){
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -195,7 +202,7 @@ fun RegistrationScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
                         .padding(10.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -209,6 +216,7 @@ fun RegistrationScreen(
                         onValueChange = {
                             phoneFieldValue.value = it
                             phoneFieldError.value = !it.text.phoneChecker()
+                            showPhoneErrorContent.value = false
                         },
                         label = stringResource(R.string.enter_your_phone_number),
                         visualTransformation = PhoneNumberVisualTransformation(),
@@ -225,10 +233,11 @@ fun RegistrationScreen(
                                 text = stringResource(R.string.phone_number_error),
                                 color = fiveColor,
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
-                        if ( !phoneFieldError.value ) showPhoneErrorContent.value = false
+                        if ( !phoneFieldError.value ) showPhoneErrorContent.value = true
                     }
                     Spacer(Modifier.height(10.dp))
 //                    Password content
@@ -268,14 +277,10 @@ fun RegistrationScreen(
                         )
                     }
                     Spacer(Modifier.height(10.dp))
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = fiveColor
-                        ),
-                        shape = RoundedCornerShape(10.dp),
+                    ButtonPressableEffect(
+                        buttonColor = fiveColor,
+                        interactionSource = buttonContinueInteractionSource,
+                        scale = buttonContinueScale,
                         onClick = {
                             when {
                                 !isPasswordForgotten.value &&
@@ -358,7 +363,7 @@ fun RegistrationScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
                         .padding(10.dp)
                 ){
                     Column(
@@ -369,7 +374,7 @@ fun RegistrationScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.the_field_must_contains_next_steps),
-                            color = fiveColor,
+                            color = fiveColor ,
                             style = TextStyle(
                                 textDecoration = if (
                                     passwordFieldValue.text.length >= 8 &&

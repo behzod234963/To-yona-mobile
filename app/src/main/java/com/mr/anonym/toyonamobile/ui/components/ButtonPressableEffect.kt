@@ -36,7 +36,7 @@ fun ButtonPressableEffect(
                 interactionSource = interactionSource,
                 onClick = onClick
             )
-            .background(buttonColor, RoundedCornerShape(15.dp))
+            .background(buttonColor, RoundedCornerShape(10.dp))
             .padding(horizontal = 10.dp),
         contentAlignment = Alignment.Center
     ){

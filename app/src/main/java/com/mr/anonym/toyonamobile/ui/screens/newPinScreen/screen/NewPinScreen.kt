@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,8 +80,10 @@ fun NewPinScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiveColor = Color.Green
+    val fiveColor = Color(101, 163, 119, 255)
     val sixColor = Color.Blue
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val changePinProcessState = sharedPreferences.changePinProcessState()
 
@@ -126,14 +130,14 @@ fun NewPinScreen(
         containerColor = primaryColor,
         contentColor = primaryColor
     ) { paddingValues ->
-
         if (isPinCodeSetCompleted.value) {
             EnterScreenDialog(
                 secondaryColor = secondaryColor,
                 tertiaryColor = tertiaryColor,
                 quaternaryColor = quaternaryColor,
-                sixrdColor = sixColor,
+                sixColor = sixColor,
                 title = stringResource(R.string.allow_fingerprint),
+                fontFamily = iosFont,
                 confirmButton = {
                     sharedPreferences.saveNewPinState(false)
                     sharedPreferences.saveIsBiometricAuthOn(true)
@@ -149,16 +153,15 @@ fun NewPinScreen(
                     navController.navigate(ScreensRouter.MainScreen.route){
                         popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
                     }
-                },
-                onDismissRequest = {
-                    sharedPreferences.saveNewPinState(false)
-                    isPinCodeSetCompleted.value = false
-                    sharedPreferences.saveIsBiometricAuthOn(false)
-                    navController.navigate(ScreensRouter.MainScreen.route){
-                        popUpTo(ScreensRouter.NewPinScreen.route ){ inclusive = true }
-                    }
                 }
-            )
+            ) {
+                sharedPreferences.saveNewPinState(false)
+                isPinCodeSetCompleted.value = false
+                sharedPreferences.saveIsBiometricAuthOn(false)
+                navController.navigate(ScreensRouter.MainScreen.route) {
+                    popUpTo(ScreensRouter.NewPinScreen.route) { inclusive = true }
+                }
+            }
         }
         Column(
             modifier = Modifier
@@ -177,14 +180,16 @@ fun NewPinScreen(
                         text = stringResource(R.string.new_pin),
                         color = secondaryColor,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont,
                     )
                 } else {
                     Text(
                         text = stringResource(R.string.confirm_new_pin_code),
                         color = secondaryColor,
                         fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont
                     )
                 }
                 Spacer(Modifier.height(30.dp))
@@ -423,7 +428,8 @@ fun NewPinScreen(
                                 text = "1",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -458,7 +464,8 @@ fun NewPinScreen(
                                 text = "2",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -492,7 +499,8 @@ fun NewPinScreen(
                                 text = "3",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -539,7 +547,8 @@ fun NewPinScreen(
                                 text = "4",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -575,7 +584,8 @@ fun NewPinScreen(
                                 text = "5",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -609,7 +619,8 @@ fun NewPinScreen(
                                 text = "6",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -654,7 +665,8 @@ fun NewPinScreen(
                                 text = "7",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -688,7 +700,8 @@ fun NewPinScreen(
                                 text = "8",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -722,7 +735,8 @@ fun NewPinScreen(
                                 text = "9",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -775,7 +789,8 @@ fun NewPinScreen(
                                 text = "0",
                                 color = secondaryColor,
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
                     }

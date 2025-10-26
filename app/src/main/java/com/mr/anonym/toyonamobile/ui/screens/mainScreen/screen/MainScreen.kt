@@ -35,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -139,6 +141,8 @@ fun MainScreen(
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val smallFontSize = remember { mutableIntStateOf(14) }
 

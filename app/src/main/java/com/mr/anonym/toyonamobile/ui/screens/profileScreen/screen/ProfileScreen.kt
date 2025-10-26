@@ -8,8 +8,8 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +23,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -42,6 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,7 +66,6 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformat
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
-import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.ProfileTopBar
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
 import com.mr.anonym.toyonamobile.ui.theme.ShimmerEffectForProfile
 import kotlinx.coroutines.Dispatchers
@@ -101,13 +104,15 @@ fun ProfileScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val quaternaryColor = Color.Red
+    val fiveColor = Color(101, 163, 119, 255)
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
     val nineColor = when{
         isSystemTheme -> systemNineColor
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val isOldUserState = dataStore.isOldUserState().collectAsState(false)
     val editProfileProcess = sharedPreferences.editProfileProcessState()
@@ -136,18 +141,12 @@ fun ProfileScreen(
         isLoading.value = false
         focusRequester.requestFocus()
     }
+
     Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         modifier = Modifier
             .imePadding(),
-        topBar = {
-            ProfileTopBar(
-                primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
-                onNavigationClick = { navController.navigateUp() }
-            )
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         if (!isSendResponse.value) {
@@ -159,55 +158,95 @@ fun ProfileScreen(
                 if (isLoading.value) {
                     ShimmerEffectForProfile()
                 } else {
+                    Spacer(Modifier.height(10.dp))
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .padding(10.dp)
-                            .background(color = nineColor, shape = RoundedCornerShape(15.dp))
+                            .padding(horizontal = 10.dp, vertical = 5.dp)
+                            .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
                             .padding(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Card(
+                        Row (
                             modifier = Modifier
-                                .size(90.dp),
-                            shape = CircleShape,
-                            onClick = {
-                                showAvatarContent.value = true
+                                .fillMaxWidth()
+                                .padding(top = 10.dp),
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            IconButton(
+                                onClick = { navController.navigateUp() }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_back),
+                                    tint = secondaryColor,
+                                    contentDescription = ""
+                                )
                             }
-                        ) {
-                            Image(
-                                painter = painterResource(avatar.value),
-                                contentDescription = "man"
-                            )
+                            Column (
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ){
+                                Card(
+                                    modifier = Modifier
+                                        .size(90.dp),
+                                    shape = CircleShape,
+                                    onClick = {
+                                        showAvatarContent.value = true
+                                    }
+                                ) {
+                                    Image(
+                                        painter = painterResource(avatar.value),
+                                        contentDescription = "man"
+                                    )
+                                }
+                                Spacer(Modifier.height(10.dp))
+                                Text(
+                                    text = "${firstname.value} ${lastname.value}",
+                                    color = secondaryColor,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
+                                )
+                                Text(
+                                    text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
+                                    color = secondaryColor,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 16.sp,
+                                    fontFamily = iosFont
+                                )
+                            }
+                            IconButton(
+                                onClick = { showAvatarContent.value = true }
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_edit),
+                                    tint = secondaryColor,
+                                    contentDescription = ""
+                                )
+                            }
                         }
-                        Spacer(Modifier.height(10.dp))
-                        Text(
-                            text = "${firstname.value} ${lastname.value}",
-                            color = secondaryColor,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
-                            color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp
-                        )
                     }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .fillMaxHeight(0.6f)
-                            .padding(horizontal = 10.dp),
+                            .wrapContentHeight()
+                            .padding(vertical = 5.dp, horizontal = 10.dp)
+                            .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                            .padding(10.dp),
                     ) {
                         NameField(
                             secondaryColor = secondaryColor,
                             tertiaryColor = nineColor,
-                            eightrdColor = nineColor,
+                            eightColor = nineColor,
+                            fontFamily = iosFont
 //                    Firstname field properties
+                            ,
+                            focusedRequester = focusRequester,
                             nameValue = firstname.value,
+                            //                    Lastname field properties
                             onNameValueChange = {
                                 viewModel.onEvent(ProfileEvent.ChangeFirstname(it))
                                 nameValueError.value = !it.nameChecker()
@@ -219,7 +258,6 @@ fun ProfileScreen(
                                     )
                                 )
                             },
-                            //                    Lastname field properties
                             nameValueError = nameValueError.value,
                             surnameValue = lastname.value,
                             onSurnameValueChange = {
@@ -227,19 +265,17 @@ fun ProfileScreen(
                                 lastnameValueError.value = !it.nameChecker()
                             },
                             surnameValueError = lastnameValueError.value,
-                            focusedRequester = focusRequester,
-                            onSurnameEnabledTrailingIconClick = {
-                                viewModel.onEvent(ProfileEvent.ChangeLastname(""))
-                            },
-                        )
+                        ) {
+                            viewModel.onEvent(ProfileEvent.ChangeLastname(""))
+                        }
                         Spacer(Modifier.height(10.dp))
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(50.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = quaternaryColor,
-                                contentColor = quaternaryColor,
+                                containerColor = fiveColor,
+                                contentColor = fiveColor,
                             ),
                             shape = RoundedCornerShape(10.dp),
                             onClick = {
@@ -261,16 +297,21 @@ fun ProfileScreen(
                                 text = stringResource(R.string.continue_),
                                 color = Color.White,
                                 fontSize = 16.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
+                        Spacer(Modifier.height(20.dp))
                     }
                 }
                 if (showAvatarContent.value) {
                     AvatarContent(
                         secondaryColor = secondaryColor,
                         tertiaryColor = nineColor,
+                        fiveColor = fiveColor,
                         state = bottomSheetState,
+                        fontFamily = iosFont,
+                        avatarIndex = avatarIndex.value,
                         onDismissRequest = {
                             showAvatarContent.value = false
                         },

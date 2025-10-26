@@ -1,7 +1,10 @@
 package com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,8 +21,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -30,6 +31,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
@@ -59,6 +62,7 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
+import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.viewModel.NumberCheckViewModel
 import kotlinx.coroutines.Dispatchers
@@ -101,7 +105,7 @@ fun NumberCheckScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val quaternaryColor = Color.Red
+    val fiveColor = Color(101, 163, 119, 255)
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
     val nineColor = when{
         isSystemTheme -> systemNineColor
@@ -109,13 +113,15 @@ fun NumberCheckScreen(
         else -> Color(0xFFF1F2F4)
     }
 
+    val iosFont = FontFamily(Font(R.font.ios_font))
+
 //    State
     val snackbarHostState = remember { SnackbarHostState() }
 
     val otpValue = remember { mutableStateOf("") }
     val correctValue = remember { mutableStateOf("11111") }
 
-    val timeLeft = remember { mutableIntStateOf(40) }
+    val timeLeft = remember { mutableIntStateOf(60) }
     val isRunning = remember { mutableStateOf(true) }
 
     val addCardProcess = sharedPreferences.addCardProcessState()
@@ -140,6 +146,10 @@ fun NumberCheckScreen(
     val loadingAnimation = rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.anim_loading)
     )
+
+    val buttonContinueInteractionSource = remember { MutableInteractionSource() }
+    val isButtonContinuePressed by buttonContinueInteractionSource.collectIsPressedAsState()
+    val buttonContinueScale by animateFloatAsState( if ( isButtonContinuePressed ) 0.85f else 0.90f )
 
     LaunchedEffect(isRunning.value, timeLeft.intValue) {
         while (isRunning.value && timeLeft.intValue > 0) {
@@ -168,7 +178,7 @@ fun NumberCheckScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(0.25f)
-                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
                         .padding(10.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -177,7 +187,8 @@ fun NumberCheckScreen(
                         text = stringResource(R.string.log_in),
                         color = secondaryColor,
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
@@ -187,13 +198,14 @@ fun NumberCheckScreen(
                             arguments.number.phoneNumberTransformation()
                         ),
                         color = secondaryColor,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = iosFont
                     )
                     Spacer(Modifier.height(10.dp))
                 }
                 Spacer(Modifier.height(10.dp))
-//            OTP field
+//                OTP field
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -208,13 +220,10 @@ fun NumberCheckScreen(
                         horizontalArrangement = Arrangement.Center
                     ) {
                         OTPField(
-                            secondaryColor = secondaryColor,
+                            textColor = if ( otpValue.value.length == 5 ) fiveColor else secondaryColor,
+                            borderColor = if ( otpValue.value.length == 5 ) fiveColor else secondaryColor,
                             value = otpValue.value,
-                            onValueChange = {
-                                if (it.length <= 5 && it.isDigitsOnly()) {
-                                    otpValue.value = it
-                                }
-                            },
+                            fontFamily = iosFont,
                             onSend = {
                                 if (
                                     otpValue.value.isNotEmpty() &&
@@ -288,18 +297,17 @@ fun NumberCheckScreen(
                                     }
                                 }
                             }
-                        )
+                        ) {
+                            if (it.length <= 5 && it.isDigitsOnly()) {
+                                otpValue.value = it
+                            }
+                        }
                     }
-                    Spacer(Modifier.height(30.dp))
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp)
-                            .padding(horizontal = 35.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = quaternaryColor
-                        ),
-                        shape = RoundedCornerShape(10.dp),
+                    Spacer(Modifier.height(20.dp))
+                    ButtonPressableEffect(
+                        buttonColor = fiveColor,
+                        interactionSource = buttonContinueInteractionSource,
+                        scale = buttonContinueScale,
                         onClick = {
                             if (
                                 otpValue.value.isNotEmpty() &&
@@ -378,10 +386,11 @@ fun NumberCheckScreen(
                             text = stringResource(R.string.Enter),
                             color = Color.White,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(5.dp))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -396,18 +405,23 @@ fun NumberCheckScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.change_number),
-                                color = Color.Blue,
-                                fontSize = 16.sp
+                                color = nineColor,
+                                fontSize = 16.sp,
+                                fontFamily = iosFont
                             )
                         }
                         IconButton(
-                            onClick = { navController.navigateUp() }
+                            onClick = {
+                                navController.navigate(ScreensRouter.LoginScreen.route){
+                                    popUpTo(ScreensRouter.NumberCheckScreen.route + "/${arguments.number}")
+                                }
+                            }
                         ) {
                             Icon(
                                 modifier = Modifier
                                     .size(20.dp),
                                 painter = painterResource(R.drawable.ic_edit),
-                                tint = secondaryColor,
+                                tint = nineColor,
                                 contentDescription = "change number"
                             )
                         }
@@ -421,15 +435,16 @@ fun NumberCheckScreen(
                     ) {
                         Text(
                             text = stringResource(R.string.send_again),
-                            color = secondaryColor,
-                            fontSize = 16.sp
+                            color = nineColor,
+                            fontSize = 16.sp,
+                            fontFamily = iosFont
                         )
                         Spacer(Modifier.width(10.dp))
                         if (!isRunning.value && timeLeft.intValue == 0) {
                             IconButton(
                                 onClick = {
                                     isRunning.value = true
-                                    timeLeft.intValue = 40
+                                    timeLeft.intValue = 60
                                     otpValue.value = ""
                                 }
                             ) {
@@ -438,15 +453,16 @@ fun NumberCheckScreen(
                                         .fillMaxHeight()
                                         .padding(top = 2.dp),
                                     painter = painterResource(R.drawable.ic_refresh),
-                                    tint = secondaryColor,
+                                    tint = nineColor,
                                     contentDescription = "null"
                                 )
                             }
                         } else {
                             Text(
                                 text = timeLeft.intValue.toString(),
-                                color = secondaryColor,
-                                fontSize = 16.sp
+                                color = nineColor,
+                                fontSize = 16.sp,
+                                fontFamily = iosFont
                             )
                         }
                     }
@@ -609,15 +625,4 @@ fun NumberCheckScreen(
             }
         }
     }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview
-@Composable
-private fun PreviewNCHS() {
-    NumberCheckScreen(
-        arguments = Arguments(number = "973570498"),
-        navController = NavController(LocalContext.current),
-        viewModel = hiltViewModel()
-    )
 }

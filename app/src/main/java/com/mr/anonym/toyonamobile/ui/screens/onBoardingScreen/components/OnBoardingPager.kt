@@ -48,7 +48,7 @@ fun OnBoardingPager(
     onPageState:(Int)->Unit,
     secondaryColor: Color,
     tertiaryColor:Color,
-    quaternaryColor:Color,
+    fiveColor:Color,
     onFinish:()-> Unit,
     fontFamily: FontFamily
 ) {
@@ -180,7 +180,7 @@ fun OnBoardingPager(
                             modifier = Modifier
                                 .fillMaxHeight()
                                 .fillMaxWidth(fillFraction)
-                                .background(color = quaternaryColor, shape = RoundedCornerShape(15.dp)),
+                                .background(color = fiveColor, shape = RoundedCornerShape(15.dp)),
                         )
                     }
                 }

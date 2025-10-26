@@ -20,7 +20,7 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun OnBoardingTopBar(
     primaryColor:Color,
-    quaternaryColor: Color,
+    fiveColor: Color,
     onSkipClick: () -> Unit,
 ) {
 
@@ -44,7 +44,7 @@ fun OnBoardingTopBar(
                         modifier = Modifier
                             .size(30.dp),
                         painter = painterResource(R.drawable.ic_close),
-                        tint = quaternaryColor,
+                        tint = fiveColor,
                         contentDescription = ""
                     )
                 }

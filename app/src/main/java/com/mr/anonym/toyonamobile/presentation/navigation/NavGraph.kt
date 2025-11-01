@@ -51,7 +51,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = ScreensRouter.NumberCheckScreen.route + "/+998973570498"
+        startDestination = ScreensRouter.MainScreen.route
 //            when {
 //                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
 //                isFirstTime -> ScreensRouter.OnboardingScreen.route

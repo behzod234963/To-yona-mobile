@@ -62,7 +62,7 @@ import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
+import com.mr.anonym.toyonamobile.ui.components.HorizontalButton
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.components.OTPField
 import com.mr.anonym.toyonamobile.ui.screens.numberCheckScreen.viewModel.NumberCheckViewModel
 import kotlinx.coroutines.Dispatchers
@@ -172,7 +172,9 @@ fun NumberCheckScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(10.dp),
+                verticalArrangement = Arrangement.Top
             ) {
+                Spacer(Modifier.height(50.dp))
 //                Instruction
                 Column(
                     modifier = Modifier
@@ -304,7 +306,7 @@ fun NumberCheckScreen(
                         }
                     }
                     Spacer(Modifier.height(20.dp))
-                    ButtonPressableEffect(
+                    HorizontalButton(
                         buttonColor = fiveColor,
                         interactionSource = buttonContinueInteractionSource,
                         scale = buttonContinueScale,

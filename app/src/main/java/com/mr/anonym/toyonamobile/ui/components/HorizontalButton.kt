@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonPressableEffect(
+fun HorizontalButton(
     buttonColor: Color,
     interactionSource: MutableInteractionSource,
     scale: Float,

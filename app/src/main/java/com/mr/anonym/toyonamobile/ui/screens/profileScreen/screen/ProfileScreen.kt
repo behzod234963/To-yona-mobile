@@ -2,8 +2,11 @@ package com.mr.anonym.toyonamobile.ui.screens.profileScreen.screen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +22,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -64,6 +66,7 @@ import com.mr.anonym.toyonamobile.presentation.event.ProfileEvent
 import com.mr.anonym.toyonamobile.presentation.extensions.nameChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.ui.components.HorizontalButton
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.AvatarContent
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.components.NameField
 import com.mr.anonym.toyonamobile.ui.screens.profileScreen.viewModel.ProfileViewModel
@@ -106,7 +109,7 @@ fun ProfileScreen(
     }
     val fiveColor = Color(101, 163, 119, 255)
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
-    val nineColor = when{
+    val nineColor = when {
         isSystemTheme -> systemNineColor
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
@@ -136,6 +139,10 @@ fun ProfileScreen(
     val avatarIndex = viewModel.avatarIndex
     val isSendResponse = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(true) }
+
+    val buttonContinueInteractionSource = remember { MutableInteractionSource() }
+    val isButtonContinuePressed by buttonContinueInteractionSource.collectIsPressedAsState()
+    val buttonContinueScale by animateFloatAsState(if (isButtonContinuePressed) 0.95f else 1f)
     LaunchedEffect(Unit) {
         delay(1500L)
         isLoading.value = false
@@ -169,13 +176,13 @@ fun ProfileScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Row (
+                        Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 10.dp),
                             verticalAlignment = Alignment.Top,
                             horizontalArrangement = Arrangement.SpaceBetween
-                        ){
+                        ) {
                             IconButton(
                                 onClick = { navController.navigateUp() }
                             ) {
@@ -185,10 +192,10 @@ fun ProfileScreen(
                                     contentDescription = ""
                                 )
                             }
-                            Column (
+                            Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
-                            ){
+                            ) {
                                 Card(
                                     modifier = Modifier
                                         .size(90.dp),
@@ -241,9 +248,8 @@ fun ProfileScreen(
                             secondaryColor = secondaryColor,
                             tertiaryColor = nineColor,
                             eightColor = nineColor,
-                            fontFamily = iosFont
+                            fontFamily = iosFont,
 //                    Firstname field properties
-                            ,
                             focusedRequester = focusRequester,
                             nameValue = firstname.value,
                             //                    Lastname field properties
@@ -269,15 +275,10 @@ fun ProfileScreen(
                             viewModel.onEvent(ProfileEvent.ChangeLastname(""))
                         }
                         Spacer(Modifier.height(10.dp))
-                        Button(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = fiveColor,
-                                contentColor = fiveColor,
-                            ),
-                            shape = RoundedCornerShape(10.dp),
+                        HorizontalButton(
+                            buttonColor = fiveColor,
+                            interactionSource = buttonContinueInteractionSource,
+                            scale = buttonContinueScale,
                             onClick = {
                                 if (
                                     !nameValueError.value &&
@@ -379,7 +380,6 @@ fun ProfileScreen(
                             }
                         }
                     }
-
                     editProfileProcess -> {
                         coroutineScope.launch {
                             delay(1500)
@@ -402,27 +402,37 @@ fun ProfileScreen(
                             }
                         }
                     }
-
                     else -> {
                         coroutineScope.launch {
-                            viewModel.updateUser(
-                                user = UserModelItem(
-                                    username = firstname.value,
-                                    surname = lastname.value,
-                                    sex = avatarIndex.value,
-                                    phonenumber = user.value.phonenumber,
-                                    password = user.value.password
+                            if (
+                                firstname.value.isNotEmpty() &&
+                                lastname.value.isNotEmpty()
+                            ) {
+                                viewModel.updateUser(
+                                    user = UserModelItem(
+                                        username = firstname.value,
+                                        surname = lastname.value,
+                                        sex = avatarIndex.value,
+                                        phonenumber = user.value.phonenumber,
+                                        password = user.value.password
+                                    )
                                 )
-                            )
-                            delay(1500)
-                            sharedPreferences.saveIsProfileSettingsState(false)
-                            sharedPreferences.saveNewPinState(true)
-                            withContext(Dispatchers.Main) {
-                                navController.navigate(ScreensRouter.NewPinScreen.route) {
-                                    popUpTo(ScreensRouter.ProfileScreen.route) {
-                                        inclusive = true
+                                delay(1500)
+                                sharedPreferences.saveIsProfileSettingsState(false)
+                                sharedPreferences.saveNewPinState(true)
+                                withContext(Dispatchers.Main) {
+                                    navController.navigate(ScreensRouter.NewPinScreen.route) {
+                                        popUpTo(ScreensRouter.ProfileScreen.route) {
+                                            inclusive = true
+                                        }
                                     }
                                 }
+                            }else{
+                                delay(1500)
+                                snackbarHostState.showSnackbar(
+                                    context.getString(R.string.unknown_error)
+                                )
+                                isSendResponse.value = false
                             }
                         }
                         Log.d(

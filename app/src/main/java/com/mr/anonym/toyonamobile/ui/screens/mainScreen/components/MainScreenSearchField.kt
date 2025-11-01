@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.mr.anonym.toyonamobile.R
@@ -24,8 +25,9 @@ import com.mr.anonym.toyonamobile.R
 fun MainScreenSearchField(
     modifier: Modifier,
     secondaryColor:Color,
-    eightrdColor:Color,
+    eightColor:Color,
     tertiaryColor: Color,
+    fontFamily: FontFamily,
     value: String,
     onValueChange:(String)-> Unit,
     onSearch:()-> Unit
@@ -43,16 +45,17 @@ fun MainScreenSearchField(
             onSearch()
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = eightrdColor,
-            focusedContainerColor = eightrdColor,
-            unfocusedBorderColor = eightrdColor,
-            focusedBorderColor = eightrdColor,
+            unfocusedContainerColor = eightColor,
+            focusedContainerColor = eightColor,
+            unfocusedBorderColor = eightColor,
+            focusedBorderColor = eightColor,
             unfocusedLabelColor = tertiaryColor,
-            focusedLabelColor = eightrdColor,
+            focusedLabelColor = eightColor,
         ),
         placeholder = {
             Text(
                 text = stringResource(R.string.search_from_contacts),
+                fontFamily = fontFamily
             )
         },
         leadingIcon = {

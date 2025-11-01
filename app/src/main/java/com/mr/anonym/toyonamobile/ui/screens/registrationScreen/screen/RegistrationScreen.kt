@@ -66,7 +66,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneChecker
 import com.mr.anonym.toyonamobile.presentation.extensions.symbolChecker
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.PhoneNumberVisualTransformation
-import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
+import com.mr.anonym.toyonamobile.ui.components.HorizontalButton
 import com.mr.anonym.toyonamobile.ui.components.CustomPasswordTextField
 import com.mr.anonym.toyonamobile.ui.components.CustomTextField
 import kotlinx.coroutines.Dispatchers
@@ -163,7 +163,9 @@ fun RegistrationScreen(
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(10.dp),
+                verticalArrangement = Arrangement.Top
             ){
+                Spacer(Modifier.height(50.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -277,7 +279,7 @@ fun RegistrationScreen(
                         )
                     }
                     Spacer(Modifier.height(10.dp))
-                    ButtonPressableEffect(
+                    HorizontalButton(
                         buttonColor = fiveColor,
                         interactionSource = buttonContinueInteractionSource,
                         scale = buttonContinueScale,

@@ -1,6 +1,7 @@
 package com.mr.anonym.toyonamobile.ui.screens.mainScreen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +47,9 @@ fun MainScreenModalDrawerSheet(
     secondaryColor: Color,
     tertiaryColor: Color,
     profileAvatar:Int,
+    fontFamily: FontFamily,
     viewModel: MainScreenViewModel,
+    onProfileClick:()-> Unit,
     onFriendsClick:()-> Unit,
     onMyEventsClick:()-> Unit,
     onMonitoringClick:()-> Unit,
@@ -82,7 +86,10 @@ fun MainScreenModalDrawerSheet(
             Row (
                 modifier = Modifier
                     .wrapContentWidth()
-                    .padding(top = 10.dp, bottom = 10.dp , start = 10.dp ,end = 30.dp),
+                    .padding(top = 10.dp, bottom = 10.dp , start = 10.dp ,end = 30.dp)
+                    .clickable{
+                        onProfileClick()
+                    },
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -110,13 +117,15 @@ fun MainScreenModalDrawerSheet(
                         text = "${user.value.username} ${user.value.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = "+998${user.value.phonenumber}".phoneNumberTransformation(),
                         color = secondaryColor,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
             }
@@ -136,7 +145,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.friends),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isFriendsSelected.value,
@@ -170,7 +180,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.my_events),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isMyEvents.value,
@@ -204,7 +215,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.monitoring),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isMonitoringSelected.value,
@@ -238,7 +250,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.wallet),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isWalletSelected.value,
@@ -273,7 +286,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.settings),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isSettingsSelected.value,
@@ -307,7 +321,8 @@ fun MainScreenModalDrawerSheet(
                     text = stringResource(R.string.support_help),
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             },
             selected = isSupportSelected.value,

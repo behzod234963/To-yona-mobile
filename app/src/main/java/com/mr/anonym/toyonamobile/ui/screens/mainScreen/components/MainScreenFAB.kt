@@ -12,14 +12,14 @@ import com.mr.anonym.toyonamobile.R
 
 @Composable
 fun MainScreenFAB(
-    quaternaryColor:Color,
+    fiveColor:Color,
     onFabClick:()-> Unit
 ) {
 
     FloatingActionButton(
         shape = CircleShape,
-        containerColor = quaternaryColor,
-        contentColor = quaternaryColor,
+        containerColor = fiveColor,
+        contentColor = fiveColor,
         elevation = FloatingActionButtonDefaults.elevation(10.dp),
         onClick = { onFabClick() }
     ) {

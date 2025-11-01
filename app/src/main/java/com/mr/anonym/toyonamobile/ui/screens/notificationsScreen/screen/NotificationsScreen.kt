@@ -11,11 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.NotificationsModel
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.components.NotificationsTopBar
 import com.mr.anonym.toyonamobile.ui.screens.notificationsScreen.items.NotificationsItem
 
@@ -50,12 +53,20 @@ fun NotificationsScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
+    val systemTertiaryColor = if (isSystemInDarkTheme()) Color.DarkGray else Color.LightGray
+    val tertiaryColor = when {
+        isSystemTheme -> systemTertiaryColor
+        isDarkTheme -> Color.DarkGray
+        else -> Color.LightGray
+    }
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
     val nineColor = when{
         isSystemTheme -> systemNineColor
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
 //    List
     val notifications = listOf(
@@ -79,10 +90,10 @@ fun NotificationsScreen(
             NotificationsTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationIconClick = {
-                    navController.navigateUp()
-                }
-            )
+                fontFamily = iosFont
+            ) {
+                navController.navigateUp()
+            }
         },
         contentColor = primaryColor,
         containerColor = primaryColor
@@ -96,7 +107,9 @@ fun NotificationsScreen(
             items(notifications){notification->
                 NotificationsItem(
                     secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
                     nineColor = nineColor,
+                    fontFamily = iosFont,
                     notification = notification
                 )
             }

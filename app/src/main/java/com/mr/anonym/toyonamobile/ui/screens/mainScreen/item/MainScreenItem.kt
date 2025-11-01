@@ -24,25 +24,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mr.anonym.domain.model.PartyModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
-import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
 
 @Composable
 fun MainScreenItem(
     primaryColor: Color,
     secondaryColor: Color,
     tertiaryColor: Color,
-    sevenrdColor: Color,
+    sevenColor: Color,
     smallFontSize: Int,
+    fontFamily: FontFamily,
     partyModel: PartysItem,
     userModel: UserModelItem,
     showContacts: Boolean,
@@ -58,7 +57,7 @@ fun MainScreenItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(sevenrdColor)
+                .background(sevenColor)
                 .clickable { onItemClick() },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -106,7 +105,6 @@ fun MainScreenItem(
                         )
                     }
                     Spacer(Modifier.width(2.dp))
-
                     Column(
                         modifier = Modifier,
                         verticalArrangement = Arrangement.Center
@@ -125,7 +123,8 @@ fun MainScreenItem(
                             },
                             color = secondaryColor,
                             fontSize = 17.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                         Text(
                             text = if (showContacts) {
@@ -135,7 +134,8 @@ fun MainScreenItem(
                             },
                             color = tertiaryColor,
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                 }
@@ -149,25 +149,10 @@ fun MainScreenItem(
                     text = if (showContacts) "" else "${partyModel.startTime} ${partyModel.endTime}",
                     color = secondaryColor,
                     fontSize = smallFontSize.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily
                 )
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewMainScreenItem() {
-    MainScreenItem(
-        primaryColor = Color.White,
-        secondaryColor = Color.Black,
-        tertiaryColor = Color.LightGray,
-        sevenrdColor = Color.White,
-        smallFontSize = 14,
-        partyModel = PartysItem(),
-        userModel = UserModelItem(),
-        showContacts = false,
-        onItemClick = {  }
-    )
 }

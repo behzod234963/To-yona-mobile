@@ -45,7 +45,7 @@ import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.managers.LocaleConfigurations
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
-import com.mr.anonym.toyonamobile.ui.components.ButtonPressableEffect
+import com.mr.anonym.toyonamobile.ui.components.HorizontalButton
 
 @Composable
 fun WelcomeScreen(
@@ -164,7 +164,7 @@ fun WelcomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 //                    Uzbek button
-                ButtonPressableEffect(
+                HorizontalButton(
                     buttonColor = nineColor,
                     interactionSource = uzbekButtonInteractionSource,
                     scale = uzbekButtonScale,
@@ -212,7 +212,7 @@ fun WelcomeScreen(
                 }
                 Spacer(Modifier.height(10.dp))
 //                    Russian button
-                ButtonPressableEffect(
+                HorizontalButton(
                     interactionSource = russianButtonInteractionSource,
                     scale = russianButtonScale,
                     buttonColor = nineColor,

@@ -199,7 +199,11 @@ fun MainScreen(
                     secondaryColor = secondaryColor,
                     tertiaryColor = tertiaryColor,
                     profileAvatar = profileAvatar.value,
+                    fontFamily = iosFont,
                     viewModel = viewModel,
+                    onProfileClick = {
+                        navController.navigate(ScreensRouter.SettingsScreen.route)
+                    },
                     onFriendsClick = {
                         if (drawerState.isOpen) {
                             coroutineScope.launch {
@@ -273,7 +277,7 @@ fun MainScreen(
                 contentColor = primaryColor,
                 floatingActionButton = {
                     MainScreenFAB(
-                        quaternaryColor = quaternaryColor
+                        fiveColor = fiveColor
                     ) { navController.navigate(ScreensRouter.AddPartyScreen.route + "/-1") }
                 },
                 topBar = {
@@ -306,8 +310,9 @@ fun MainScreen(
                             .padding( vertical = 5.dp)
                             .clickable { showContacts.value = true },
                         secondaryColor = secondaryColor,
-                        eightrdColor = nineColor,
+                        eightColor = nineColor,
                         tertiaryColor = tertiaryColor,
+                        fontFamily = iosFont,
                         value = searchValue.value,
                         onValueChange = {
                             showContacts.value = true
@@ -328,19 +333,20 @@ fun MainScreen(
                                     primaryColor = primaryColor,
                                     secondaryColor = secondaryColor,
                                     tertiaryColor = tertiaryColor,
-                                    sevenrdColor = sevenColor,
+                                    sevenColor = sevenColor,
                                     smallFontSize = smallFontSize.intValue,
+                                    fontFamily = iosFont,
                                     partyModel = partyModel.value,
                                     userModel = userModel,
-                                    showContacts = showContacts.value,
-                                    onItemClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${userModel.id}") }
-                                )
+                                    showContacts = showContacts.value
+                                ) { navController.navigate(ScreensRouter.DetailsScreen.route + "/${userModel.id}") }
                             }
                         }
                     } else {
                         MainScreenTabRow(
                             primaryColor = primaryColor,
                             secondaryColor = secondaryColor,
+                            fontFamily = iosFont,
                             tabs = tabs,
                             content = { contentItem ->
                                 selectedTabIndex.intValue = contentItem
@@ -359,15 +365,15 @@ fun MainScreen(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
-                                                            sevenrdColor = sevenColor,
+                                                            sevenColor = sevenColor,
                                                             smallFontSize = smallFontSize.intValue,
+                                                            fontFamily = iosFont,
                                                             partyModel = party,
                                                             userModel = user.value,
-                                                            showContacts = showContacts.value,
-                                                            onItemClick = {
-                                                                navController.navigate(ScreensRouter.DetailsScreen.route + "/${party.userId}")
-                                                            }
-                                                        )
+                                                            showContacts = showContacts.value
+                                                        ) {
+                                                            navController.navigate(ScreensRouter.DetailsScreen.route + "/${party.userId}")
+                                                        }
                                                     }
                                                 } else {
                                                     items(20) {
@@ -393,17 +399,17 @@ fun MainScreen(
                                                             primaryColor = primaryColor,
                                                             secondaryColor = secondaryColor,
                                                             tertiaryColor = tertiaryColor,
-                                                            sevenrdColor = sevenColor,
+                                                            sevenColor = sevenColor,
                                                             smallFontSize = smallFontSize.intValue,
+                                                            fontFamily = iosFont,
                                                             partyModel = model,
                                                             userModel = user.value,
-                                                            showContacts = showContacts.value,
-                                                            onItemClick = {
-                                                                navController.navigate(
-                                                                    ScreensRouter.DetailsScreen.route + "/${model.userId}"
-                                                                )
-                                                            }
-                                                        )
+                                                            showContacts = showContacts.value
+                                                        ) {
+                                                            navController.navigate(
+                                                                ScreensRouter.DetailsScreen.route + "/${model.userId}"
+                                                            )
+                                                        }
                                                     }
                                                 }
                                                 item {

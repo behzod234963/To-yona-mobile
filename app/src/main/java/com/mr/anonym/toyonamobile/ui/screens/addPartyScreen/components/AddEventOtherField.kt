@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,7 +22,8 @@ import com.mr.anonym.toyonamobile.R
 fun AddEventOtherField(
     secondaryColor: Color,
     tertiaryColor: Color,
-    eightrdColor:Color,
+    eightColor:Color,
+    fontFamily: FontFamily,
     isEventError: Boolean,
     isTitle: Boolean,
     value: String,
@@ -38,23 +40,25 @@ fun AddEventOtherField(
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamily
         ),
         placeholder = {
             Text(
                 text = if (isTitle) stringResource(R.string.title) else stringResource(R.string.enter_the_event),
-                color = tertiaryColor,
+                color = secondaryColor,
                 fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily
             )
         },
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = eightrdColor,
-            focusedContainerColor = eightrdColor,
-            unfocusedBorderColor = eightrdColor,
-            focusedBorderColor = eightrdColor,
+            unfocusedContainerColor = eightColor,
+            focusedContainerColor = eightColor,
+            unfocusedBorderColor = eightColor,
+            focusedBorderColor = eightColor,
             unfocusedLabelColor = tertiaryColor,
-            focusedLabelColor = eightrdColor,
+            focusedLabelColor = eightColor,
         ),
         leadingIcon = {
             Icon(
@@ -67,6 +71,7 @@ fun AddEventOtherField(
             if (isEventError) {
                 Text(
                     text = stringResource(R.string.the_place_must_not_be_empty),
+                    fontFamily = fontFamily
                 )
             }
         },

@@ -11,14 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
 
 @Composable
 fun AddPartyAddressField(
     secondaryColor: Color,
     tertiaryColor: Color,
-    eightrdColor:Color,
+    eightColor:Color,
+    fontFamily: FontFamily,
     value:String,
     onValueChange:(String)-> Unit,
 ) {
@@ -29,13 +34,19 @@ fun AddPartyAddressField(
         value = value,
         onValueChange = { onValueChange(it) },
         shape = RoundedCornerShape(10.dp),
+        textStyle = TextStyle(
+            fontSize = 16.sp,
+            color = secondaryColor,
+            fontFamily = fontFamily,
+            fontWeight = FontWeight.SemiBold
+        ),
         colors = OutlinedTextFieldDefaults.colors(
-            unfocusedContainerColor = eightrdColor,
-            focusedContainerColor = eightrdColor,
-            unfocusedBorderColor = eightrdColor,
-            focusedBorderColor = eightrdColor,
+            unfocusedContainerColor = eightColor,
+            focusedContainerColor = eightColor,
+            unfocusedBorderColor = eightColor,
+            focusedBorderColor = eightColor,
             unfocusedLabelColor = tertiaryColor,
-            focusedLabelColor = eightrdColor,
+            focusedLabelColor = eightColor,
         ),
         leadingIcon = {
             Icon(
@@ -47,7 +58,8 @@ fun AddPartyAddressField(
         placeholder = {
             Text(
                 text = stringResource(R.string.address),
-                color = tertiaryColor
+                color = secondaryColor,
+                fontFamily = fontFamily
             )
         }
     )

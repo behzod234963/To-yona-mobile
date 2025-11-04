@@ -3,6 +3,8 @@ package com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.screens
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -42,10 +45,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -56,13 +61,13 @@ import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.components.AddEventSetDate
-import com.mr.anonym.toyonamobile.ui.screens.addEventScreen.items.AddEventCardItem
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventFAB
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventOtherField
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventSetDate
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddEventTopBar
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.AddPartyAddressField
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.components.PartyTypeButtons
+import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.items.AddEventCardItem
 import com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.viewModel.AddPartyViewModel
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import kotlinx.coroutines.Dispatchers
@@ -114,25 +119,26 @@ fun AddPartyScreen(
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
-    val quaternaryColor = Color.Red
-    val sixrdColor = Color.Blue
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
-        isDarkTheme -> Color.Unspecified
-        else -> Color.White
-    }
-    val systemEightrdColor = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
-    val eightrdColor = when {
-        isSystemTheme -> systemEightrdColor
+    val fiveColor = Color(101, 163, 119, 255)
+    val systemEightColor =
+        if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.LightGray
+    val eightColor = when {
+        isSystemTheme -> systemEightColor
         isDarkTheme -> MaterialTheme.colorScheme.background
         else -> Color.LightGray
     }
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val isCardError = rememberSaveable { mutableStateOf(true) }
     val cards = viewModel.cards
     val cardValue = viewModel.cardValue
-    val cardModel = viewModel.card
     val scaffoldState = remember { SnackbarHostState() }
 
     val selectedEventIndex = viewModel.selectedEventIndex
@@ -193,12 +199,13 @@ fun AddPartyScreen(
     Scaffold(
         modifier = Modifier
             .imePadding(),
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         topBar = {
             AddEventTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
+                fontFamily = iosFont,
                 navigationIconClick = {
                     navController.navigate(ScreensRouter.MainScreen.route) {
                         popUpTo(ScreensRouter.AddPartyScreen.route + "/-1") { inclusive = true }
@@ -208,7 +215,7 @@ fun AddPartyScreen(
         },
         floatingActionButton = {
             AddEventFAB(
-                quaternaryColor = quaternaryColor
+                fiveColor = fiveColor
             ) {
                 viewModel.getUserById()
                 val endDateResult =
@@ -293,116 +300,138 @@ fun AddPartyScreen(
                     .padding(10.dp)
                     .verticalScroll(scrollState)
             ) {
-//                Title
-                AddEventOtherField(
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    eightrdColor = eightrdColor,
-                    isEventError = isTitleError.value,
-                    isTitle = true,
-                    value = titleValue.value,
-                    onValueChange = {
-                        viewModel.onEvent(AddEventState.ChangeTitle(it))
-                    },
-                    isValueConfirmed = false
-                )
-//                Event
-                PartyTypeButtons(
-                    primaryColor = primaryColor,
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    selectedEventIndex = selectedEventIndex.value,
-                    onItemClick = {
-                        viewModel.onEvent(AddEventState.ChangeEventIndex(it))
-                        isOtherClicked.value = it == 4
-                    }
-                )
-                Spacer(Modifier.height(10.dp))
-//                Other field
-                if (isOtherClicked.value) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(color = primaryColor,shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp)
+                ) {
+//                    Title
                     AddEventOtherField(
                         secondaryColor = secondaryColor,
                         tertiaryColor = tertiaryColor,
-                        eightrdColor = eightrdColor,
-                        isEventError = isOtherEventError.value,
-                        isTitle = false,
-                        value = otherEventValue.value,
+                        eightColor = eightColor,
+                        fontFamily = iosFont,
+                        isEventError = isTitleError.value,
+                        isTitle = true,
+                        value = titleValue.value,
                         onValueChange = {
-                            viewModel.onEvent(AddEventState.ChangeOtherField(it))
+                            viewModel.onEvent(AddEventState.ChangeTitle(it))
                         },
-                        isValueConfirmed = isValueConfirmed.value
+                        isValueConfirmed = false
                     )
-                    Spacer(Modifier.height(10.dp))
-                }
-//                Date and time value
-                Card(
-                    shape = if (isDateSet.value) {
-                        RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
-                    } else {
-                        RoundedCornerShape(10.dp)
-                    },
-                    colors = CardDefaults.cardColors(
-                        containerColor = sevenrdColor,
-                        contentColor = sevenrdColor
-                    ),
-                    elevation = CardDefaults.cardElevation(7.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+//                Event
+                    PartyTypeButtons(
+                        primaryColor = primaryColor,
+                        secondaryColor = secondaryColor,
+                        fiveColor = fiveColor,
+                        fontFamily = iosFont,
+                        selectedEventIndex = selectedEventIndex.value
                     ) {
-                        Text(
-                            text = stringResource(R.string.data_and_time),
-                            fontSize = 18.sp,
-                            color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                        viewModel.onEvent(AddEventState.ChangeEventIndex(it))
+                        isOtherClicked.value = it == 4
+                    }
+                    Spacer(Modifier.height(10.dp))
+//                Other field
+                    if (isOtherClicked.value) {
+                        AddEventOtherField(
+                            secondaryColor = secondaryColor,
+                            tertiaryColor = tertiaryColor,
+                            eightColor = eightColor,
+                            fontFamily = iosFont,
+                            isEventError = isOtherEventError.value,
+                            isTitle = false,
+                            value = otherEventValue.value,
+                            onValueChange = {
+                                viewModel.onEvent(AddEventState.ChangeOtherField(it))
+                            },
+                            isValueConfirmed = isValueConfirmed.value
                         )
-                        Row(
-                            horizontalArrangement = Arrangement.End,
-                        ) {
-                            TextButton(
-                                onClick = { showDatePicker.value = !showDatePicker.value }
-                            ) {
-                                Text(
-                                    text = if (arguments.eventID == -1) {
-                                        stringResource(R.string.set_date)
-                                    } else {
-                                        stringResource(R.string.change_date)
-                                    },
-                                    color = sixrdColor,
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-                        }
+                        Spacer(Modifier.height(10.dp))
                     }
                 }
-//                Date and time value
-                if (isDateSet.value) {
+                Spacer(Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp)
+                ) {
+//                    Date and time value
                     Card(
+                        shape = if (isDateSet.value) {
+                            RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                        } else {
+                            RoundedCornerShape(10.dp)
+                        },
                         colors = CardDefaults.cardColors(
-                            containerColor = sevenrdColor,
-                            contentColor = sevenrdColor
+                            containerColor = eightColor,
+                            contentColor = eightColor
                         ),
-                        shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp),
                         elevation = CardDefaults.cardElevation(7.dp)
                     ) {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp)
+                                .clickable{ showDatePicker.value = !showDatePicker.value },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}",
-                                modifier = Modifier
-                                    .padding(start = 10.dp),
+                                text = stringResource(R.string.data_and_time),
+                                fontSize = 18.sp,
                                 color = secondaryColor,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
-                            Spacer(Modifier.width(15.dp))
+                            Row(
+                                horizontalArrangement = Arrangement.End,
+                            ) {
+                                TextButton(
+                                    onClick = { showDatePicker.value = !showDatePicker.value }
+                                ) {
+                                    Text(
+                                        text = if (arguments.eventID == -1) {
+                                            stringResource(R.string.set_date)
+                                        } else {
+                                            stringResource(R.string.change_date)
+                                        },
+                                        color = secondaryColor,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontFamily = iosFont
+                                    )
+                                }
+                            }
+                        }
+                    }
+//                Date and time value
+                    if (isDateSet.value) {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = eightColor,
+                                contentColor = eightColor
+                            ),
+                            shape = RoundedCornerShape(bottomEnd = 10.dp, bottomStart = 10.dp),
+                            elevation = CardDefaults.cardElevation(7.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                            ) {
+                                Text(
+                                    text = "${startDate.value}${if (!endDate.value.contains("2025")) "" else " , ${endDate.value}"}",
+                                    modifier = Modifier
+                                        .padding(start = 10.dp),
+                                    color = secondaryColor,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
+                                )
+                                Spacer(Modifier.width(15.dp))
 //                            Text(
 //                                text = time.value,
 //                                modifier = Modifier
@@ -411,21 +440,24 @@ fun AddPartyScreen(
 //                                fontSize = 14.sp,
 //                                fontWeight = FontWeight.SemiBold
 //                            )
+                            }
                         }
                     }
-                }
-                Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(10.dp))
 //                Address
-                AddPartyAddressField(
-                    secondaryColor = secondaryColor,
-                    tertiaryColor = tertiaryColor,
-                    eightrdColor = eightrdColor,
-                    value = address.value
-                ) { viewModel.onEvent(AddEventState.ChangeAddressField(it)) }
+                    AddPartyAddressField(
+                        secondaryColor = secondaryColor,
+                        tertiaryColor = tertiaryColor,
+                        eightColor = eightColor,
+                        fontFamily = iosFont,
+                        value = address.value
+                    ) { viewModel.onEvent(AddEventState.ChangeAddressField(it)) }
+                }
 //                Date picker
                 if (showDatePicker.value) {
                     AddEventSetDate(
                         showDialog = showDatePicker.value,
+                        fontFamily = iosFont,
                         onDismissRequest = {
                             isDateReEntered.value = it
                             showDatePicker.value = false
@@ -435,143 +467,154 @@ fun AddPartyScreen(
                             viewModel.onEvent(AddEventState.ChangeStartDate(formatter.format(start)))
                             viewModel.onEvent(AddEventState.ChangeEndDate(formatter.format(end)))
                             showDatePicker.value = false
-                        },
-                        dismissButton = {
-                            showDatePicker.value = false
                         }
-                    )
+                    ) {
+                        showDatePicker.value = false
+                    }
                 }
 //                if (showTimePicker.value) {
 //                    timePickerDialog.show()
 //                    showTimePicker.value = false
 //                }
                 Spacer(Modifier.height(10.dp))
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(color = primaryColor, shape = RoundedCornerShape(15.dp))
+                        .padding(10.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.requisites),
-                        color = secondaryColor,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-                Spacer(Modifier.height(10.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.requisites),
+                            color = secondaryColor,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
 //                Requisites
 //                Cards
-                if (cards.value.isNotEmpty()) {
-                    isCardError.value = false
-                    AddEventCardItem(
-                        secondaryColor = secondaryColor,
-                        tertiaryColor = tertiaryColor,
-                        value = cardValue.value,
-                        cards = cards.value,
-                        onClick = {
-                            viewModel.onEvent(AddEventState.ChangeCardModel(it))
-                            viewModel.onEvent(AddEventState.ChangeCardNumber(it.number))
-                        },
-                        onAddCardClick = {
-                            sharedPreferences.addCardFromAddEvent(true)
-                            sharedPreferences.partyIndex(arguments.eventID)
-                            navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
-                        },
-                        cardModel = cardModel.value
-                    )
-                    Spacer(Modifier.height(5.dp))
-                    HorizontalDivider()
-                    Spacer(Modifier.height(10.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.add_other_payment_methods),
-                            color = tertiaryColor,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                    Spacer(Modifier.height(5.dp))
-//                    Add card
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = tertiaryColor,
-                            contentColor = tertiaryColor
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        onClick = {
+                    if (cards.value.isNotEmpty()) {
+                        isCardError.value = false
+                        AddEventCardItem(
+                            secondaryColor = secondaryColor,
+                            tertiaryColor = tertiaryColor,
+                            fontFamily = iosFont,
+                            value = cardValue.value,
+                            cards = cards.value,
+                            onClick = {
+                                viewModel.onEvent(AddEventState.ChangeCardModel(it))
+                                viewModel.onEvent(AddEventState.ChangeCardNumber(it.number))
+                            }
+                        ) {
                             sharedPreferences.addCardFromAddEvent(true)
                             sharedPreferences.partyIndex(arguments.eventID)
                             navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
                         }
-                    ) {
+                        Spacer(Modifier.height(5.dp))
+                        HorizontalDivider()
+                        Spacer(Modifier.height(10.dp))
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_add_circle),
-                                tint = secondaryColor,
-                                contentDescription = ""
-                            )
-                            Spacer(Modifier.width(5.dp))
                             Text(
-                                text = stringResource(R.string.add_cart),
-                                fontSize = 16.sp,
-                                color = secondaryColor,
-                                fontWeight = FontWeight.SemiBold
+                                text = stringResource(R.string.add_other_payment_methods),
+                                color = tertiaryColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
                         }
-                    }
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = stringResource(R.string.you_have_not_active_card),
-                            color = tertiaryColor,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                    Spacer(Modifier.height(5.dp))
+                        Spacer(Modifier.height(5.dp))
 //                    Add card
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = tertiaryColor,
-                            contentColor = tertiaryColor
-                        ),
-                        shape = RoundedCornerShape(10.dp),
-                        onClick = {
-                            sharedPreferences.addCardFromAddEvent(true)
-                            navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
-                        }
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = eightColor,
+                                contentColor = eightColor
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            onClick = {
+                                sharedPreferences.addCardFromAddEvent(true)
+                                sharedPreferences.partyIndex(arguments.eventID)
+                                navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                            }
                         ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_add_circle),
-                                tint = secondaryColor,
-                                contentDescription = ""
-                            )
-                            Spacer(Modifier.width(5.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add_circle),
+                                    tint = secondaryColor,
+                                    contentDescription = ""
+                                )
+                                Spacer(Modifier.width(5.dp))
+                                Text(
+                                    text = stringResource(R.string.add_cart),
+                                    fontSize = 16.sp,
+                                    color = secondaryColor,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
+                                )
+                            }
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
-                                text = stringResource(R.string.add_cart),
-                                fontSize = 16.sp,
-                                color = secondaryColor,
-                                fontWeight = FontWeight.SemiBold
+                                text = stringResource(R.string.you_have_not_active_card),
+                                color = tertiaryColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                fontFamily = iosFont
                             )
+                        }
+                        Spacer(Modifier.height(5.dp))
+//                    Add card
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = eightColor,
+                                contentColor = eightColor
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            onClick = {
+                                sharedPreferences.addCardFromAddEvent(true)
+                                navController.navigate(ScreensRouter.AddCardScreen.route + "/-1")
+                            }
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_add_circle),
+                                    tint = secondaryColor,
+                                    contentDescription = ""
+                                )
+                                Spacer(Modifier.width(5.dp))
+                                Text(
+                                    text = stringResource(R.string.add_cart),
+                                    fontSize = 16.sp,
+                                    color = secondaryColor,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = iosFont
+                                )
+                            }
                         }
                     }
                 }

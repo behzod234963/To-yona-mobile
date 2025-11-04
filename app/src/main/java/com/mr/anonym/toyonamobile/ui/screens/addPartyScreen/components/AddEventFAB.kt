@@ -10,13 +10,13 @@ import com.mr.anonym.toyonamobile.R
 
 @Composable
 fun AddEventFAB(
-    quaternaryColor: Color,
+    fiveColor: Color,
     onFabClick:()-> Unit
 ) {
 
     FloatingActionButton(
-        containerColor = quaternaryColor,
-        contentColor = quaternaryColor,
+        containerColor = fiveColor,
+        contentColor = fiveColor,
         shape = CircleShape,
         onClick = { onFabClick() }
     ) {

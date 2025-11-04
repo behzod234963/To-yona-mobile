@@ -23,6 +23,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +38,7 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 fun AddEventCardField(
     secondaryColor: Color,
     tertiaryColor: Color,
+    fontFamily: FontFamily,
     value:String,
     values: List<CardModel>,
     onClick:(CardModel)-> Unit,
@@ -58,7 +61,13 @@ fun AddEventCardField(
             readOnly = true,
             modifier = Modifier
                 .menuAnchor(type = anchorType, enabled = true)
-                .focusRequester(FocusRequester())
+                .focusRequester(FocusRequester()),
+            textStyle = TextStyle(
+                fontSize = 16.sp,
+                color = secondaryColor,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.SemiBold
+            )
         )
         ExposedDropdownMenu(
             expanded = isExpanded.value,
@@ -80,7 +89,8 @@ fun AddEventCardField(
                             text = stringResource(R.string.add_cart),
                             fontSize = 14.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     },
                     onClick = {
@@ -101,7 +111,8 @@ fun AddEventCardField(
                                     text = card.number.cardNumberFormatter(),
                                     fontSize = 14.sp,
                                     color = secondaryColor,
-                                    fontWeight = FontWeight.SemiBold
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontFamily = fontFamily
                                 )
                             }
                         },
@@ -126,7 +137,8 @@ fun AddEventCardField(
                             text = stringResource(R.string.add_cart),
                             fontSize = 14.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     },
                     onClick = {

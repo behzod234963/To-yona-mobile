@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +23,7 @@ import com.mr.anonym.toyonamobile.R
 fun AddEventTopBar(
     primaryColor:Color,
     secondaryColor: Color,
+    fontFamily: FontFamily,
     navigationIconClick:()-> Unit,
     onActionsClick:()-> Unit
 ) {
@@ -35,7 +37,8 @@ fun AddEventTopBar(
                 text = stringResource(R.string.create_event),
                 color = secondaryColor,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily
             )
         },
         navigationIcon = {

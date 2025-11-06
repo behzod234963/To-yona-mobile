@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,8 +36,9 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 fun MyPartiesItem(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
-    sevenrdColor: Color,
+    fiveColor: Color,
+    sevenColor: Color,
+    fontFamily: FontFamily,
     partyModel: PartysItem,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -45,8 +48,8 @@ fun MyPartiesItem(
         modifier = Modifier
             .padding(7.dp),
         colors = CardDefaults.cardColors(
-            contentColor = sevenrdColor,
-            containerColor = sevenrdColor
+            contentColor = sevenColor,
+            containerColor = sevenColor
         ),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(7.dp)
@@ -67,7 +70,8 @@ fun MyPartiesItem(
                     text = partyModel.name,
                     fontSize = 18.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Row {
                     IconButton(
@@ -92,7 +96,7 @@ fun MyPartiesItem(
                     MyEventSwitch(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
-                        fiverdColor = fiverdColor,
+                        fiveColor = fiveColor,
                         isChecked = partyModel.status,
                         onCheckedChange = {
                             onCheckedChange(it)
@@ -111,6 +115,7 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = if (partyModel.status)
@@ -120,6 +125,7 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
             HorizontalDivider()
@@ -134,6 +140,7 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = when(partyModel.type){
@@ -146,6 +153,7 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
             HorizontalDivider()
@@ -163,13 +171,15 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = "${partyModel.startTime} ${partyModel.endTime}",
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.End,
+                    fontFamily = fontFamily
                 )
             }
             HorizontalDivider()
@@ -187,13 +197,15 @@ fun MyPartiesItem(
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = partyModel.address,
                     color = secondaryColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.End
+                    textAlign = TextAlign.End,
+                    fontFamily = fontFamily
                 )
             }
             HorizontalDivider()
@@ -207,7 +219,8 @@ fun MyPartiesItem(
                     text = stringResource(R.string.requisites),
                     color = secondaryColor,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
 //            Row(
@@ -249,13 +262,15 @@ fun MyPartiesItem(
                     text = stringResource(R.string.card_number),
                     fontSize = 16.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = partyModel.cardNumber.cardNumberFormatter(),
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
             Spacer(Modifier.height(10.dp))
@@ -266,13 +281,13 @@ fun MyPartiesItem(
 @Preview
 @Composable
 private fun PreviewMyEventsItem() {
+    val iosFont = FontFamily(Font(R.font.ios_font))
     MyPartiesItem(
         secondaryColor = Color.Black,
         quaternaryColor = Color.Red,
-        fiverdColor = Color.Green,
-        sevenrdColor = Color.White,
-        onEditClick = { },
-        onDeleteClick = { },
+        fiveColor = Color.Green,
+        sevenColor = Color.White,
+        fontFamily = iosFont,
         partyModel = PartysItem(
             id = 1,
             userId = 1,
@@ -284,6 +299,8 @@ private fun PreviewMyEventsItem() {
             startTime = "TODO()",
             endTime = "TODO()",
             createdAt = "TODO()"
-        )
+        ),
+        onEditClick = { },
+        onDeleteClick = { }
     ) { }
 }

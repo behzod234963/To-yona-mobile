@@ -51,7 +51,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = ScreensRouter.AddPartyScreen.route + "/-1"
+        startDestination = ScreensRouter.MyPartiesScreen.route
 //            when {
 //                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
 //                isFirstTime -> ScreensRouter.OnboardingScreen.route
@@ -130,7 +130,7 @@ fun NavGraph(
                 )
             )
         }
-        composable(ScreensRouter.MyEventsScreen.route) {
+        composable(ScreensRouter.MyPartiesScreen.route) {
             MyPartiesScreen(navController)
         }
         composable(

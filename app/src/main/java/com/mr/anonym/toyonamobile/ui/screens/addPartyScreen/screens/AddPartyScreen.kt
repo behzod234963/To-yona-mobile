@@ -211,7 +211,7 @@ fun AddPartyScreen(
                         popUpTo(ScreensRouter.AddPartyScreen.route + "/-1") { inclusive = true }
                     }
                 }
-            ) { navController.navigate(ScreensRouter.MyEventsScreen.route) }
+            ) { navController.navigate(ScreensRouter.MyPartiesScreen.route) }
         },
         floatingActionButton = {
             AddEventFAB(
@@ -662,7 +662,7 @@ fun AddPartyScreen(
                                 delay(1500)
                                 isLoading.value = false
                                 withContext(Dispatchers.Main) {
-                                    navController.navigate(ScreensRouter.MyEventsScreen.route) {
+                                    navController.navigate(ScreensRouter.MyPartiesScreen.route) {
                                         popUpTo(ScreensRouter.AddPartyScreen.route) {
                                             inclusive = true
                                         }

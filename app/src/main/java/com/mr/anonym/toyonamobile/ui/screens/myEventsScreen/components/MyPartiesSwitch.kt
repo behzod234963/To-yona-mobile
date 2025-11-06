@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 fun MyEventSwitch(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
 ) {
@@ -19,9 +19,9 @@ fun MyEventSwitch(
         enabled = true,
         colors = SwitchDefaults.colors(
             checkedThumbColor = secondaryColor,
-            checkedTrackColor = fiverdColor,
-            checkedBorderColor = fiverdColor,
-            checkedIconColor = fiverdColor,
+            checkedTrackColor = fiveColor,
+            checkedBorderColor = fiveColor,
+            checkedIconColor = fiveColor,
             uncheckedThumbColor = secondaryColor,
             uncheckedTrackColor = quaternaryColor,
             uncheckedBorderColor = quaternaryColor,

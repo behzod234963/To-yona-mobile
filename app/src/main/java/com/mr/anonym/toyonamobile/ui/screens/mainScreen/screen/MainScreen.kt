@@ -221,7 +221,7 @@ fun MainScreen(
                                 drawerState.close()
                                 delay(250)
                                 withContext(Dispatchers.Main) {
-                                    navController.navigate(ScreensRouter.MyEventsScreen.route)
+                                    navController.navigate(ScreensRouter.MyPartiesScreen.route)
                                 }
                             }
                         }

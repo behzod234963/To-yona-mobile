@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -66,13 +68,21 @@ fun MyPartiesScreen(
         else -> Color.Black
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
+    val fiveColor = Color(101, 163, 119, 255)
+    val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenColor = when {
+        isSystemTheme -> systemSevenColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val isLoading = remember { mutableStateOf( false ) }
     val loadingAnimation = rememberLottieComposition(
@@ -82,12 +92,13 @@ fun MyPartiesScreen(
     val parties = viewModel.parties
 
     Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         topBar = {
             MyEventTopBar(
                 primaryColor = primaryColor,
-                secondaryColor = secondaryColor
+                secondaryColor = secondaryColor,
+                fontFamily = iosFont,
             ) { navController.navigateUp() }
         }
     ) { paddingValues ->
@@ -115,8 +126,9 @@ fun MyPartiesScreen(
                     MyPartiesItem(
                         secondaryColor = secondaryColor,
                         quaternaryColor = quaternaryColor,
-                        fiverdColor = fiverdColor,
-                        sevenrdColor = sevenrdColor,
+                        fiveColor = fiveColor,
+                        sevenColor = sevenColor,
+                        fontFamily = iosFont,
                         partyModel = model,
                         onEditClick = {
                             navController.navigate(ScreensRouter.AddPartyScreen.route + "/${model.id}")
@@ -125,28 +137,27 @@ fun MyPartiesScreen(
                             isLoading.value = true
                             viewModel.deleteParty(model.id)
                             viewModel.deleteLocalParty(localParty)
-                        },
-                        onCheckedChange = {
-                            isLoading.value = true
-                            viewModel.updateParty(
-                                partyID = model.id,
-                                partyModel = PartysItem(
-                                    name = model.name,
-                                    type = model.type,
-                                    address = model.address,
-                                    cardNumber = model.cardNumber,
-                                    startTime = model.startTime,
-                                    endTime = model.endTime,
-                                    status = it
-                                )
-                            )
-                            if (model.status){
-                                viewModel.insertLocalParty(localParty)
-                            }else{
-                                viewModel.deleteLocalParty(localParty)
-                            }
                         }
-                    )
+                    ) {
+                        isLoading.value = true
+                        viewModel.updateParty(
+                            partyID = model.id,
+                            partyModel = PartysItem(
+                                name = model.name,
+                                type = model.type,
+                                address = model.address,
+                                cardNumber = model.cardNumber,
+                                startTime = model.startTime,
+                                endTime = model.endTime,
+                                status = it
+                            )
+                        )
+                        if (model.status) {
+                            viewModel.insertLocalParty(localParty)
+                        } else {
+                            viewModel.deleteLocalParty(localParty)
+                        }
+                    }
                 }
             }
         }else{

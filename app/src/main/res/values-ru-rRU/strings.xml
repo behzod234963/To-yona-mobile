@@ -178,4 +178,13 @@
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* Хотя бы один специальный символ из набора (@ . $ ! % * ? & #)]]></string>
     <string name="welcome">Добро пожаловать!</string>
     <string name="language_instruction">Выберите язык, удобный для себя</string>
+    <string name="by_date">По дате</string>
+    <string name="for_yesterday">За вчера</string>
+    <string name="for_today">За сегодня</string>
+    <string name="for_week">За текущую неделю</string>
+    <string name="for_past_week">За прошлую неделю</string>
+    <string name="for_current_month">За текущий месяц</string>
+    <string name="for_past_month">За прошлый месяц</string>
+    <string name="reset">Сбросить</string>
+    <string name="apply">Применить</string>
 </resources>

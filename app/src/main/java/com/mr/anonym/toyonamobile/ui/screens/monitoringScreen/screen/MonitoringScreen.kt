@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -23,19 +25,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.MonitoringModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.managers.pdfGenerator
 import com.mr.anonym.toyonamobile.presentation.managers.shareTransfer
-import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
+import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.FilterNavigationDrawer
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringBottomSheet
+import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringFAB
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringScrollableTabRow
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.components.MonitoringTopBar
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.items.MonitoringItem
+import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.items.MonitoringViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -48,7 +57,8 @@ import java.util.Locale
 )
 @Composable
 fun MonitoringScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MonitoringViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -84,19 +94,24 @@ fun MonitoringScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
+    val fiveColor = Color(101, 163, 119, 255)
     val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
     val nineColor = when{
         isSystemTheme -> systemNineColor
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
     }
+    val tenColor = Color(0xFF259BD6)
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val selectedTabIndex = rememberSaveable { mutableIntStateOf(monthIndex) }
+    val filterDateIndex = remember { mutableIntStateOf( 0 ) }
 
     val showTransferDetails = rememberSaveable { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState( skipPartiallyExpanded = true )
     coroutineScope.launch { bottomSheetState.hide() }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val monitoringModel = remember {
         mutableStateOf(
@@ -117,6 +132,23 @@ fun MonitoringScreen(
         )
     }
 
+//    val cards = viewModel.cards
+    val cards = listOf(
+        CardModel(
+            id = -1,
+            userId = -1,
+            number = "9860030160619356",
+            date = "0925",
+            createdAt = "01.11.2025"
+        ),
+        CardModel(
+            id = -1,
+            userId = -1,
+            number = "9860030160619356",
+            date = "0925",
+            createdAt = "01.11.2025"
+        )
+    )
     val months = mapOf(
         0 to stringResource(R.string.january),
         1 to stringResource(R.string.february),
@@ -162,256 +194,295 @@ fun MonitoringScreen(
         )
     )
 
-    Scaffold(
-        containerColor = primaryColor,
-        contentColor = primaryColor,
-        topBar = {
-            MonitoringTopBar(
-                primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
-                onNavigationClick = { navController.navigateUp() },
-                onActionsClick = {
-                    navController.navigate(ScreensRouter.MonitoringFilterScreen.route)
+    FilterNavigationDrawer(
+        primaryColor = primaryColor,
+        secondaryColor = secondaryColor,
+        quaternaryColor = quaternaryColor,
+        fiveColor = fiveColor,
+        nineColor = nineColor,
+        tenColor = tenColor,
+        fontFamily = iosFont,
+        cardList = cards,
+        onCardClick = {
+//            Need backend to realize next steps
+        },
+        onDateIndex = { filterDateIndex.intValue = it },
+        onBackClick = {
+            if ( drawerState.isOpen ){
+                coroutineScope.launch {
+                    delay(150)
+                    drawerState.close()
                 }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            MonitoringScrollableTabRow(
-                primaryColor = primaryColor,
-                secondaryColor = secondaryColor,
-                selectedTabIndex = selectedTabIndex.intValue,
-                tabs = months.values,
-                onClick = { index ->
-                    selectedTabIndex.intValue = index
-                },
-                content = {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(10.dp)
+            }
+        },
+        onConfirmClick = {
+//            Need backend to realize next steps
+        },
+        drawerState = drawerState,
+        content = {
+            Scaffold(
+                containerColor = primaryColor,
+                contentColor = primaryColor,
+                floatingActionButton = {
+                    MonitoringFAB(
+                        secondaryColor = secondaryColor,
+                        fiveColor = fiveColor
                     ) {
-                        when (selectedTabIndex.intValue) {
-                            0 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            1 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            2 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            3 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-
-                            4 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            5 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            6 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            7 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            8 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            9 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            10 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
-                            }
-                            11 -> {
-                                items(monitoringList) { item ->
-                                    MonitoringItem(
-                                        secondaryColor = secondaryColor,
-                                        quaternaryColor = quaternaryColor,
-                                        fiverdColor = fiverdColor,
-                                        nineColor = nineColor,
-                                        model = item,
-                                        onClick = {
-                                            monitoringModel.value = item
-                                            showTransferDetails.value = true
-                                        },
-                                    )
-                                }
+                        if (drawerState.isClosed){
+                            coroutineScope.launch {
+                                delay(100)
+                                drawerState.open()
                             }
                         }
                     }
-                    if (showTransferDetails.value) {
-                        MonitoringBottomSheet(
-                            secondaryColor = secondaryColor,
-                            tertiaryColor = tertiaryColor,
-                            state = bottomSheetState,
-                            model = monitoringModel.value,
-                            onDownloadClick = {
-                                activity?.let {
-                                    pdfGenerator(
-                                        context = context,
-                                        activity = it,
-                                        fileName = "${System.currentTimeMillis()}",
-                                        model = monitoringModel.value
-                                    )
-                                }
-                                showTransferDetails.value = false
-                            },
-                            onShareClick = {
-                                val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-                                val currentDate = dateFormat.format( calendarInstance.time )
-                                shareTransfer(
-                                    context = context,
-                                    fileName = "Document_$currentDate _${System.currentTimeMillis()}",
-                                    model = monitoringModel.value
-                                )
-                                showTransferDetails.value = false
-                            },
-                            onDismissRequest = { showTransferDetails.value = false }
-                        )
-                    }
+                },
+                topBar = {
+                    MonitoringTopBar(
+                        primaryColor = primaryColor,
+                        secondaryColor = secondaryColor,
+                        fontFamily = iosFont,
+                        onNavigationClick = { navController.navigateUp() }
+                    )
                 }
-            )
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    MonitoringScrollableTabRow(
+                        primaryColor = primaryColor,
+                        secondaryColor = secondaryColor,
+                        fontFamily = iosFont,
+                        selectedTabIndex = selectedTabIndex.intValue,
+                        tabs = months.values,
+                        onClick = { index ->
+                            selectedTabIndex.intValue = index
+                        },
+                        content = {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                            ) {
+                                when (selectedTabIndex.intValue) {
+                                    0 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    1 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    2 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    3 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    4 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    5 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    6 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    7 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    8 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    9 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    10 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                    11 -> {
+                                        items(monitoringList) { item ->
+                                            MonitoringItem(
+                                                secondaryColor = secondaryColor,
+                                                quaternaryColor = quaternaryColor,
+                                                fiveColor = fiveColor,
+                                                nineColor = nineColor,
+                                                fontFamily = iosFont,
+                                                model = item,
+                                            ) {
+                                                monitoringModel.value = item
+                                                showTransferDetails.value = true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (showTransferDetails.value) {
+                                MonitoringBottomSheet(
+                                    secondaryColor = secondaryColor,
+                                    tertiaryColor = tertiaryColor,
+                                    fontFamily = iosFont,
+                                    state = bottomSheetState,
+                                    model = monitoringModel.value,
+                                    onDownloadClick = {
+                                        activity?.let {
+                                            pdfGenerator(
+                                                context = context,
+                                                activity = it,
+                                                fileName = "${System.currentTimeMillis()}",
+                                                model = monitoringModel.value
+                                            )
+                                        }
+                                        showTransferDetails.value = false
+                                    },
+                                    onShareClick = {
+                                        val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                                        val currentDate = dateFormat.format( calendarInstance.time )
+                                        shareTransfer(
+                                            context = context,
+                                            fileName = "Document_$currentDate _${System.currentTimeMillis()}",
+                                            model = monitoringModel.value
+                                        )
+                                        showTransferDetails.value = false
+                                    }
+                                ) { showTransferDetails.value = false }
+                            }
+                        }
+                    )
+                }
+            }
         }
-    }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.Q)

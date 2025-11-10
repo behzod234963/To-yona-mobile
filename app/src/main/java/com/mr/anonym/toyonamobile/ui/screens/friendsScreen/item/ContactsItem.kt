@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +28,8 @@ import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformat
 @Composable
 fun ContactsItem(
     secondaryColor: Color,
-    sevenrdColor: Color,
+    sevenColor: Color,
+    fontFamily: FontFamily,
     friend: Friend,
     onContactClick:()-> Unit
 ) {
@@ -36,8 +38,8 @@ fun ContactsItem(
             .fillMaxWidth()
             .padding(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = sevenrdColor,
-            contentColor = sevenrdColor
+            containerColor = sevenColor,
+            contentColor = sevenColor
         ),
         onClick = { onContactClick() },
         shape = RoundedCornerShape(10.dp),
@@ -66,13 +68,15 @@ fun ContactsItem(
                     text = "${friend.username} ${friend.surname}",
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Text(
                     text = "+998${friend.phonenumber}".phoneNumberTransformation(),
                     color = secondaryColor,
                     fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
         }

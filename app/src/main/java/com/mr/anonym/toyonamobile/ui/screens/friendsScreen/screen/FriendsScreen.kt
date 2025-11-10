@@ -15,9 +15,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.components.FriendsTopBar
 import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.item.ContactsItem
@@ -53,12 +57,20 @@ fun FriendsScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
+    val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenColor = when {
+        isSystemTheme -> systemSevenColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
+    }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     val isRefresh = viewModel.isRefresh.collectAsState()
     val friends = viewModel.friends
@@ -72,20 +84,21 @@ fun FriendsScreen(
         onRefresh = { viewModel.isLoading() }
     ) {
         Scaffold(
-            containerColor = primaryColor,
-            contentColor = primaryColor,
+            containerColor = nineColor,
+            contentColor = nineColor,
             topBar = {
                 FriendsTopBar(
                     primaryColor = primaryColor,
                     secondaryColor = secondaryColor,
-                    onNavigationClick = { navController.navigateUp() }
-                )
+                    fontFamily = iosFont
+                ) { navController.navigateUp() }
             }
         ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(7.dp)
             ) {
                 if (isRefresh.value){
                     items(20) {
@@ -95,10 +108,10 @@ fun FriendsScreen(
                     items(friends.value) { model ->
                         ContactsItem(
                             secondaryColor = secondaryColor,
-                            sevenrdColor = sevenrdColor,
-                            friend = model.friend,
-                            onContactClick = { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.friendId}") }
-                        )
+                            sevenColor = sevenColor,
+                            fontFamily = iosFont,
+                            friend = model.friend
+                        ) { navController.navigate(ScreensRouter.DetailsScreen.route + "/${model.friendId}") }
                     }
                 }
             }

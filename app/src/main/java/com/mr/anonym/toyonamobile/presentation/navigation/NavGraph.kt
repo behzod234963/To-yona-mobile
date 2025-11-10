@@ -19,7 +19,6 @@ import com.mr.anonym.toyonamobile.ui.screens.enterScreen.screen.EnterScreen
 import com.mr.anonym.toyonamobile.ui.screens.friendsScreen.screen.FriendsScreen
 import com.mr.anonym.toyonamobile.ui.screens.logInScreen.screen.LogInScreen
 import com.mr.anonym.toyonamobile.ui.screens.mainScreen.screen.MainScreen
-import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringFilterScreen
 import com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.screen.MonitoringScreen
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.screens.MyPartiesScreen
 import com.mr.anonym.toyonamobile.ui.screens.newPinScreen.screen.NewPinScreen
@@ -51,7 +50,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = ScreensRouter.MyPartiesScreen.route
+        startDestination = ScreensRouter.WalletScreen.route
 //            when {
 //                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
 //                isFirstTime -> ScreensRouter.OnboardingScreen.route
@@ -96,7 +95,7 @@ fun NavGraph(
         composable(ScreensRouter.NotificationsScreen.route) {
             NotificationsScreen(navController)
         }
-        composable(ScreensRouter.ContactsScreen.route) {
+        composable(ScreensRouter.FriendsScreen.route) {
             FriendsScreen(navController)
         }
         composable(ScreensRouter.MonitoringScreen.route) {
@@ -175,9 +174,6 @@ fun NavGraph(
             ChangePasswordScreen(
                 navController = navController
             )
-        }
-        composable(ScreensRouter.MonitoringFilterScreen.route) {
-            MonitoringFilterScreen(navController)
         }
     }
 }

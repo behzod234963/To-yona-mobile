@@ -177,4 +177,13 @@
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* At least one special character from the set (@ . $ ! % * ? & #)]]></string>
     <string name="welcome">Welcome!</string>
     <string name="language_instruction">Choose a language that is convenient for you</string>
+    <string name="by_date">By date</string>
+    <string name="for_yesterday">For yesterday</string>
+    <string name="for_today">For today</string>
+    <string name="for_week">For current week</string>
+    <string name="for_past_week">For past week</string>
+    <string name="for_current_month">For current month</string>
+    <string name="for_past_month">For past month</string>
+    <string name="reset">Reset</string>
+    <string name="apply">Apply</string>
 </resources>

@@ -15,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
@@ -26,7 +26,8 @@ import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberFormatter
 fun FilterByCardItem(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
+    fontFamily: FontFamily,
     model: CardModel,
     isSelected: Boolean,
     onClick:()-> Unit
@@ -57,7 +58,8 @@ fun FilterByCardItem(
                     text = "",
                     fontSize = 16.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Spacer(Modifier.width(5.dp))
                 Text(
@@ -65,7 +67,8 @@ fun FilterByCardItem(
                     text = "",
                     fontSize = 16.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
             Row (
@@ -75,7 +78,8 @@ fun FilterByCardItem(
                     text = model.number.cardNumberFormatter(),
                     fontSize = 16.sp,
                     color = secondaryColor,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Spacer(Modifier.width(5.dp))
                 RadioButton(
@@ -83,7 +87,7 @@ fun FilterByCardItem(
                     onClick = { onClick() },
                     colors = RadioButtonDefaults.colors(
                         unselectedColor = quaternaryColor,
-                        selectedColor = fiverdColor
+                        selectedColor = fiveColor
                     ),
                 )
             }

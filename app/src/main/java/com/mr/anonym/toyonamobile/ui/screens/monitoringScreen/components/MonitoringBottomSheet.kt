@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ import com.mr.anonym.toyonamobile.R
 fun MonitoringBottomSheet(
     secondaryColor:Color,
     tertiaryColor: Color,
+    fontFamily: FontFamily,
     state: SheetState,
     model: MonitoringModel,
     onDownloadClick:()-> Unit,
@@ -74,7 +76,8 @@ fun MonitoringBottomSheet(
                 color = secondaryColor,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = fontFamily
             )
             Spacer(Modifier.height(10.dp))
             Column (
@@ -89,12 +92,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.dateTime}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -105,12 +110,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.amount}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -121,12 +128,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " 500",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -137,28 +146,32 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.senderCardNumber}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
-//                Sender cardholdr
+//                Sender cardholder
                 Row {
                     Text(
                         text = "${stringResource(R.string.sender_name)} :",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.senderCardHolder}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -169,12 +182,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.receiverCardNumber}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -185,12 +200,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.receiverCardHolder}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -201,12 +218,14 @@ fun MonitoringBottomSheet(
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = " ${model.transferStatus}",
                         color = secondaryColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.height(5.dp))
@@ -227,7 +246,6 @@ fun MonitoringBottomSheet(
                     )
                 }
                 IconButton(
-
                     onClick = { onShareClick() }
                 ) {
                     Icon(

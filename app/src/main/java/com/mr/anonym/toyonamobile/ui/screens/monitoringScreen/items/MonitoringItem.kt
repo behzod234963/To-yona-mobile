@@ -1,6 +1,5 @@
 package com.mr.anonym.toyonamobile.ui.screens.monitoringScreen.items
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,8 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.MonitoringModel
@@ -26,8 +25,9 @@ import com.mr.anonym.domain.model.MonitoringModel
 fun MonitoringItem(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
     nineColor: Color,
+    fontFamily: FontFamily,
     model: MonitoringModel,
     onClick:()-> Unit
 ) {
@@ -55,47 +55,25 @@ fun MonitoringItem(
                     text = model.eventName,
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Spacer(Modifier.height(5.dp))
                 Text(
                     text = "${model.eventOwnerName} ${model.eventOwnerLastName}",
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
             Text(
                 text = model.amount,
-                color = if (model.amount.contains("-")) quaternaryColor else fiverdColor,
+                color = if (model.amount.contains("-")) quaternaryColor else fiveColor,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewMonitoringModel() {
-    MonitoringItem(
-        secondaryColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-        quaternaryColor = Color.Red,
-        fiverdColor = Color.Green,
-        nineColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
-        model = MonitoringModel(
-            id = 1,
-            eventName = "Wedding",
-            eventOwnerName = "",
-            eventOwnerLastName = "",
-            dateTime = "",
-            amount = "",
-            senderCardNumber = "",
-            senderCardHolder = "",
-            receiverCardNumber = "",
-            receiverCardHolder = "",
-            transferStatus = "",
-            monthIndex = 3
-        )
-    ) { }
 }

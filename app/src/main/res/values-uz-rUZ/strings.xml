@@ -178,4 +178,13 @@
     <string name="at_least_one_special_character_from_the_set"><![CDATA[* To\'plamdan kamida bitta maxsus belgi (@ . $ ! % * ? & #)]]></string>
     <string name="welcome">Hush kelibsiz!</string>
     <string name="language_instruction">O\'zingiz uchun qulay tilni tanlang</string>
+    <string name="by_date">Sana bo\'yicha</string>
+    <string name="for_yesterday">Kecha uchun</string>
+    <string name="for_today">Bugun uchun</string>
+    <string name="for_week">Joriy hafta uchun</string>
+    <string name="for_past_week">O\'tkan hafta uchun</string>
+    <string name="for_current_month">Joriy oy uchun</string>
+    <string name="for_past_month">O\'tkan oy uchun</string>
+    <string name="reset">Qayta tiklash</string>
+    <string name="apply">Qo\'llash</string>
 </resources>

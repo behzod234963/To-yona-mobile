@@ -141,6 +141,7 @@ fun MainScreen(
         isDarkTheme -> Color(0xFF222327)
         else -> Color(0xFFF1F2F4)
     }
+    val tenColor = Color(0xFF259BD6)
 
     val iosFont = FontFamily(Font(R.font.ios_font))
 
@@ -210,7 +211,7 @@ fun MainScreen(
                                 drawerState.close()
                                 delay(250)
                                 withContext(Dispatchers.Main) {
-                                    navController.navigate(ScreensRouter.ContactsScreen.route)
+                                    navController.navigate(ScreensRouter.FriendsScreen.route)
                                 }
                             }
                         }

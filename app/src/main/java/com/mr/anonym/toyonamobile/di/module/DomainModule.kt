@@ -1,5 +1,6 @@
 package com.mr.anonym.toyonamobile.di.module
 
+import com.mr.anonym.domain.repository.local.LocalCardUtilRepository
 import com.mr.anonym.domain.repository.local.LocalFriendsRepository
 import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
@@ -13,6 +14,9 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsB
 import com.mr.anonym.domain.useCases.local.notificationUseCase.GetNotificationsUseCase
 import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificationUseCase
 import com.mr.anonym.domain.useCases.local.LocalUseCases
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.DeleteCardUtilUseCase
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.GetCardIndexByIdUseCase
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.InsertCardUtilUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.DeleteLocalFriendUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.GetLocalFriendsUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.InsertLocalFriendUseCase
@@ -60,7 +64,8 @@ class DomainModule {
     fun provideUseCases(
         notificationsRepository: NotificationsRepository,
         localPartyRepository: LocalPartyRepository,
-        localFriendRepository: LocalFriendsRepository
+        localFriendRepository: LocalFriendsRepository,
+        localCardUtilRepository: LocalCardUtilRepository
     ): LocalUseCases =
         LocalUseCases(
             insertNotificationUseCase = InsertNotificationUseCase(notificationsRepository),
@@ -75,7 +80,10 @@ class DomainModule {
             deleteLocalParty = DeleteLocalPartyUseCase(localPartyRepository),
             insertLocalFriend = InsertLocalFriendUseCase(localFriendRepository),
             getLocalFriends = GetLocalFriendsUseCase(localFriendRepository),
-            deleteLocalFriend = DeleteLocalFriendUseCase(localFriendRepository)
+            deleteLocalFriend = DeleteLocalFriendUseCase(localFriendRepository),
+            insertCardUtilUseCase = InsertCardUtilUseCase(localCardUtilRepository),
+            getCardIndexByIdUseCase = GetCardIndexByIdUseCase(localCardUtilRepository),
+            deleteCardUtilUseCase = DeleteCardUtilUseCase(localCardUtilRepository),
         )
 
     @Provides

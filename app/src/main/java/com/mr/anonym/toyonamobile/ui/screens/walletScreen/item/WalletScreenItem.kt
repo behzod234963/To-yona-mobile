@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
@@ -31,6 +31,7 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun WalletScreenItem(
     secondaryColor: Color,
+    fontFamily: FontFamily,
     brush: Brush,
     model: CardModel,
     onChangeClick:()-> Unit,
@@ -44,7 +45,7 @@ fun WalletScreenItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(brush)
-                .height(200.dp)
+                .height(250.dp)
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ){
@@ -63,13 +64,15 @@ fun WalletScreenItem(
                         text = model.number,
                         color = secondaryColor,
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = model.date,
                         color = secondaryColor,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
             }
@@ -109,21 +112,4 @@ fun WalletScreenItem(
         }
     }
     Spacer(Modifier.height(15.dp))
-}
-
-@Preview
-@Composable
-private fun PreviewWalletScreenItem() {
-    val whiteGreen = Color(150, 180, 150, 255)
-    val darkerGreen = Color(120, 150, 100, 255)
-    WalletScreenItem(
-        secondaryColor = Color.Black,
-        brush = Brush.linearGradient(colors = listOf(whiteGreen,darkerGreen,Color.Green)),
-        model = CardModel(
-            id = 1,
-            number = "9860 0301 6061 9356",
-            date = "08/25",
-        ),
-        onChangeClick = {  }
-    ) { }
 }

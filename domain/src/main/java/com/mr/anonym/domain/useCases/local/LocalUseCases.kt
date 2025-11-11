@@ -1,6 +1,9 @@
 package com.mr.anonym.domain.useCases.local
 
 import androidx.annotation.Keep
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.DeleteCardUtilUseCase
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.GetCardIndexByIdUseCase
+import com.mr.anonym.domain.useCases.local.localCardUtilUseCase.InsertCardUtilUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.DeleteLocalFriendUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.GetLocalFriendsUseCase
 import com.mr.anonym.domain.useCases.local.localFriendsUseCase.InsertLocalFriendUseCase
@@ -31,5 +34,9 @@ import com.mr.anonym.domain.useCases.local.notificationUseCase.InsertNotificatio
 //    Local Friend use cases
     val insertLocalFriend: InsertLocalFriendUseCase,
     val getLocalFriends: GetLocalFriendsUseCase,
-    val deleteLocalFriend: DeleteLocalFriendUseCase
+    val deleteLocalFriend: DeleteLocalFriendUseCase,
+//    Local card utils use cases
+    val insertCardUtilUseCase: InsertCardUtilUseCase,
+    val getCardIndexByIdUseCase: GetCardIndexByIdUseCase,
+    val deleteCardUtilUseCase: DeleteCardUtilUseCase
 )

@@ -7,5 +7,5 @@ import androidx.annotation.Keep
     val userId: Int = -1,
     val number: String = "",
     val date: String = "",
-    val createdAt: String = ""
+    val createdAt: String = "",
 )

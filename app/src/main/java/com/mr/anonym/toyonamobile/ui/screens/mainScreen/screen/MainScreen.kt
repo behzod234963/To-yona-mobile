@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -142,6 +143,49 @@ fun MainScreen(
         else -> Color(0xFFF1F2F4)
     }
     val tenColor = Color(0xFF259BD6)
+    //    Card gradients
+//    1.
+    val greenGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF00C853), // ярко-зелёный
+            Color(0xFFB2FF59)  // светло-зелёный
+        )
+    )
+//    2.
+    val redGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFFF1744), // насыщенный красный
+            Color(0xFFFF8A80)  // мягкий коралловый
+        )
+    )
+//    3.
+    val purpleGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF7C4DFF), // насыщенный фиолетовый
+            Color(0xFFB388FF)  // светлый лавандовый
+        )
+    )
+//    4.
+    val blueGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF00B0FF), // небесно-голубой
+            Color(0xFF40C4FF)  // яркий бирюзовый
+        )
+    )
+//    5.
+    val orangeGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFFF6D00), // оранжевый
+            Color(0xFFFFD600)  // солнечный жёлтый
+        )
+    )
+//    6.
+    val blackGoldGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF212121), // тёмный графит
+            Color(0xFFFFD740)  // золотистый акцент
+        )
+    )
 
     val iosFont = FontFamily(Font(R.font.ios_font))
 

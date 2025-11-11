@@ -25,17 +25,22 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,6 +49,7 @@ import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.event.CardEvents
+import com.mr.anonym.toyonamobile.presentation.extensions.cardDateTransformation
 import com.mr.anonym.toyonamobile.presentation.extensions.cardNumberSeparator
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
 import com.mr.anonym.toyonamobile.presentation.utils.Arguments
@@ -93,6 +99,7 @@ fun AddCardScreen(
         else -> Color.LightGray
     }
     val quaternaryColor = Color.Red
+    val fiveColor = Color(101, 163, 119, 255)
     val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
     val sevenrdColor = when {
         isSystemTheme -> systemSevenrdColor
@@ -106,11 +113,59 @@ fun AddCardScreen(
         else -> Color.LightGray
     }
 
+    //    Card gradients
+//    1.
+    val greenGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF00C853), // ярко-зелёный
+            Color(0xFFB2FF59)  // светло-зелёный
+        )
+    )
+//    2.
+    val redGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFFF1744), // насыщенный красный
+            Color(0xFFFF8A80)  // мягкий коралловый
+        )
+    )
+//    3.
+    val purpleGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF7C4DFF), // насыщенный фиолетовый
+            Color(0xFFB388FF)  // светлый лавандовый
+        )
+    )
+//    4.
+    val blueGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF00B0FF), // небесно-голубой
+            Color(0xFF40C4FF)  // яркий бирюзовый
+        )
+    )
+//    5.
+    val orangeGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFFF6D00), // оранжевый
+            Color(0xFFFFD600)  // солнечный жёлтый
+        )
+    )
+//    6.
+    val blackGoldGradient = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFF212121), // тёмный графит
+            Color(0xFFFFD740)  // золотистый акцент
+        )
+    )
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
+
     val isScanned = rememberSaveable { mutableStateOf(false) }
     val cardNumberValue = viewModel.cardNumber
     val cardValueError = rememberSaveable { mutableStateOf(false) }
     val expiryDateValue = viewModel.expiryDate
     val cardDateError = rememberSaveable { mutableStateOf(false) }
+
+    val colorIndex = remember { mutableIntStateOf( 5 ) }
 
     val user = viewModel.user
 
@@ -146,33 +201,69 @@ fun AddCardScreen(
                 .fillMaxSize()
                 .background(sevenrdColor)
                 .padding(paddingValues)
+                .padding(10.dp)
         ){
 //            Add card field
-            CardFields(
-                secondaryColor = secondaryColor,
-                tertiaryColor = tertiaryColor,
-                eightrdColor = eightrdColor,
-                cardValue = cardNumberValue.value,
-                isScanned = isScanned.value,
-                columnModifier = Modifier
+            Column(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.85f)
-                    .padding(10.dp),
-                onCardValueChange = {
-                    isScanned.value = false
-                    viewModel.cardEvents(CardEvents.ChangeCardNumber(it.take(16)))
-                },
-                cardFieldError = cardValueError.value,
-                cardFieldTrailingClick = {
-                    isScanned.value = true
-                    startScanning(context, launcher)
-                },
-                cardDateValue = expiryDateValue.value,
-                onCardDateValueChange = {
-                    viewModel.cardEvents(CardEvents.ChangeExpiryDate(it))
-                },
-                cardDateError = cardDateError.value,
-            )
+                    .height(230.dp)
+                    .background(
+                        brush = when (colorIndex.intValue) {
+                            1 -> greenGradient
+                            2 -> redGradient
+                            3 -> purpleGradient
+                            4 -> blueGradient
+                            5 -> orangeGradient
+                            6 -> blackGoldGradient
+                            else -> greenGradient
+                        },
+                        shape = RoundedCornerShape(10.dp)
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CardFields(
+                    secondaryColor = secondaryColor,
+                    tertiaryColor = tertiaryColor,
+                    eightrdColor = eightrdColor,
+                    cardValue = cardNumberValue.value,
+                    isScanned = isScanned.value,
+                    columnModifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    onCardValueChange = {
+                        isScanned.value = false
+                        viewModel.cardEvents(CardEvents.ChangeCardNumber(it.take(16)))
+                    },
+                    cardFieldError = cardValueError.value,
+                    cardFieldTrailingClick = {
+                        isScanned.value = true
+                        startScanning(context, launcher)
+                    },
+                    cardDateValue = expiryDateValue.value,
+                    onCardDateValueChange = {
+                        viewModel.cardEvents(CardEvents.ChangeExpiryDate(it.take(4)))
+                    },
+                    cardDateError = cardDateError.value,
+                )
+//                Spacer(Modifier.height(30.dp))
+//                Text(
+//                    text = cardNumberValue.value.cardNumberSeparator(),
+//                    fontSize = 22.sp,
+//                    color = secondaryColor,
+//                    fontFamily = iosFont
+//                )
+//                Spacer(Modifier.height(10.dp))
+//                Text(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    text = expiryDateValue.value.cardDateTransformation(),
+//                    fontSize = 22.sp,
+//                    color = secondaryColor,
+//                    fontFamily = iosFont,
+//                    textAlign = TextAlign.Center
+//                )
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

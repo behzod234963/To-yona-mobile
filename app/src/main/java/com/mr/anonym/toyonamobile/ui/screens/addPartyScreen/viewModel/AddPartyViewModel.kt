@@ -1,10 +1,8 @@
 package com.mr.anonym.toyonamobile.ui.screens.addPartyScreen.viewModel
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +11,6 @@ import com.mr.anonym.domain.model.CardModel
 import com.mr.anonym.domain.model.PartysItem
 import com.mr.anonym.domain.model.UserModelItem
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
-import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.state.ListState
 import com.mr.anonym.toyonamobile.ui.screens.myEventsScreen.utils.AddEventState
 import dagger.hilt.android.lifecycle.HiltViewModel

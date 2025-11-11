@@ -106,8 +106,6 @@ fun CardFields(
             singleLine = true,
             shape = RoundedCornerShape(10.dp),
         )
-
-        Spacer(Modifier.height(10.dp))
 //    Card date field
         OutlinedTextField(
             value = cardDateValue,

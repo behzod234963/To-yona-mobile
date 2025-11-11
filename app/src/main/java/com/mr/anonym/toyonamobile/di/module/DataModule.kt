@@ -6,6 +6,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.mr.anonym.data.auth.AuthInterceptor
 import com.mr.anonym.data.auth.TokenAuthenticator
 import com.mr.anonym.data.auth.TokenManager
+import com.mr.anonym.data.implementations.local.LocalCardUtilRepositoryImpl
 import com.mr.anonym.data.implementations.local.LocalFriendsRepositoryImpl
 import com.mr.anonym.data.implementations.local.LocalPartyRepositoryImpl
 import com.mr.anonym.data.implementations.local.NotificationsRepositoryImpl
@@ -15,6 +16,7 @@ import com.mr.anonym.data.implementations.remote.PartyRepositoryImpl
 import com.mr.anonym.data.implementations.remote.UserRepositoryImpl
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
+import com.mr.anonym.data.instance.local.room.LocalCardUtilDAO
 import com.mr.anonym.data.instance.local.room.LocalFriendsDAO
 import com.mr.anonym.data.instance.local.room.LocalPartyDAO
 import com.mr.anonym.data.instance.local.room.NotificationsDAO
@@ -23,6 +25,7 @@ import com.mr.anonym.data.instance.remote.CardApiService
 import com.mr.anonym.data.instance.remote.FriendsApiService
 import com.mr.anonym.data.instance.remote.PartyApiService
 import com.mr.anonym.data.instance.remote.UserApiService
+import com.mr.anonym.domain.repository.local.LocalCardUtilRepository
 import com.mr.anonym.domain.repository.local.LocalFriendsRepository
 import com.mr.anonym.domain.repository.local.LocalPartyRepository
 import com.mr.anonym.domain.repository.local.NotificationsRepository
@@ -59,6 +62,15 @@ class DataModule {
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
+
+    @Provides
+    @Singleton
+    fun provideCardUtilDAO(roomInstance: RoomInstance): LocalCardUtilDAO = roomInstance.localCardUtilDAO
+
+    @Provides
+    @Singleton
+    fun provideCardUtilRepository(dao: LocalCardUtilDAO): LocalCardUtilRepository =
+        LocalCardUtilRepositoryImpl(dao)
 
     @Provides
     @Singleton

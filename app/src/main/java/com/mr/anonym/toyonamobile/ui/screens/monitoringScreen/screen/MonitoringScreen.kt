@@ -135,15 +135,11 @@ fun MonitoringScreen(
 //    val cards = viewModel.cards
     val cards = listOf(
         CardModel(
-            id = -1,
-            userId = -1,
             number = "9860030160619356",
             date = "0925",
             createdAt = "01.11.2025"
         ),
         CardModel(
-            id = -1,
-            userId = -1,
             number = "9860030160619356",
             date = "0925",
             createdAt = "01.11.2025"

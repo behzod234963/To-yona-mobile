@@ -58,6 +58,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.mr.anonym.data.instance.local.DataStoreInstance
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.CardModel
+import com.mr.anonym.domain.model.CardUtilModel
 import com.mr.anonym.toyonamobile.R
 import com.mr.anonym.toyonamobile.presentation.extensions.phoneNumberTransformation
 import com.mr.anonym.toyonamobile.presentation.navigation.ScreensRouter
@@ -132,6 +133,7 @@ fun NumberCheckScreen(
     val addCardFromParty = sharedPreferences.addCardFromAddEventState()
     val partyIndex = sharedPreferences.getPartyIndex()
     val detailIndex = sharedPreferences.getDetailIndex()
+    val cardColorIndex = sharedPreferences.getCardColorIndex()
 
     val cardNumber = sharedPreferences.getCardNumber()
 //    val cardHolder = dataStore.getCardHolder().collectAsState("")
@@ -242,7 +244,13 @@ fun NumberCheckScreen(
                                                         date = expiryDate.value
                                                     )
                                                 )
-
+                                                val formattedID = cardNumber?.takeLast(4)?.toInt()
+                                                viewModel.insertCardUtil(
+                                                    CardUtilModel(
+                                                        id = formattedID?:-1,
+                                                        colorIndex = cardColorIndex
+                                                    )
+                                                )
                                             } else {
                                                 isLoading.value = true
                                                 viewModel.updateCard(
@@ -250,6 +258,13 @@ fun NumberCheckScreen(
                                                     cardModel = CardModel(
                                                         number = cardNumber ?: "",
                                                         date = expiryDate.value
+                                                    )
+                                                )
+                                                val formattedID = cardNumber?.takeLast(4)?.toInt()
+                                                viewModel.insertCardUtil(
+                                                    CardUtilModel(
+                                                        id = formattedID?:-1,
+                                                        colorIndex = cardColorIndex
                                                     )
                                                 )
                                             }
@@ -326,7 +341,13 @@ fun NumberCheckScreen(
                                                     date = expiryDate.value
                                                 )
                                             )
-
+                                            val formattedID = cardNumber?.takeLast(4)?.toInt()
+                                            viewModel.insertCardUtil(
+                                                CardUtilModel(
+                                                    id = formattedID?:-1,
+                                                    colorIndex = cardColorIndex
+                                                )
+                                            )
                                         } else {
                                             isLoading.value = true
                                             viewModel.updateCard(
@@ -334,6 +355,13 @@ fun NumberCheckScreen(
                                                 cardModel = CardModel(
                                                     number = cardNumber ?: "",
                                                     date = expiryDate.value
+                                                )
+                                            )
+                                            val formattedID = cardNumber?.takeLast(4)?.toInt()
+                                            viewModel.insertCardUtil(
+                                                CardUtilModel(
+                                                    id = formattedID?:-1,
+                                                    colorIndex = cardColorIndex
                                                 )
                                             )
                                         }

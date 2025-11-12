@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mr.anonym.data.instance.local.SharedPreferencesInstance
 import com.mr.anonym.domain.model.CardModel
+import com.mr.anonym.domain.model.CardUtilModel
 import com.mr.anonym.domain.response.LoginRequest
+import com.mr.anonym.domain.useCases.local.LocalUseCases
 import com.mr.anonym.domain.useCases.remote.RemoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NumberCheckViewModel @Inject constructor(
     private val sharedPrefs: SharedPreferencesInstance,
+    private val localUseCases: LocalUseCases,
     private val remoteUseCases: RemoteUseCases
 ) : ViewModel() {
 
@@ -35,6 +38,10 @@ class NumberCheckViewModel @Inject constructor(
         remoteUseCases.addCardUseCase.execute(cardModel).collect {
             _isCardAdded.value = true
         }
+    }
+
+    fun insertCardUtil(model: CardUtilModel) = viewModelScope.launch {
+        localUseCases.insertCardUtilUseCase.execute(model)
     }
 
     fun loginUser() = viewModelScope.launch {

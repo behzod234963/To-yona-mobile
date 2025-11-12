@@ -225,4 +225,9 @@ class SharedPreferencesInstance(private val context: Context ) {
         sharedPreferences.edit { putBoolean("LanguageState",state) }
     }
     fun languageState(): Boolean = sharedPreferences.getBoolean("LanguageState",false)
+
+    fun saveCardColorIndex(index: Int){
+        sharedPreferences.edit { putInt("CardColorIndex",index) }
+    }
+    fun getCardColorIndex(): Int = sharedPreferences.getInt("CardColorIndex",1)
 }

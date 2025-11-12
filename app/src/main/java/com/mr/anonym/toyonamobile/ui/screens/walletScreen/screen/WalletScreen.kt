@@ -98,7 +98,7 @@ fun WalletScreen(
         )
     }
     val cardID = remember { mutableIntStateOf(-1) }
-    val cardUtilModel = remember { mutableStateOf(CardModel() ) }
+    val cardUtilModel = remember { mutableStateOf(CardUtilModel() ) }
     sharedPreferences.addCardProcess(false)
 
     val isLoading = remember { mutableStateOf(false) }
@@ -184,7 +184,8 @@ fun WalletScreen(
                     .padding(10.dp)
             ) {
                 items(cards.value) { model ->
-                    viewModel.getColorIndex(model.id)
+                    val formattedID = model.number.takeLast(4).toInt()
+                    viewModel.getColorIndex(formattedID)
                     WalletScreenItem(
                         secondaryColor = secondaryColor,
                         fontFamily = iosFont,
@@ -202,7 +203,10 @@ fun WalletScreen(
                         onDeleteClick = {
                             cardID.intValue = model.id
                             showDeleteDialog.value = true
-                            cardUtilModel.value = model
+                            cardUtilModel.value = CardUtilModel(
+                                id = formattedID,
+                                colorIndex = colorIndex.value
+                            )
                         },
                     )
                 }
@@ -216,7 +220,7 @@ fun WalletScreen(
                     onConfirmClick = {
                         showDeleteDialog.value = false
                         viewModel.deleteCard(id = cardID.intValue)
-                        viewModel.deleteCardUtil(model =
+                        viewModel.deleteCardUtil(
                             CardUtilModel(
                                 id = cardUtilModel.value.id,
                                 colorIndex = colorIndex.value

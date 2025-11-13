@@ -35,12 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -99,20 +101,52 @@ fun DetailsScreen(
         isDarkTheme -> Color.DarkGray
         else -> Color.LightGray
     }
-    val quaternaryColor = Color.Red
-    val fiverdColor = Color.Green
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme -> systemSevenrdColor
+    val fiveColor = Color(101, 163, 119, 255)
+    val systemSevenColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
+    val sevenColor = when {
+        isSystemTheme -> systemSevenColor
         isDarkTheme -> Color.Unspecified
         else -> Color.White
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
+
     val profileAvatar = viewModel.profileAvatar
     val selectedTab = rememberSaveable { mutableIntStateOf(1) }
 
     val priceValue = remember { mutableStateOf("") }
     val receiver = viewModel.user
     val sender = viewModel.sender
+//    val parties = remember { mutableStateOf(
+//        listOf(
+//            PartysItem(
+//                id = -1,
+//                userId = -1,
+//                userName = "Behzod Xudaybergenov",
+//                name = "Behzod",
+//                type = "1",
+//                address = "Old Trafford",
+//                cardNumber = "9860030160619356",
+//                startTime = "13.11.2025",
+//                endTime = "14.11.2025",
+//                status = true,
+//                createdAt = "12.11.2025"
+//            ),
+//            PartysItem(
+//                id = -1,
+//                userId = -1,
+//                userName = "Behzod Xudaybergenov",
+//                name = "Behzod",
+//                type = "1",
+//                address = "Old Trafford",
+//                cardNumber = "9860030160619356",
+//                startTime = "13.11.2025",
+//                endTime = "14.11.2025",
+//                status = true,
+//                createdAt = "12.11.2025"
+//            )
+//        )
+//    ) }
     val activeParties = viewModel.activeParties
     val parties = viewModel.parties
     val partyModel = remember { mutableStateOf(PartysItem()) }
@@ -184,14 +218,16 @@ fun DetailsScreen(
                             color = secondaryColor,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            fontFamily = iosFont
                         )
                         Spacer(Modifier.height(5.dp))
                         Text(
                             text = "+998${receiver.value.phonenumber}".phoneNumberTransformation(),
                             color = secondaryColor,
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = iosFont
                         )
                     }
                     IconButton(
@@ -230,6 +266,7 @@ fun DetailsScreen(
                     modifier = Modifier
                         .padding(vertical = 10.dp),
                     secondaryColor = secondaryColor,
+                    fontFamily = iosFont,
                     content = {
                         selectedTab.intValue = it
                         when (selectedTab.intValue) {
@@ -242,14 +279,16 @@ fun DetailsScreen(
                                         partyModel.value = model
                                         ActualEventsItem(
                                             secondaryColor = secondaryColor,
-                                            fiverdColor = fiverdColor,
-                                            sevenrdColor = sevenrdColor,
+                                            fiveColor = fiveColor,
+                                            sevenColor = sevenColor,
+                                            fontFamily = iosFont,
                                             partyModel = model,
                                             userModel = receiver.value,
                                             priceFieldError = priceFieldError.value,
                                         ) { price ->
                                             partyModel.value = model
-                                            priceValue.value = price.filter { digit -> digit.isDigit() }
+                                            priceValue.value =
+                                                price.filter { digit -> digit.isDigit() }
                                             try {
                                                 if (
                                                     priceValue.value.isDigitsOnly() &&
@@ -281,14 +320,16 @@ fun DetailsScreen(
                                         partyModel.value = model
                                         DetailsHistoryItem(
                                             secondaryColor = secondaryColor,
-                                            fiverdColor = fiverdColor,
-                                            sevenrdColor = sevenrdColor,
+                                            fiveColor = fiveColor,
+                                            sevenColor = sevenColor,
+                                            fontFamily = iosFont,
                                             userModel = receiver.value,
                                             partyModel = model,
                                             priceFieldError = priceHistoryValueError.value,
                                         ) { price ->
                                             partyModel.value = model
-                                            priceValue.value = price.filter { digit -> digit.isDigit() }
+                                            priceValue.value =
+                                                price.filter { digit -> digit.isDigit() }
                                             try {
                                                 if (
                                                     priceValue.value.isDigitsOnly() &&
@@ -319,13 +360,14 @@ fun DetailsScreen(
                         primaryColor = primaryColor,
                         secondaryColor = secondaryColor,
                         tertiaryColor = tertiaryColor,
-                        quaternaryColor = quaternaryColor,
+                        fiveColor = fiveColor,
+                        fontFamily = iosFont,
                         state = bottomSheetState,
                         sender = sender.value,
                         receiver = receiver.value,
                         partyModel = partyModel.value,
-                        isFieldEnabled = isPriceFieldEnabled.value,
 //                Price field properties
+                        isFieldEnabled = isPriceFieldEnabled.value,
                         priceValue = priceValue.value,
                         onValueChange = {
                             priceValue.value = it
@@ -333,8 +375,8 @@ fun DetailsScreen(
                         onTrailingIconClick = {
                             isPriceFieldEnabled.value = true
                         },
-                        senderCardNumber = senderCardNumber.value,
 //                DropDown menu properties
+                        senderCardNumber = senderCardNumber.value,
                         onConfirmButtonClick = {
                             if (
                                 priceValue.value.isDigitsOnly() &&
@@ -378,14 +420,15 @@ fun DetailsScreen(
                 if (showCheckDetails.value) {
                     TransferCheckDialog(
                         secondaryColor = secondaryColor,
-                        quaternaryColor = quaternaryColor,
+                        fiveColor = fiveColor,
+                        fontFamily = iosFont,
                         commission = "500",
                         sender = sender.value,
-                        receiver = receiver.value,
-                        onDismissClick = { showCheckDetails.value = false },
                         senderCard = senderCardNumber.value,
+                        receiver = receiver.value,
                         transferAmount = priceValue.value,
                         partyModel = partyModel.value,
+                        onDismissClick = { showCheckDetails.value = false },
                     ) {
                         showCheckDetails.value = false
                         navController.navigate(ScreensRouter.MainScreen.route) {

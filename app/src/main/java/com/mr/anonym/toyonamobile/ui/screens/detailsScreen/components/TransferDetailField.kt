@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ import com.mr.anonym.toyonamobile.presentation.utils.UzsVisualTransformation
 @Composable
 fun TransferDetailField(
     secondaryColor: Color,
+    fontFamily: FontFamily,
     priceValue: String,
     onValueChange:(String)-> Unit,
     onTrailingIconClick:()-> Unit,
@@ -42,7 +44,8 @@ fun TransferDetailField(
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamily
         ),
         keyboardOptions = keyBoardOptions,
         enabled = isFieldEnabled,
@@ -62,7 +65,8 @@ fun TransferDetailField(
         },
         label = {
             Text(
-                text = stringResource(R.string.transfer_amount)
+                text = stringResource(R.string.transfer_amount),
+                fontFamily = fontFamily
             )
         },
         singleLine = true,

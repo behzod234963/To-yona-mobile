@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.domain.model.CardModel
@@ -17,6 +18,7 @@ import com.mr.anonym.toyonamobile.R
 fun TransferDropDownMenu(
     primaryColor: Color,
     secondaryColor: Color,
+    fontFamily: FontFamily,
     isExpanded: Boolean,
     onDismissRequest: () -> Unit,
     onItemClick: (String) -> Unit,
@@ -37,7 +39,8 @@ fun TransferDropDownMenu(
                         text = stringResource(R.string.add_cart),
                         color = secondaryColor,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 },
                 onClick = { onAddCardClick() },
@@ -57,7 +60,8 @@ fun TransferDropDownMenu(
                             text = card.number,
                             color = secondaryColor,
                             fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     },
                     onClick = {
@@ -73,7 +77,8 @@ fun TransferDropDownMenu(
                         text = stringResource(R.string.add_card),
                         color = secondaryColor,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 },
                 onClick = { onAddCardClick() },

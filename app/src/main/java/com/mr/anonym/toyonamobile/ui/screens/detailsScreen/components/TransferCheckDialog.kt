@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,8 @@ import com.mr.anonym.toyonamobile.presentation.extensions.stringEqualizerForDeta
 @Composable
 fun TransferCheckDialog(
     secondaryColor: Color,
-    quaternaryColor: Color,
+    fiveColor: Color,
+    fontFamily: FontFamily,
     commission: String,
     sender: UserModelItem,
     senderCard: String,
@@ -63,7 +65,8 @@ fun TransferCheckDialog(
                 color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = fontFamily
             )
         },
         text = {
@@ -86,6 +89,7 @@ fun TransferCheckDialog(
                             .fillMaxWidth(0.5f),
                         text = stringResource(R.string.time_of_the_event),
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -93,7 +97,8 @@ fun TransferCheckDialog(
                         text = "$",
                         fontSize = 16.sp,
                         color = secondaryColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 HorizontalDivider()
@@ -112,12 +117,14 @@ fun TransferCheckDialog(
                         text = stringResource(R.string.transfer_amount),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "${transferAmount.moneySeparator()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -137,12 +144,14 @@ fun TransferCheckDialog(
                         text = stringResource(R.string.commission),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "${commission.moneySeparator()} ${stringResource(R.string.uzs)}",
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -162,6 +171,7 @@ fun TransferCheckDialog(
                         text = stringResource(R.string.receiver_name),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     receiver.surname.length.let {
@@ -169,6 +179,7 @@ fun TransferCheckDialog(
                             text = "${receiver.username} ${if (it > 10) receiver.surname.stringEqualizerForDetails() else receiver.surname }",
                             fontSize = 16.sp,
                             color = secondaryColor,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -189,6 +200,7 @@ fun TransferCheckDialog(
                             .fillMaxWidth(0.5f),
                         text = stringResource(R.string.receiver_card),
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         color = secondaryColor,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -196,6 +208,7 @@ fun TransferCheckDialog(
                         text = partyModel.cardNumber.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -215,12 +228,14 @@ fun TransferCheckDialog(
                         text = stringResource(R.string.sender_name),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                         Text(
                             text = "${sender.username} ${sender.surname}",
                             fontSize = 16.sp,
                             color = secondaryColor,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -241,12 +256,14 @@ fun TransferCheckDialog(
                         text = stringResource(R.string.sender_card),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = senderCard.cardNumberFormatter(),
                         fontSize = 16.sp,
                         color = secondaryColor,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -257,8 +274,8 @@ fun TransferCheckDialog(
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = quaternaryColor,
-                    contentColor = quaternaryColor
+                    containerColor = fiveColor,
+                    contentColor = fiveColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 onClick = { onConfirmClick() }
@@ -267,6 +284,7 @@ fun TransferCheckDialog(
                     text = stringResource(R.string.continue_),
                     color = Color.White,
                     fontSize = 16.sp,
+                    fontFamily = fontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
             }

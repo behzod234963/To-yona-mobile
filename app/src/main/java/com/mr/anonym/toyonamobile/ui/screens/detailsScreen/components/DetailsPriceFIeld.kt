@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,8 @@ import com.mr.anonym.toyonamobile.presentation.utils.UzsVisualTransformation
 fun DetailsPriceFields(
     modifier: Modifier,
     secondaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
+    fontFamily: FontFamily,
     value: String,
     priceFieldError: Boolean,
     onValueChange:(String)-> Unit,
@@ -45,21 +47,23 @@ fun DetailsPriceFields(
         textStyle = TextStyle(
             color = secondaryColor,
             fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontFamily = fontFamily
         ),
         label = {
             Text(
                 text = stringResource(R.string.enter_the_price),
+                fontFamily = fontFamily
             )
         },
         trailingIcon = {
             Button(
                 modifier = Modifier
                     .height(50.dp)
-                    .padding(end = 10.dp, top = 5.dp, bottom = 5.dp,),
+                    .padding(end = 10.dp, top = 5.dp, bottom = 5.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = fiverdColor,
-                    contentColor = fiverdColor
+                    containerColor = fiveColor,
+                    contentColor = fiveColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 onClick = { onTransferClick() }
@@ -68,6 +72,7 @@ fun DetailsPriceFields(
                     text = stringResource(R.string.transfer),
                     color = secondaryColor,
                     fontSize = 15.sp,
+                    fontFamily = fontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -76,10 +81,11 @@ fun DetailsPriceFields(
             if (priceFieldError){
                 Text(
                     text = stringResource(R.string.the_field_must_not_be_empty_or_can_contain_only_digits),
+                    fontFamily = fontFamily
                 )
             }
         },
         singleLine = true,
-        shape = RoundedCornerShape(10.dp,),
+        shape = RoundedCornerShape(10.dp),
     )
 }

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,8 +37,9 @@ import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPri
 @Composable
 fun DetailsHistoryItem(
     secondaryColor: Color,
-    fiverdColor: Color,
-    sevenrdColor: Color,
+    fiveColor: Color,
+    sevenColor: Color,
+    fontFamily: FontFamily,
     userModel: UserModelItem,
     partyModel: PartysItem,
     priceFieldError: Boolean,
@@ -51,8 +53,8 @@ fun DetailsHistoryItem(
         modifier = Modifier
             .padding(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = sevenrdColor,
-            contentColor = sevenrdColor
+            containerColor = sevenColor,
+            contentColor = sevenColor
         ),
         elevation = CardDefaults.cardElevation(10.dp),
         shape = RoundedCornerShape(10.dp),
@@ -76,6 +78,7 @@ fun DetailsHistoryItem(
                     text = partyModel.name,
                     color = secondaryColor,
                     fontSize = 16.sp,
+                    fontFamily = fontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
                 Row(
@@ -85,6 +88,7 @@ fun DetailsHistoryItem(
                         text = stringResource(R.string.more_details),
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(5.dp))
@@ -111,6 +115,7 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.event),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
@@ -124,6 +129,7 @@ fun DetailsHistoryItem(
                             },
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -143,6 +149,7 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.event_date_and_time),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Column {
@@ -150,6 +157,7 @@ fun DetailsHistoryItem(
                                 text = partyModel.startTime,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -157,6 +165,7 @@ fun DetailsHistoryItem(
                                 text = partyModel.endTime,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -178,12 +187,14 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.address),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = partyModel.address,
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -200,6 +211,7 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.requisites),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -217,12 +229,14 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.card_holder_name),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = "${userModel.username} ${userModel.surname}",
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -242,6 +256,7 @@ fun DetailsHistoryItem(
                             text = stringResource(R.string.card_number),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         partyModel.cardNumber.cardNumberFormatter().let {
@@ -249,6 +264,7 @@ fun DetailsHistoryItem(
                                 text = it,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -262,7 +278,8 @@ fun DetailsHistoryItem(
                             .fillMaxWidth()
                             .height(100.dp),
                         secondaryColor = secondaryColor,
-                        fiverdColor = fiverdColor,
+                        fiveColor = fiveColor,
+                        fontFamily = fontFamily,
                         value = priceHistoryValue.value,
                         priceFieldError = priceFieldError,
                         onValueChange = { newValue ->

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,7 +42,8 @@ fun TransferDetailsBottomSheet(
     primaryColor: Color,
     secondaryColor:Color,
     tertiaryColor:Color,
-    quaternaryColor: Color,
+    fiveColor: Color,
+    fontFamily: FontFamily,
     state: SheetState,
     sender: UserModelItem,
     receiver: UserModelItem,
@@ -87,6 +89,7 @@ fun TransferDetailsBottomSheet(
         ){
             TransferDetailField(
                 secondaryColor = secondaryColor,
+                fontFamily = fontFamily,
                 priceValue = priceValue,
                 onValueChange = { onValueChange(it) },
                 onTrailingIconClick = { onTrailingIconClick() },
@@ -105,13 +108,15 @@ fun TransferDetailsBottomSheet(
                         text = stringResource(R.string.receiver),
                         color = secondaryColor,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = "${receiver.username} ${receiver.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 partyModel.cardNumber.cardNumberFormatter().let {
@@ -119,6 +124,7 @@ fun TransferDetailsBottomSheet(
                         text = it,
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -140,12 +146,14 @@ fun TransferDetailsBottomSheet(
                         text = stringResource(R.string.sender),
                         color = secondaryColor,
                         fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                     Text(
                         text = "${sender.username} ${sender.surname}",
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
@@ -156,6 +164,7 @@ fun TransferDetailsBottomSheet(
                         text = senderCardNumber.cardNumberFormatter(),
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Box{
@@ -171,12 +180,13 @@ fun TransferDetailsBottomSheet(
                         TransferDropDownMenu(
                             primaryColor = primaryColor,
                             secondaryColor = secondaryColor,
+                            fontFamily = fontFamily,
                             isExpanded = isExpanded,
                             onDismissRequest = { onDropDownDismissRequest() },
                             onItemClick = { cardNumber->
                                 onItemClick(cardNumber) },
-                            userCards = userCards,
-                            onAddCardClick = { onAddCardClick() }
+                            onAddCardClick = { onAddCardClick() },
+                            userCards = userCards
                         )
                     }
                 }
@@ -189,15 +199,16 @@ fun TransferDetailsBottomSheet(
                 shape = RoundedCornerShape(10.dp),
                 onClick = { onConfirmButtonClick() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = quaternaryColor,
-                    contentColor = quaternaryColor
+                    containerColor = fiveColor,
+                    contentColor = fiveColor
                 )
             ) {
                 Text(
                     text = stringResource(R.string.transfer),
                     color = Color.White,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
             }
         }

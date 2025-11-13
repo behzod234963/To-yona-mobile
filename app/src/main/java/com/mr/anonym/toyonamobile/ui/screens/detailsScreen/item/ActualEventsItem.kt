@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,8 +37,9 @@ import com.mr.anonym.toyonamobile.ui.screens.detailsScreen.components.DetailsPri
 @Composable
 fun ActualEventsItem(
     secondaryColor: Color,
-    fiverdColor: Color,
-    sevenrdColor: Color,
+    fiveColor: Color,
+    sevenColor: Color,
+    fontFamily: FontFamily,
     partyModel: PartysItem,
     userModel: UserModelItem,
     priceFieldError: Boolean,
@@ -51,8 +53,8 @@ fun ActualEventsItem(
         modifier = Modifier
             .padding(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = sevenrdColor,
-            contentColor = sevenrdColor
+            containerColor = sevenColor,
+            contentColor = sevenColor
         ),
         elevation = CardDefaults.cardElevation(10.dp),
         shape = RoundedCornerShape(10.dp),
@@ -76,7 +78,8 @@ fun ActualEventsItem(
                     text = partyModel.name,
                     color = secondaryColor,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = fontFamily
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -85,6 +88,7 @@ fun ActualEventsItem(
                         text = stringResource(R.string.more_details),
                         color = secondaryColor,
                         fontSize = 16.sp,
+                        fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.width(5.dp))
@@ -111,6 +115,7 @@ fun ActualEventsItem(
                             text = stringResource(R.string.event),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
@@ -122,6 +127,7 @@ fun ActualEventsItem(
                                 "4" -> partyModel.type
                                 else -> ""
                             },
+                            fontFamily = fontFamily,
                             color = secondaryColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
@@ -143,6 +149,7 @@ fun ActualEventsItem(
                             text = stringResource(R.string.event_date_and_time),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Column {
@@ -150,6 +157,7 @@ fun ActualEventsItem(
                                 text = partyModel.startTime,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -157,6 +165,7 @@ fun ActualEventsItem(
                                 text = partyModel.endTime,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -178,12 +187,14 @@ fun ActualEventsItem(
                             text = stringResource(R.string.address),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = partyModel.address,
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -200,6 +211,7 @@ fun ActualEventsItem(
                             text = stringResource(R.string.requisites),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -217,12 +229,14 @@ fun ActualEventsItem(
                             text = stringResource(R.string.card_holder_name),
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = "${userModel.username} ${userModel.surname}",
                             color = secondaryColor,
                             fontSize = 16.sp,
+                            fontFamily = fontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.End
                         )
@@ -242,6 +256,7 @@ fun ActualEventsItem(
                                 .fillMaxWidth(0.5f),
                             text = stringResource(R.string.card_number),
                             color = secondaryColor,
+                            fontFamily = fontFamily,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -250,6 +265,7 @@ fun ActualEventsItem(
                                 text = it,
                                 color = secondaryColor,
                                 fontSize = 16.sp,
+                                fontFamily = fontFamily,
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.End
                             )
@@ -263,7 +279,8 @@ fun ActualEventsItem(
                             .fillMaxWidth()
                             .height(100.dp),
                         secondaryColor = secondaryColor,
-                        fiverdColor = fiverdColor,
+                        fiveColor = fiveColor,
+                        fontFamily = fontFamily,
                         value = priceValue.value,
                         priceFieldError = priceFieldError,
                         onValueChange = { newValue ->

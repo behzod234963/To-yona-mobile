@@ -143,7 +143,9 @@ fun MainScreen(
         else -> Color(0xFFF1F2F4)
     }
     val tenColor = Color(0xFF259BD6)
-    //    Card gradients
+    
+//    Card gradients
+
 //    1.
     val greenGradient = Brush.linearGradient(
         colors = listOf(

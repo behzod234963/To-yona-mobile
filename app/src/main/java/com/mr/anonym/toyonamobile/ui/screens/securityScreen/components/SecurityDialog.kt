@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,9 @@ import com.mr.anonym.toyonamobile.R
 fun SecurityDialog(
     secondaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor:Color,
+    fiveColor:Color,
+    nineColor: Color,
+    fontFamily: FontFamily,
     title: String,
     onDismissClick:()-> Unit,
     onConfirmClick:()-> Unit,
@@ -31,13 +34,15 @@ fun SecurityDialog(
 ) {
 
     AlertDialog(
+        containerColor = nineColor,
         title = {
             Text(
                 text = title,
                 color = secondaryColor,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                fontFamily = fontFamily
             )
         },
         confirmButton = {
@@ -52,7 +57,8 @@ fun SecurityDialog(
                     Text(
                         text = stringResource(R.string.no),
                         color = quaternaryColor,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
                 Spacer(Modifier.width(15.dp))
@@ -61,8 +67,9 @@ fun SecurityDialog(
                 ) {
                     Text(
                         text = stringResource(R.string.yes),
-                        color = fiverdColor,
-                        fontWeight = FontWeight.SemiBold
+                        color = fiveColor,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamily
                     )
                 }
             }

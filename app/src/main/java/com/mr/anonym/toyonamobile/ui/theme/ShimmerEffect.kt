@@ -140,8 +140,109 @@ fun ShimmerEffectForProfile() {
     Spacer(Modifier.height(10.dp))
 }
 
+@Composable
+fun ShimmerEffectForSettings() {
+    val shimmerColor = listOf(
+        Color.LightGray.copy( alpha = 0.6f ),
+        Color.LightGray.copy( alpha = 0.2f ),
+        Color.LightGray.copy( alpha = 0.6f ),
+    )
+    val transition = rememberInfiniteTransition()
+    val translateAnimation = transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing)
+        )
+    )
+    val brush = Brush.linearGradient(
+        colors = shimmerColor,
+        start = Offset.Zero,
+        end = Offset(x = translateAnimation.value,y = translateAnimation.value)
+    )
+    Column (
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+//        Spacer(Modifier.height(50.dp))
+        Box(
+            modifier = Modifier
+                .size(70.dp)
+                .clip(CircleShape)
+                .background(brush)
+        )
+        Spacer(Modifier.height(10.dp))
+        Box(
+            modifier = Modifier
+                .height(20.dp)
+                .width(200.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        )
+        Spacer(Modifier.height(5.dp))
+        Box(
+            modifier = Modifier
+                .height(20.dp)
+                .width(200.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        )
+        Spacer(Modifier.height(20.dp))
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        )
+        Spacer(Modifier.height(10.dp))
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp)
+        )
+        Spacer(Modifier.height(10.dp))
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+        ){}
+        Spacer(Modifier.height(10.dp))
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+        ){}
+        Spacer(Modifier.height(10.dp))
+        Box(
+            modifier = Modifier
+                .height(45.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .background(brush)
+                .padding(horizontal = 10.dp, vertical = 5.dp),
+        ){}
+    }
+    Spacer(Modifier.height(10.dp))
+}
+
 @Preview
 @Composable
 private fun PreviewShimmerEffectForProfile() {
-    ShimmerEffectForProfile()
+    ShimmerEffectForSettings()
 }

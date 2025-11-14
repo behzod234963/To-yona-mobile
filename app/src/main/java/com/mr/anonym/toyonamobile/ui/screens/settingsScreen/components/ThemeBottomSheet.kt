@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,11 +35,12 @@ import com.mr.anonym.toyonamobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeBottomSheet(
-    primaryColor: Color,
     secondaryColor:Color,
     tertiaryColor: Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
+    nineColor: Color,
+    fontFamily: FontFamily,
     state: SheetState,
     onDismissRequest:()-> Unit,
     isDaySelected: Boolean,
@@ -52,8 +54,8 @@ fun ThemeBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = state,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = tertiaryColor,
-        contentColor = tertiaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         tonalElevation = 7.dp,
         dragHandle = {
             BottomSheetDefaults.DragHandle(
@@ -74,14 +76,15 @@ fun ThemeBottomSheet(
                 text = stringResource(R.string.choose_app_theme),
                 color = secondaryColor,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily
             )
             Spacer(Modifier.height(7.dp))
 //            Day theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
+                    containerColor = tertiaryColor,
+                    contentColor = tertiaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -110,14 +113,15 @@ fun ThemeBottomSheet(
                             text = stringResource(R.string.day_theme),
                             fontSize = 16.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                     RadioButton(
                         selected = isDaySelected,
                         onClick = { onDayClick() },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = fiverdColor,
+                            selectedColor = fiveColor,
                             unselectedColor = quaternaryColor
                         ),
                     )
@@ -127,8 +131,8 @@ fun ThemeBottomSheet(
 //            Night theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
+                    containerColor = tertiaryColor,
+                    contentColor = tertiaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -157,14 +161,15 @@ fun ThemeBottomSheet(
                             text = stringResource(R.string.night_theme),
                             fontSize = 16.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                     RadioButton(
                         selected = isNightSelected,
                         onClick = { onNightClick() },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = fiverdColor,
+                            selectedColor = fiveColor,
                             unselectedColor = quaternaryColor
                         ),
                     )
@@ -174,8 +179,8 @@ fun ThemeBottomSheet(
 //            System theme field
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
+                    containerColor = tertiaryColor,
+                    contentColor = tertiaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -204,14 +209,15 @@ fun ThemeBottomSheet(
                             text = stringResource(R.string.system_theme),
                             fontSize = 16.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                     RadioButton(
                         selected = isSystemSelected,
                         onClick = { onSystemClick() },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = fiverdColor,
+                            selectedColor = fiveColor,
                             unselectedColor = quaternaryColor
                         ),
                     )

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,11 +35,12 @@ import com.mr.anonym.toyonamobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageBottomSheet(
-    primaryColor: Color,
-    secondaryColor:Color,
     tertiaryColor: Color,
+    secondaryColor:Color,
     quaternaryColor: Color,
-    fiverdColor: Color,
+    fiveColor: Color,
+    nineColor: Color,
+    fontFamily: FontFamily,
     state: SheetState,
     onDismissRequest:()-> Unit,
     onUzbekSelected: Boolean,
@@ -50,8 +52,8 @@ fun LanguageBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = state,
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        containerColor = tertiaryColor,
-        contentColor = tertiaryColor,
+        containerColor = nineColor,
+        contentColor = nineColor,
         tonalElevation = 7.dp,
         dragHandle = {
             BottomSheetDefaults.DragHandle(
@@ -72,13 +74,14 @@ fun LanguageBottomSheet(
                 text = stringResource(R.string.choose_the_language),
                 color = secondaryColor,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = fontFamily
             )
             Spacer(Modifier.height(7.dp))
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
+                    containerColor = tertiaryColor,
+                    contentColor = tertiaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -106,14 +109,15 @@ fun LanguageBottomSheet(
                             text = stringResource(R.string.o_zbekcha),
                             fontSize = 16.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                     RadioButton(
                         selected = onUzbekSelected,
                         onClick = { onUzbekClick() },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = fiverdColor,
+                            selectedColor = fiveColor,
                             unselectedColor = quaternaryColor
                         ),
                     )
@@ -122,8 +126,8 @@ fun LanguageBottomSheet(
             Spacer(Modifier.height(10.dp))
             Card (
                 colors = CardDefaults.cardColors(
-                    containerColor = primaryColor,
-                    contentColor = primaryColor
+                    containerColor = tertiaryColor,
+                    contentColor = tertiaryColor
                 ),
                 shape = RoundedCornerShape(10.dp),
                 elevation = CardDefaults.cardElevation(7.dp),
@@ -151,14 +155,15 @@ fun LanguageBottomSheet(
                             text = stringResource(R.string.russian),
                             fontSize = 16.sp,
                             color = secondaryColor,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = fontFamily
                         )
                     }
                     RadioButton(
                         selected = onRussianSelected,
                         onClick = { onRussianClick() },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = fiverdColor,
+                            selectedColor = fiveColor,
                             unselectedColor = quaternaryColor
                         ),
                     )

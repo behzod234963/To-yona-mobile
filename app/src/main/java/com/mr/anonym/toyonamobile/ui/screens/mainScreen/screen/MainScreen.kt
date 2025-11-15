@@ -149,43 +149,43 @@ fun MainScreen(
 //    1.
     val greenGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFF00C853), // ярко-зелёный
-            Color(0xFFB2FF59)  // светло-зелёный
+            Color(0xFF00C853),
+            Color(0xFFB2FF59)
         )
     )
 //    2.
     val redGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFFFF1744), // насыщенный красный
-            Color(0xFFFF8A80)  // мягкий коралловый
+            Color(0xFFFF1744),
+            Color(0xFFFF8A80)
         )
     )
 //    3.
     val purpleGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFF7C4DFF), // насыщенный фиолетовый
-            Color(0xFFB388FF)  // светлый лавандовый
+            Color(0xFF7C4DFF),
+            Color(0xFFB388FF)
         )
     )
 //    4.
     val blueGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFF00B0FF), // небесно-голубой
-            Color(0xFF40C4FF)  // яркий бирюзовый
+            Color(0xFF00B0FF),
+            Color(0xFF40C4FF)
         )
     )
 //    5.
     val orangeGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFFFF6D00), // оранжевый
-            Color(0xFFFFD600)  // солнечный жёлтый
+            Color(0xFFFF6D00),
+            Color(0xFFFFD600)
         )
     )
 //    6.
     val blackGoldGradient = Brush.linearGradient(
         colors = listOf(
-            Color(0xFF212121), // тёмный графит
-            Color(0xFFFFD740)  // золотистый акцент
+            Color(0xFF212121),
+            Color(0xFFFFD740)
         )
     )
 

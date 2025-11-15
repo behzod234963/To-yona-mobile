@@ -5,7 +5,6 @@ import androidx.annotation.Keep
 import com.mr.anonym.domain.repository.remote.UserRepository
 import com.mr.anonym.domain.response.DeleteUserResponse
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
 
 @Keep class DeleteUserUseCase(private val repository: UserRepository) {

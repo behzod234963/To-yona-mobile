@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -50,12 +52,14 @@ fun SupportScreen(
         isDarkTheme -> Color.White
         else -> Color.Black
     }
-    val systemSevenrdColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White
-    val sevenrdColor = when {
-        isSystemTheme-> systemSevenrdColor
-        isDarkTheme -> Color.Unspecified
-        else -> Color.White
+    val systemNineColor = if (isSystemInDarkTheme()) Color(0xFF222327) else Color(0xFFF1F2F4)
+    val nineColor = when{
+        isSystemTheme -> systemNineColor
+        isDarkTheme -> Color(0xFF222327)
+        else -> Color(0xFFF1F2F4)
     }
+
+    val iosFont = FontFamily(Font(R.font.ios_font))
 
     Scaffold (
         containerColor = primaryColor,
@@ -64,11 +68,11 @@ fun SupportScreen(
             SupportTopBar(
                 primaryColor = primaryColor,
                 secondaryColor = secondaryColor,
-                onNavigationClick = { navController.navigateUp() },
-                onActionsClick = {
-                    openSupportBot(context, SUPPORT_BOT)
-                }
-            )
+                fontFamily = iosFont,
+                onNavigationClick = { navController.navigateUp() }
+            ) {
+                openSupportBot(context, SUPPORT_BOT)
+            }
         }
     ){paddingValues ->
         Column(
@@ -79,19 +83,19 @@ fun SupportScreen(
         ) {
             SupportField(
                 secondaryColor = secondaryColor,
-                sevenrdColor = sevenrdColor,
+                nineColor = nineColor,
+                fontFamily = iosFont,
                 title = stringResource(R.string.how_to_change_language),
-                content = stringResource(R.string.change_language_instruction),
-                onClick = {  }
-            )
+                content = stringResource(R.string.change_language_instruction)
+            ) { }
             Spacer(Modifier.height(5.dp))
             SupportField(
                 secondaryColor = secondaryColor,
-                sevenrdColor = sevenrdColor,
+                nineColor = nineColor,
+                fontFamily = iosFont,
                 title = stringResource(R.string.card_support_instruction),
-                content = stringResource(R.string.card_support_instruction_content),
-                onClick = {  }
-            )
+                content = stringResource(R.string.card_support_instruction_content)
+            ) { }
         }
     }
 }

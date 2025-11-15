@@ -19,9 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mr.anonym.toyonamobile.R
@@ -29,17 +29,19 @@ import com.mr.anonym.toyonamobile.R
 @Composable
 fun SupportField(
     secondaryColor: Color,
-    sevenrdColor: Color,
+    nineColor: Color,
+    fontFamily : FontFamily,
     title: String,
     content: String,
     onClick: () -> Unit
 ) {
 
     val isCardClicked = rememberSaveable { mutableStateOf(false) }
+
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = sevenrdColor,
-            contentColor = sevenrdColor
+            containerColor = nineColor,
+            contentColor = nineColor
         ),
         elevation = CardDefaults.cardElevation(7.dp),
         onClick = {
@@ -68,7 +70,8 @@ fun SupportField(
                     fontSize = 17.sp,
                     color = secondaryColor,
                     fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    fontFamily = fontFamily
                 )
                 Icon(
                     painter = painterResource( if (isCardClicked.value) R.drawable.ic_keyboard_down else R.drawable.ic_keyboard_right ),
@@ -84,21 +87,11 @@ fun SupportField(
                     Text(
                         text = content,
                         fontSize = 14.sp,
-                        color = secondaryColor
+                        color = secondaryColor,
+                        fontFamily = fontFamily
                     )
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun PreviewSupportField() {
-    SupportField(
-        secondaryColor = Color.Black,
-        sevenrdColor = Color.Unspecified,
-        title = "Каким образом можно сменить язык интерфейса?",
-        content = "Откройте «Настройки» -> «Сменить язык» и выберите удобный вариант из списка."
-    ) { }
 }

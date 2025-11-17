@@ -166,7 +166,7 @@ fun AddCardScreen(
     val expiryDateValue = viewModel.expiryDate
     val cardDateError = rememberSaveable { mutableStateOf(false) }
 
-    val colorIndex = remember { mutableIntStateOf( 5 ) }
+    val colorIndex = remember { mutableIntStateOf( 1 ) }
 
     val user = viewModel.user
 
@@ -174,7 +174,7 @@ fun AddCardScreen(
         viewModel.cardEvents(CardEvents.ChangeCardNumber(card.number))
         viewModel.cardEvents(CardEvents.ChangeExpiryDate(card.date))
     }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val greenInteractionSource = remember { MutableInteractionSource() }
     val isGreenPressed by greenInteractionSource.collectIsPressedAsState()
@@ -220,7 +220,7 @@ fun AddCardScreen(
             .imePadding(),
         containerColor = primaryColor,
         contentColor = primaryColor,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             AddCardTopBar(
                 primaryColor = primaryColor,
@@ -441,7 +441,7 @@ fun AddCardScreen(
                             }
                         }else{
                             coroutineScope.launch {
-                                snackbarHostState.showSnackbar(
+                                snackBarHostState.showSnackbar(
                                     message = context.getString(R.string.please_check_validate_places)
                                 )
                             }

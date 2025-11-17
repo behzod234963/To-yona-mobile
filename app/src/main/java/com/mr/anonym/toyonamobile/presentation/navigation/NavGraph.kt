@@ -50,7 +50,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = ScreensRouter.SupportScreen.route
+        startDestination = ScreensRouter.MainScreen.route
 //            when {
 //                !isLanguageSelected -> ScreensRouter.WelcomeScreen.route
 //                isFirstTime -> ScreensRouter.OnboardingScreen.route

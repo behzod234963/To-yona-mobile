@@ -117,7 +117,7 @@ fun NumberCheckScreen(
     val iosFont = FontFamily(Font(R.font.ios_font))
 
 //    State
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     val otpValue = remember { mutableStateOf("") }
     val correctValue = remember { mutableStateOf("11111") }
@@ -166,7 +166,7 @@ fun NumberCheckScreen(
         contentColor = nineColor,
         modifier = Modifier
             .imePadding(),
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) { paddingValues ->
         if (!isLoading.value) {
             Column(
@@ -308,7 +308,7 @@ fun NumberCheckScreen(
                                     }
                                 } else {
                                     coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
+                                        snackBarHostState.showSnackbar(
                                             message = context.getString(R.string.please_complete_the_process)
                                         )
                                     }
@@ -405,7 +405,7 @@ fun NumberCheckScreen(
                                 }
                             } else {
                                 coroutineScope.launch {
-                                    snackbarHostState.showSnackbar(
+                                    snackBarHostState.showSnackbar(
                                         message = context.getString(R.string.please_complete_the_process)
                                     )
                                 }
@@ -644,7 +644,7 @@ fun NumberCheckScreen(
                                 }
                                 isLoading.value = false
                             }else{
-                                snackbarHostState.showSnackbar(
+                                snackBarHostState.showSnackbar(
                                     context.getString(R.string.couldn_t_log_in)
                                 )
                                 isLoading.value = false
